@@ -23,7 +23,6 @@
 
             return services;
         }
-
        
         private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
