@@ -16,6 +16,7 @@
     using Infrastructure;
 
     using Web.Extentions.Middleware;
+    using Persistence;
 
     public static class Startup
     {
@@ -53,7 +54,8 @@
 
         public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder builder)
         {
-            builder.MapControllers().RequireAuthorization();
+            builder.MapControllers();
+                //.RequireAuthorization();
 
             return builder;
         }
