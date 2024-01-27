@@ -12,10 +12,11 @@
 
     using Web.Services;
     using Web.Extentions.Swagger;
+    using Web.Extentions.Middleware;
+    using Web.Extentions.Healtchecks;
 
     using Infrastructure;
 
-    using Web.Extentions.Middleware;
     using Persistence;
 
     public static class Startup
@@ -33,6 +34,8 @@
             services.AddPersistence(config);
 
             services.AddSwaggerDocumentation();
+
+            services.AddHealth(config);
 
             services.AddScoped<IUser, CurrentUser>();
 
@@ -56,6 +59,7 @@
         {
             builder.MapControllers();
                 //.RequireAuthorization();
+            builder.MapHealthCheck();
 
             return builder;
         }
