@@ -71,7 +71,10 @@
                 default:
                     messages.Add("An unexpected error occurred.");
                     messages.Add(exception.Message.ToString());
-                    messages.Add(exception.InnerException!.ToString());
+                    if (exception.InnerException != null)
+                    {
+                        messages.Add(exception.InnerException!.ToString());
+                    }
                     break;
             }
 
