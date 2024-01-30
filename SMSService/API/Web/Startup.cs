@@ -12,10 +12,10 @@
 
     using Web.Services;
     using Web.Extentions.Swagger;
+    using Web.Extentions.Middleware;
+    using Web.Extentions.Healtchecks;
 
     using Infrastructure;
-
-    using Web.Extentions.Middleware;
 
     using Persistence;
 
@@ -34,6 +34,8 @@
             services.AddPersistence(config);
 
             services.AddSwaggerDocumentation();
+
+            services.AddHealth(config);
 
             services.AddScoped<IUser, CurrentUser>();
 
@@ -55,7 +57,9 @@
 
         public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder builder)
         {
-            builder.MapControllers().RequireAuthorization();
+            builder.MapControllers();
+            //.RequireAuthorization();
+            builder.MapHealthCheck();
 
             return builder;
         }
