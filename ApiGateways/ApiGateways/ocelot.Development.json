@@ -1,0 +1,135 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/Health",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5070
+        }
+      ],
+      "UpstreamPathTemplate": "/email/Health",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "emailservice",
+      "Key": "email-health"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Health",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5071
+        }
+      ],
+      "UpstreamPathTemplate": "/notification/Health",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "notificationservice",
+      "Key": "notification-health"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Health",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5072
+        }
+      ],
+      "UpstreamPathTemplate": "/otp/Health",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "otpservice",
+      "Key": "otp-health"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Health",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5073
+        }
+      ],
+      "UpstreamPathTemplate": "/sms/Health",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "smsservice",
+      "Key": "sms-health"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "emailservice",
+      "Config": [
+        {
+          "Name": "Email Service",
+          "Version": "v1",
+          "Url": "http://localhost:5070/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "notificationservice",
+      "Config": [
+        {
+          "Name": "Notification Service",
+          "Version": "v1",
+          "Url": "http://localhost:5071/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "otpservice",
+      "Config": [
+        {
+          "Name": "OTP Service",
+          "Version": "v1",
+          "Url": "http://localhost:5072/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "smsservice",
+      "Config": [
+        {
+          "Name": "SMS Service",
+          "Version": "v1",
+          "Url": "http://localhost:5073/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ],
+  "Aggregates": [
+    {
+      "RouteKeys": [
+        "email-health"
+      ],
+      "UpstreamPathTemplate": "/email/health",
+      "Aggregator": "HealthCheckAggregator"
+    },
+    {
+      "RouteKeys": [
+        "notification-health"
+      ],
+      "UpstreamPathTemplate": "/notification/health",
+      "Aggregator": "HealthCheckAggregator"
+    },
+    {
+      "RouteKeys": [
+        "otp-health"
+      ],
+      "UpstreamPathTemplate": "/otp/health",
+      "Aggregator": "HealthCheckAggregator"
+    },
+    {
+      "RouteKeys": [
+        "sms-health"
+      ],
+      "UpstreamPathTemplate": "/sms/health",
+      "Aggregator": "HealthCheckAggregator"
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5008"
+  }
+}
