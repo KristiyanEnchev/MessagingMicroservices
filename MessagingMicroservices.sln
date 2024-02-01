@@ -111,6 +111,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "SMSService\Shared
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateways", "ApiGateways\ApiGateways\ApiGateways.csproj", "{4DF3665D-16A3-49BA-9BD3-6865C266152E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B427F3A4-0759-4EF9-ACAF-E201E21CA1F3}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yaml = docker-compose.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

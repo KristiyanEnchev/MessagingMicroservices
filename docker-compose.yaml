@@ -1,0 +1,62 @@
+version: '3.8'
+services:
+  emailservice:
+    container_name: email.api
+    build:
+      context: ./EmailService
+      dockerfile: /API/Host/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=EmailService;User Id=localAdmin;Password=localAdmin;Encrypt=False;
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    ports:
+      - "5070:80"
+    restart: on-failure
+
+  smsservice:
+    container_name: sms.api
+    build:
+      context: ./SMSService
+      dockerfile: /API/Host/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=SMSService;User Id=localAdmin;Password=localAdmin;Encrypt=False;
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    ports:
+      - "5071:80"
+
+  otpservice:
+    container_name: otp.api
+    build:
+      context: ./OTPService
+      dockerfile: /API/Host/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=OTPService;User Id=localAdmin;Password=localAdmin;Encrypt=False;
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    ports:
+      - "5072:80"
+
+  notificationservice:
+    container_name: notification.api
+    build:
+      context: ./NotificationService
+      dockerfile: /API/Host/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=NotificationService;User Id=localAdmin;Password=localAdmin;Encrypt=False;
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    ports:
+      - "5073:80"
+
+  apigateway:
+    container_name: apigateway
+    build:
+      context: ./ApiGateways
+      dockerfile: ApiGateways/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    ports:
+      - "5008:80"
+    depends_on:
+      - emailservice
+      - smsservice
+      - otpservice
+      - notificationservice
