@@ -55,6 +55,34 @@
       "UpstreamHttpMethod": [ "GET" ],
       "SwaggerKey": "smsservice",
       "Key": "sms-health"
+    },
+    {
+      "DownstreamPathTemplate": "/api/identity/login",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44313
+        }
+      ],
+      "UpstreamPathTemplate": "/identity/login",
+      "UpstreamHttpMethod": [ "POST" ],
+      "SwaggerKey": "identityservice",
+      "Key": "identity-login"
+    },
+    {
+      "DownstreamPathTemplate": "/api/identity/register",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44313
+        }
+      ],
+      "UpstreamPathTemplate": "/identity/register",
+      "UpstreamHttpMethod": [ "POST" ],
+      "SwaggerKey": "identityservice",
+      "Key": "identity-register"
     }
   ],
   "SwaggerEndPoints": [
@@ -95,6 +123,16 @@
           "Name": "SMS Service",
           "Version": "v1",
           "Url": "http://localhost:5073/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "identityservice",
+      "Config": [
+        {
+          "Name": "Authentication Api",
+          "Version": "v1",
+          "Url": "https://localhost:44313/swagger/v1/swagger.json"
         }
       ]
     }
