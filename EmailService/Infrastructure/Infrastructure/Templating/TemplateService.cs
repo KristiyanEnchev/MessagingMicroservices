@@ -1,5 +1,7 @@
 ﻿namespace Infrastructure.Templating
 {
+    using System.Reflection;
+    using System.Text;
     using System.Web;
 
     using Models;
@@ -19,5 +21,19 @@
             return templateContent;
         }
 
+        public async Task<string> GetLocalEmailTemplate(string templateName)
+        {
+            var assemply = typeof(Models.TemplateData).GetTypeInfo().Assembly;
+            string baseDirectory = Path.GetDirectoryName(assemply!.Location)!;
+            string tmplFolder = Path.Combine(baseDirectory, "EmailTemplates");
+            string filePath = Path.Combine(tmplFolder, $"{templateName}.html");
+
+            using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var sr = new StreamReader(fs, Encoding.Default);
+            string mailText = sr.ReadToEnd();
+            sr.Close();
+
+            return mailText;
+        }
     }
 }
