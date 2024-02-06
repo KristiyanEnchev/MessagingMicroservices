@@ -21,6 +21,17 @@
             return templateContent;
         }
 
+        public async Task<string> ApplyPartialTemplate(string title, string body, string footer)
+        {
+            string shell = await GetLocalEmailTemplate("DefaultTemplate");
+
+            shell = shell.Replace("|Title|", title);
+            shell = shell.Replace("|BodyContent|", body);
+            shell = shell.Replace("|FooterContent|", footer);
+
+            return shell;
+        }
+
         public async Task<string> GetLocalEmailTemplate(string templateName)
         {
             var assemply = typeof(Models.TemplateData).GetTypeInfo().Assembly;
