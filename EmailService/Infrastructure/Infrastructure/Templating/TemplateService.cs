@@ -1,8 +1,8 @@
 ﻿namespace Infrastructure.Templating
 {
-    using System.Reflection;
-    using System.Text;
     using System.Web;
+    using System.Text;
+    using System.Reflection;
 
     using Models;
 
