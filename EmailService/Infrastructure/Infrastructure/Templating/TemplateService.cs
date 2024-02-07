@@ -38,7 +38,7 @@
 
         public EmailTemplateModel LoadTemplateFromFile(string templateName)
         {
-            var assemply = typeof(Models.TemplateData).GetTypeInfo().Assembly;
+            var assemply = typeof(TemplateData).GetTypeInfo().Assembly;
             string baseDirectory = Path.GetDirectoryName(assemply!.Location)!;
             string tmplFolder = Path.Combine(baseDirectory, "EmailTemplates");
             string filePath = Path.Combine(tmplFolder, $"{templateName}.json");
@@ -55,7 +55,7 @@
 
         public async Task<string> GetLocalEmailTemplate(string templateName)
         {
-            var assemply = typeof(Models.TemplateData).GetTypeInfo().Assembly;
+            var assemply = typeof(TemplateData).GetTypeInfo().Assembly;
             string baseDirectory = Path.GetDirectoryName(assemply!.Location)!;
             string tmplFolder = Path.Combine(baseDirectory, "EmailTemplates");
             string filePath = Path.Combine(tmplFolder, $"{templateName}.html");
