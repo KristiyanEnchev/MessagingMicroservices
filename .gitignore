@@ -25,7 +25,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]ogs/
-
+[C]onfigurations/
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -251,3 +251,4 @@ ModelManifest.xml
 /.vs/VSWorkspaceState.json
 /Multitenant.API/Multitenant.Host/ssl/private_key_unencrypted.pem
 /Multitenant.API/Multitenant.Host/ssl/ssl_certificate.crt
+/EmailService/API/Host/Configurations/smtpSettings.json
