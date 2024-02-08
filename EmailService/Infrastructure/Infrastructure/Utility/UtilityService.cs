@@ -14,7 +14,7 @@
 
     public class UtilityService
     {
-        private static string CreateWorkingDir(string rootDir)
+        public static string CreateWorkingDir(string rootDir)
         {
             string workDir = Path.Combine(rootDir, Guid.NewGuid().ToString());
 
@@ -27,7 +27,7 @@
             }
         }
 
-        private static Task<IDictionary<string, string>> GetAttachmentsAsync(string workingDir, IEnumerable<AttachmentBaseModel> attachments)
+        public static Task<IDictionary<string, string>> GetAttachmentsAsync(string workingDir, IEnumerable<AttachmentBaseModel> attachments)
         {
             IDictionary<string, string> files = new Dictionary<string, string>();
 
@@ -70,7 +70,7 @@
             return Task.FromResult(files);
         }
 
-        private static void AddRecipients(IEnumerable<string> addresses, MailAddressCollection collection)
+        public static void AddRecipients(IEnumerable<string> addresses, MailAddressCollection collection)
         {
             if (addresses != null)
             {
