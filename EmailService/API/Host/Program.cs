@@ -20,6 +20,8 @@ namespace Host
                 builder.RegisterSerilog();
                 builder.Services.AddWeb(builder.Configuration);
 
+                builder.Configuration.AddJsonFile("Configurations/smtpSettings.json", optional: false, reloadOnChange: true);
+
                 var app = builder.Build();
 
                 app.UseWeb();

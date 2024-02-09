@@ -17,6 +17,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Infrastructure\Models\Models.csproj" />
+	  <ProjectReference Include="..\..\Shared\Shared\Shared.csproj" />
 	</ItemGroup>
 
 </Project>

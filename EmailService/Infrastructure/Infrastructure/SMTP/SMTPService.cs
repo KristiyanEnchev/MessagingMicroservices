@@ -9,11 +9,11 @@
 
     using Application.Interfaces.Services;
 
-    using Shared.Exceptions;
     using Models.Mailing;
+
     using Shared;
 
-    public class SMTPService
+    public class SMTPService : ISMTPService
     {
         private readonly ITemplateService _templateService;
         private readonly IOptions<MailingSettings> _mailingSettings;
@@ -33,13 +33,16 @@
 
             model.Body = await _templateService.GenerateEmailTemplateAsync(model.TemplateKey, model.TempateData!);
 
-            await SendAsync(model);
-
-            return Result<string>.SuccessResult("Email Sent.");
+            return await SendAsync(model);
         }
 
-        public async Task SendAsync(MailRequest request)
+        public async Task<Result<string>> SendAsync(MailRequest request)
         {
+            if (request.Body == null)
+            {
+                return Result<string>.Failure("Template Key is required");
+            }
+
             var email = new MimeMessage();
 
             email.From.Add(new MailboxAddress(_mailingSettings.Value.DisplayName, request.From ?? _mailingSettings.Value.From));
@@ -104,6 +107,8 @@
 
                 await smtp.DisconnectAsync(true);
             }
+
+            return Result<string>.SuccessResult("Email Sent.");
         }
     }
 }
