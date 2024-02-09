@@ -22,7 +22,6 @@ namespace Host
 
                 var app = builder.Build();
 
-
                 app.UseWeb();
                 app.MapEndpoints();
 

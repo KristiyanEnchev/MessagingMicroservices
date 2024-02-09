@@ -1,73 +1,108 @@
 ﻿namespace Infrastructure.SMTP
 {
-    using System.Net.Mail;
+    using Microsoft.Extensions.Options;
 
-    using Models;
-    using Models.Attachments;
+    using MimeKit;
+
+    using MailKit.Security;
+    using MailKit.Net.Smtp;
 
     using Application.Interfaces.Services;
+
+    using Shared.Exceptions;
+    using Models.Mailing;
+    using Shared;
 
     public class SMTPService
     {
         private readonly ITemplateService _templateService;
-        private readonly IUtilityService _utilityService;
+        private readonly IOptions<MailingSettings> _mailingSettings;
 
-        public SMTPService(ITemplateService templateService, IUtilityService utilityService)
+        public SMTPService(ITemplateService templateService, IOptions<MailingSettings> mailingSettings)
         {
             _templateService = templateService;
-            _utilityService = utilityService;
+            _mailingSettings = mailingSettings;
         }
 
-        private async Task SendEmail(
-            string from,
-            string fromDisplayName,
-            IEnumerable<string> to,
-            IEnumerable<string> cc,
-            IEnumerable<string> bcc,
-            string subject,
-            IEnumerable<AttachmentBaseModel> attachments,
-            string html,
-            IEnumerable<TemplateData> templateData)
+        public async Task<Result<string>> SendEmailWithLocalTemplate(EmailTemplateKeyModel model)
         {
-            try
+            if (model.TemplateKey == null)
             {
-                if (string.IsNullOrEmpty(from))
-                    from = emailSettings.Value.From!;
+                return Result<string>.Failure("Template Key is required");
+            }
 
-                if (string.IsNullOrEmpty(fromDisplayName))
-                    fromDisplayName = emailSettings.Value.DisplayName!;
+            model.Body = await _templateService.GenerateEmailTemplateAsync(model.TemplateKey, model.TempateData!);
 
-                using (var email = new MailMessage())
+            await SendAsync(model);
+
+            return Result<string>.SuccessResult("Email Sent.");
+        }
+
+        public async Task SendAsync(MailRequest request)
+        {
+            var email = new MimeMessage();
+
+            email.From.Add(new MailboxAddress(_mailingSettings.Value.DisplayName, request.From ?? _mailingSettings.Value.From));
+
+            foreach (string address in request.To)
+            {
+                email.To.Add(MailboxAddress.Parse(address));
+            }
+
+            if (!string.IsNullOrEmpty(request.ReplyTo))
+            {
+                email.ReplyTo.Add(new MailboxAddress(request.ReplyToName, request.ReplyTo));
+            }
+
+            if (request.Bcc != null)
+            {
+                foreach (string address in request.Bcc.Where(bccValue => !string.IsNullOrWhiteSpace(bccValue)))
                 {
-                    var workingDir = CreateWorkingDir(emailSettings.Value.LocalDirectory);
-
-                    var files = GetAttachmentsAsync(workingDir, attachments);
-
-                    email.From = new MailAddress(from, fromDisplayName);
-
-                    AddRecipients(to, email.To);
-                    AddRecipients(cc, email.CC);
-                    AddRecipients(bcc, email.Bcc);
-
-                    email.IsBodyHtml = true;
-                    email.Subject = await templateService.ReplaceDataOnTemplate(subject, templateData);
-                    email.Body = await templateService.ReplaceDataOnTemplate(html, templateData);
-
-                    await files;
-                    foreach (var key in files.Result.Keys)
-                        email.Attachments.Add(new Attachment(files.Result[key]));
-
-                    using (var smtp = new SmtpClient(host: emailSettings.Value.Host, port: emailSettings.Value.Port))
-                    {
-                        await smtp.SendMailAsync(email).ConfigureAwait(false);
-
-                        smtp.Dispose();
-                    }
+                    email.Bcc.Add(MailboxAddress.Parse(address.Trim()));
                 }
             }
-            catch (Exception ex)
+
+            if (request.Cc != null)
             {
-                throw new CustomExeption($"Somthing went wrong: {string.Join(Environment.NewLine, ex.Message)}");
+                foreach (string? address in request.Cc.Where(ccValue => !string.IsNullOrWhiteSpace(ccValue)))
+                {
+                    email.Cc.Add(MailboxAddress.Parse(address.Trim()));
+                }
+            }
+
+            if (request.Headers != null)
+            {
+                foreach (var header in request.Headers)
+                {
+                    email.Headers.Add(header.Key, header.Value);
+                }
+            }
+
+            var builder = new BodyBuilder();
+            email.Sender = new MailboxAddress(request.DisplayName ?? _mailingSettings.Value.DisplayName, request.From ?? _mailingSettings.Value.From);
+            email.Subject = request.Subject;
+            builder.HtmlBody = request.Body;
+
+            if (request.AttachmentData != null)
+            {
+                foreach (var attachmentInfo in request.AttachmentData)
+                {
+                    builder.Attachments.Add(attachmentInfo.Key, attachmentInfo.Value);
+                }
+            }
+
+            email.Body = builder.ToMessageBody();
+
+            var response = string.Empty;
+
+            using (var smtp = new SmtpClient())
+            {
+                await smtp.ConnectAsync(_mailingSettings.Value.Host, _mailingSettings.Value.Port, SecureSocketOptions.StartTls);
+                await smtp.AuthenticateAsync(_mailingSettings.Value.UserName, _mailingSettings.Value.Password);
+
+                await smtp.SendAsync(email);
+
+                await smtp.DisconnectAsync(true);
             }
         }
     }

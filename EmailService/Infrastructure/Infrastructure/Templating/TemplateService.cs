@@ -1,59 +1,40 @@
 ﻿namespace Infrastructure.Templating
 {
-    using System.Web;
     using System.Text;
+    using System.Dynamic;
     using System.Reflection;
 
-    using Newtonsoft.Json;
+    using RazorEngineCore;
 
-    using Models;
+    using Application.Interfaces.Services;
 
-    public class TemplateService
+    using Models.Mailing;
+
+    public class TemplateService : ITemplateService
     {
-        public async Task<string> ReplaceDataOnTemplate(string templateContent, IEnumerable<TemplateData> placeholders)
+        public async Task<string> GenerateEmailTemplateAsync(string templateName, IEnumerable<TemplateData> mailTemplateModel)
         {
-            templateContent = HttpUtility.HtmlDecode(templateContent);
+            var mailTemplateData = GetDynamicData(mailTemplateModel);
+            string template = await GetLocalEmailTemplateAsync(templateName);
 
-            if (placeholders != null)
-                foreach (var placeholder in placeholders)
-                {
-                    templateContent = templateContent.Replace("{{" + placeholder.Field + "}}", placeholder.Value);
-                }
+            IRazorEngine razorEngine = new RazorEngine();
+            IRazorEngineCompiledTemplate modifiedTemplate = razorEngine.Compile(template);
 
-            return templateContent;
+            return modifiedTemplate.Run(mailTemplateModel);
         }
 
-        public async Task<string> ApplyPartialTemplate(string templateName)
+        private static dynamic GetDynamicData(IEnumerable<TemplateData> TemplateDataList)
         {
-            string shell = await GetLocalEmailTemplate("DefaultTemplate");
-
-            var partialTemplate = LoadTemplateFromFile(templateName);
-
-            shell = shell.Replace("|Title|", partialTemplate.Title);
-            shell = shell.Replace("|BodyContent|", partialTemplate.Body);
-            shell = shell.Replace("|FooterContent|", partialTemplate.Footer);
-
-            return shell;
-        }
-
-        public EmailTemplateModel LoadTemplateFromFile(string templateName)
-        {
-            var assemply = typeof(TemplateData).GetTypeInfo().Assembly;
-            string baseDirectory = Path.GetDirectoryName(assemply!.Location)!;
-            string tmplFolder = Path.Combine(baseDirectory, "EmailTemplates");
-            string filePath = Path.Combine(tmplFolder, $"{templateName}.json");
-
-            if (!File.Exists(filePath))
+            dynamic dynamicData = new ExpandoObject();
+            foreach (var templateData in TemplateDataList!)
             {
-                throw new FileNotFoundException($"Template file {filePath} not found.");
+                ((IDictionary<string, object>)dynamicData)[templateData.Field!] = templateData.Value!;
             }
 
-            string jsonContent = File.ReadAllText(filePath);
-            EmailTemplateModel template = JsonConvert.DeserializeObject<EmailTemplateModel>(jsonContent);
-            return template ?? throw new InvalidOperationException("Failed to deserialize template.");
+            return dynamicData;
         }
 
-        public async Task<string> GetLocalEmailTemplate(string templateName)
+        public async Task<string> GetLocalEmailTemplateAsync(string templateName)
         {
             var assemply = typeof(TemplateData).GetTypeInfo().Assembly;
             string baseDirectory = Path.GetDirectoryName(assemply!.Location)!;

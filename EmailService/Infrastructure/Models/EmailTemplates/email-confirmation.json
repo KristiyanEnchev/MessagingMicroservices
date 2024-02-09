@@ -1,7 +1,0 @@
-{
-  "key": "email-confirmation",
-  "title": "Welcome to Our Community!",
-  "subject": "Email Confirmation",
-  "body": "<div class=\"content\">\n    <p>Hello {{Name}}!</p>\n    <p>\n        We're excited to have you get started. First, you need to confirm your\n        email to activate your account. Just click the button below.\n    </p>\n    <a href=\"{{confirmationUrl}}\" class=\"button\">Confirm Account</a>\n    <p>\n        If the above button doesn't work, copy and paste the following link\n        into your browser:\n    </p>\n    <p>\n        <a href=\"{{confirmationUrl}}\">{{confirmationUrl}}</a>\n    </p>\n    <p>Cheers,<br />The Team</p>\n</div>",
-  "footer": "<div class=\"footer-content\" id=\"footerQuote\"></div>\n<script>\n  document.addEventListener('DOMContentLoaded', function () {\n    const quotes = [\n      \"“The way to get started is to quit talking and begin doing.” – Walt Disney\",\n      \"“Life is what happens when you're busy making other plans.” – John Lennon\",\n      \"“The world is a book and those who do not travel read only one page.” – Augustine of Hippo\",\n      \"“Life is either a daring adventure or nothing at all.” – Helen Keller\",\n      \"“To be the best, you must be able to handle the worst.” – Wilson Kanadi\",\n      \"“Keep smiling, because life is a beautiful thing and there’s so much to smile about.” – Marilyn Monroe\"\n    ];\n\n    const quote = quotes[Math.floor(Math.random() * quotes.length)];\n\n    document.getElementById('footerQuote').innerHTML = quote;\n  });\n</script>"
-}
