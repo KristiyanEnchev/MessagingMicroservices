@@ -4,9 +4,8 @@
 
     using Swashbuckle.AspNetCore.Annotations;
 
-    using Models.Mailing;
-
     using Web.Extentions;
+
     using Application.Handlers.SMTP.Commands;
 
     public class Send : ApiController
