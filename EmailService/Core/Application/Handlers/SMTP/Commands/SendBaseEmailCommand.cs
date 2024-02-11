@@ -37,7 +37,9 @@
 
             public async Task<Result<string>> Handle(SendBaseEmailCommand reques, CancellationToken cancellationToken) 
             {
-                var result = await _smtpService.s
+                var result = await _smtpService.SendAsync(reques);
+
+                return result;
             }
         }
     }
