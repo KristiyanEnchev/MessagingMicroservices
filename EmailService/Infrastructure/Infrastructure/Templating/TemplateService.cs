@@ -39,7 +39,7 @@
             var assemply = typeof(TemplateData).GetTypeInfo().Assembly;
             string baseDirectory = Path.GetDirectoryName(assemply!.Location)!;
             string tmplFolder = Path.Combine(baseDirectory, "EmailTemplates");
-            string filePath = Path.Combine(tmplFolder, $"{templateName}.html");
+            string filePath = Path.Combine(tmplFolder, $"{templateName}.cshtml");
 
             if (!File.Exists(filePath))
             {

@@ -1,8 +1,7 @@
-﻿
-using System.Text.Json.Serialization;
-
-namespace Models.Mailing
+﻿namespace Models.Mailing
 {
+    using System.Text.Json.Serialization;
+
     public class EmailTemplateKeyModel : MailRequest
     {
         public EmailTemplateKeyModel(

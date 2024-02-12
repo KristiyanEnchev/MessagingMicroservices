@@ -9,7 +9,8 @@
 
     using Infrastructure.Templating;
     using Infrastructure.SMTP;
-    using SendGrid.Helpers.Mail;
+
+    using Models.Mailing;
 
     public static class Startup
     {
@@ -34,7 +35,7 @@
        
         private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
+            services.Configure<MailingSettings>(configuration.GetSection(nameof(MailingSettings)));
 
             return services;
         }

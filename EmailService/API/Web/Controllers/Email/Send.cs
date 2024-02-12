@@ -19,7 +19,7 @@
 
         [HttpPost(nameof(TemplateEmail))]
         [SwaggerOperation("Sends email with specified local template.", "")]
-        public async Task<IActionResult> TemplateEmail(SendBaseEmailCommand reques)
+        public async Task<IActionResult> TemplateEmail(SendTemplateEmailCommand reques)
         {
             return await Mediator.Send(reques).ToActionResult();
         }
