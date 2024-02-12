@@ -31,7 +31,7 @@
                 return Result<string>.Failure("Template Key is required");
             }
 
-            model.Body = await _templateService.GenerateEmailTemplateAsync(model.TemplateKey, model.TempateData!);
+            model.Body = await _templateService.GenerateEmailTemplate(model.TemplateKey, model.TempateData!);
 
             return await SendAsync(model);
         }
@@ -98,9 +98,12 @@
 
             var response = string.Empty;
 
+            var host = _mailingSettings.Value.Host;
+            var port = _mailingSettings.Value.Port;
+
             using (var smtp = new SmtpClient())
             {
-                await smtp.ConnectAsync(_mailingSettings.Value.Host, _mailingSettings.Value.Port, SecureSocketOptions.StartTls);
+                await smtp.ConnectAsync(host, port, SecureSocketOptions.StartTls);
                 await smtp.AuthenticateAsync(_mailingSettings.Value.UserName, _mailingSettings.Value.Password);
 
                 await smtp.SendAsync(email);

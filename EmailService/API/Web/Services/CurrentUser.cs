@@ -9,12 +9,18 @@
     public class CurrentUser : IUser
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private string? _userIdOverride;
 
         public CurrentUser(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string? Id => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        public string? Id => _userIdOverride ?? _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        public void SetUserId(string userId)
+        {
+            _userIdOverride = userId;
+        }
     }
 }

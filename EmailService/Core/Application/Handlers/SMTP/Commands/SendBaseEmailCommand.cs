@@ -2,7 +2,7 @@
 {
     using Application.Interfaces.Services;
     using MediatR;
-
+    using Microsoft.Extensions.DependencyInjection;
     using Models.Mailing;
 
     using Shared;
@@ -26,18 +26,27 @@
         {
         }
 
+        public string EmailProvider { get; set; }
+
         public class SendBaseEmailCommandHandler : IRequestHandler<SendBaseEmailCommand, Result<string>> 
         {
-            private readonly ISMTPService _smtpService;
+            private readonly IServiceProvider _serviceProvider;
 
-            public SendBaseEmailCommandHandler(ISMTPService smtpService)
+            public SendBaseEmailCommandHandler(IServiceProvider serviceProvider)
             {
-                _smtpService = smtpService;
+                _serviceProvider = serviceProvider;
             }
 
-            public async Task<Result<string>> Handle(SendBaseEmailCommand reques, CancellationToken cancellationToken) 
+            public async Task<Result<string>> Handle(SendBaseEmailCommand request, CancellationToken cancellationToken) 
             {
-                var result = await _smtpService.SendAsync(reques);
+                var emailService = request.EmailProvider.ToLower() switch
+                {
+                    "smtp" => _serviceProvider.GetRequiredService<ISMTPService>(),
+                    "sendgrid" => _serviceProvider.GetRequiredService<ISMTPService>(),
+                    _ => throw new ArgumentException("Invalid email provider specified."),
+                };
+
+                var result = await emailService.SendAsync(request);
 
                 return result;
             }

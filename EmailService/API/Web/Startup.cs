@@ -12,6 +12,7 @@
 
     using Web.Services;
     using Web.Extentions.Swagger;
+    using Web.Extentions.Hangfire;
     using Web.Extentions.Middleware;
     using Web.Extentions.Healtchecks;
 
@@ -36,6 +37,7 @@
             services.AddSwaggerDocumentation();
 
             services.AddHealth(config);
+            services.AddHangfireConfigurations(config);
 
             services.AddScoped<IUser, CurrentUser>();
 
@@ -48,6 +50,7 @@
                     .UseStaticFiles()
                     .UseHttpsRedirection()
                     .UseErrorHandler()
+                    .UseHangfireConfiguration()
                     .UseRouting()
                     .UseAuthentication()
                     .UseAuthorization();

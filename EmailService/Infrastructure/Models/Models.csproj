@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="EmailTemplates\email-confirmation.cshtml">
+    <None Update="EmailTemplates\email-confirmation.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="EmailTemplates\passwordReset.cshtml">

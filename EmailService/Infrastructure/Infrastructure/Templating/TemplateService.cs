@@ -12,26 +12,16 @@
 
     public class TemplateService : ITemplateService
     {
-        public async Task<string> GenerateEmailTemplateAsync(string templateName, IEnumerable<TemplateData> mailTemplateModel)
+        public async Task<string> GenerateEmailTemplate(string templateName, IEnumerable<TemplateData> placeholders)
         {
-            var mailTemplateData = GetDynamicData(mailTemplateModel);
             string template = await GetLocalEmailTemplateAsync(templateName);
 
-            IRazorEngine razorEngine = new RazorEngine();
-            IRazorEngineCompiledTemplate modifiedTemplate = razorEngine.Compile(template);
-
-            return modifiedTemplate.Run(mailTemplateModel);
-        }
-
-        private static dynamic GetDynamicData(IEnumerable<TemplateData> TemplateDataList)
-        {
-            dynamic dynamicData = new ExpandoObject();
-            foreach (var templateData in TemplateDataList!)
+            foreach (var placeholder in placeholders)
             {
-                ((IDictionary<string, object>)dynamicData)[templateData.Field!] = templateData.Value!;
+                template = template.Replace("{{" + placeholder.Field!.ToLower() + "}}", placeholder.Value);
             }
 
-            return dynamicData;
+            return template;
         }
 
         public async Task<string> GetLocalEmailTemplateAsync(string templateName)
@@ -39,7 +29,7 @@
             var assemply = typeof(TemplateData).GetTypeInfo().Assembly;
             string baseDirectory = Path.GetDirectoryName(assemply!.Location)!;
             string tmplFolder = Path.Combine(baseDirectory, "EmailTemplates");
-            string filePath = Path.Combine(tmplFolder, $"{templateName}.cshtml");
+            string filePath = Path.Combine(tmplFolder, $"{templateName}.html");
 
             if (!File.Exists(filePath))
             {

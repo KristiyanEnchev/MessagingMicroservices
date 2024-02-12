@@ -4,7 +4,7 @@
 
     public interface ITemplateService
     {
-        Task<string> GenerateEmailTemplateAsync(string templateName, IEnumerable<TemplateData> mailTemplateModel);
+        Task<string> GenerateEmailTemplate(string templateName, IEnumerable<TemplateData> placeholders);
         Task<string> GetLocalEmailTemplateAsync(string templateName);
     }
 }
