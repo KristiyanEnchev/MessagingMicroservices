@@ -1,4 +1,4 @@
-﻿namespace Web.Extensions.Hangfire
+﻿namespace Web.Extentions.Hangfire
 {
     using Microsoft.Extensions.DependencyInjection;
 

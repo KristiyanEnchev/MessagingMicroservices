@@ -12,6 +12,7 @@
     using Models.Mailing;
 
     using Shared;
+    using Application.Handlers.SMTP.Commands;
 
     public class SMTPService : ISMTPService
     {
@@ -24,14 +25,14 @@
             _mailingSettings = mailingSettings;
         }
 
-        public async Task<Result<string>> SendEmailWithLocalTemplate(EmailTemplateKeyModel model)
+        public async Task<Result<string>> SendEmailWithLocalTemplate(SendTemplateEmailCommand model)
         {
             if (model.TemplateKey == null)
             {
                 return Result<string>.Failure("Template Key is required");
             }
 
-            model.Body = await _templateService.GenerateEmailTemplate(model.TemplateKey, model.TempateData!);
+            model.Body = await _templateService.GenerateEmailTemplate(model.TemplateKey, model.TemplateData!);
 
             return await SendAsync(model);
         }

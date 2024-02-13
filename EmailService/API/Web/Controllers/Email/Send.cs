@@ -4,11 +4,12 @@
 
     using Swashbuckle.AspNetCore.Annotations;
 
+    using Hangfire;
+
     using Web.Extentions;
+    using Web.Extentions.MediatoR;
 
     using Application.Handlers.SMTP.Commands;
-    using Hangfire;
-    using Web.Extentions.MediatoR;
 
     public class Send : ApiController
     {
@@ -37,11 +38,9 @@
 
         [HttpPost(nameof(TemplateEmail))]
         [SwaggerOperation("Sends email with specified local template.")]
-        public IActionResult TemplateEmail(SendTemplateEmailCommand request)
+        public async Task<IActionResult> TemplateEmail([FromForm] SendTemplateEmailCommand command)
         {
-            BackgroundJob.Enqueue<MediatorHangfireBridge>(x => x.Send(request));
-
-            return Accepted("Template email send request queued.");
+            return await Mediator.Send(command).ToActionResult();
         }
     }
 }

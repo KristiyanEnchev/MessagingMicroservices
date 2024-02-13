@@ -1,12 +1,16 @@
 ﻿namespace Application.Handlers.SMTP.Commands
 {
-    using Application.Interfaces.Services;
-    using MediatR;
+    using System.Collections.Generic;
+
     using Microsoft.Extensions.DependencyInjection;
+
+    using MediatR;
+
+    using Application.Interfaces.Services;
+
     using Models.Mailing;
 
     using Shared;
-    using System.Collections.Generic;
 
     public class SendBaseEmailCommand : MailRequest, IRequest<Result<string>>
     {

@@ -35,7 +35,7 @@
 
         public List<string> Cc { get; }
 
-        public IDictionary<string, byte[]> AttachmentData { get; }
+        public virtual IDictionary<string, byte[]> AttachmentData { get; set; }
 
         public IDictionary<string, string> Headers { get; }
     }

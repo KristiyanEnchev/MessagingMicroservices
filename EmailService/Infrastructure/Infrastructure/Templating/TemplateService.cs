@@ -1,10 +1,7 @@
 ﻿namespace Infrastructure.Templating
 {
     using System.Text;
-    using System.Dynamic;
     using System.Reflection;
-
-    using RazorEngineCore;
 
     using Application.Interfaces.Services;
 
@@ -15,6 +12,11 @@
         public async Task<string> GenerateEmailTemplate(string templateName, IEnumerable<TemplateData> placeholders)
         {
             string template = await GetLocalEmailTemplateAsync(templateName);
+
+            if (placeholders == null)
+            {
+                placeholders = new List<TemplateData>();
+            }
 
             foreach (var placeholder in placeholders)
             {

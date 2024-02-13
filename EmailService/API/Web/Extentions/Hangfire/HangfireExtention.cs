@@ -7,15 +7,15 @@
     using global::Hangfire;
     using global::Hangfire.Redis.StackExchange;
 
-    using Web.Extensions.Hangfire;
     using Newtonsoft.Json;
+
     using Web.Extentions.MediatoR;
 
     public static class HangfireExtention
     {
         public static IServiceCollection AddHangfireConfigurations(this IServiceCollection services, IConfiguration configuration) 
         {
-            var redisConnection = "host.docker.internal:6379,host.docker.internal:6380,password=password,ssl=False";
+            var redisConnection = configuration.GetConnectionString("Redis");
 
             services.AddTransient<MediatorHangfireBridge>();
 
