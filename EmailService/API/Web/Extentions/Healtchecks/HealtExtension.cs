@@ -1,10 +1,10 @@
 ﻿namespace Web.Extentions.Healtchecks
 {
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
     using Models.HealthCheck;
 
@@ -23,7 +23,9 @@
             if (databaseHealthChecks != null && (bool)databaseHealthChecks)
             {
                 healthChecks
-                    .AddSqlServer(configuration.GetConnectionString("DefaultConnection"));
+                    .AddSqlServer(configuration.GetConnectionString("DefaultConnection")!);
+
+                //healthChecks.AddCheck<RedisCacheHealthCheck>("redis-connection");
             }
 
             return services;

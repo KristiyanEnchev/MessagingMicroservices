@@ -1,10 +1,10 @@
 ﻿namespace Application.Handlers.SMTP.Commands
 {
-    using System.Collections.Generic;
-
     using Microsoft.Extensions.DependencyInjection;
 
     using MediatR;
+
+    using AutoMapper;
 
     using Application.Interfaces.Services;
 
@@ -12,25 +12,13 @@
 
     using Shared;
 
-    public class SendBaseEmailCommand : MailRequest, IRequest<Result<string>>
+    public class SendBaseEmailCommand : CustomEmailRequest, IRequest<Result<string>>
     {
-        public SendBaseEmailCommand(
-            List<string> to,
-            string subject,
-            string? body = null,
-            string? from = null,
-            string? displayName = null,
-            string? replyTo = null,
-            string? replyToName = null,
-            List<string>? bcc = null,
-            List<string>? cc = null,
-            IDictionary<string, byte[]>? attachmentData = null,
-            IDictionary<string, string>? headers = null) 
-            : base(to, subject, body, from, displayName, replyTo, replyToName, bcc, cc, attachmentData, headers)
+        public virtual void Mapping(Profile mapper)
         {
+            mapper.CreateMap<SendBaseEmailCommand, CustomEmailRequest>().ReverseMap();
+            mapper.CreateMap<SendBaseEmailCommand, MailRequest>().ReverseMap();
         }
-
-        public string EmailProvider { get; set; }
 
         public class SendBaseEmailCommandHandler : IRequestHandler<SendBaseEmailCommand, Result<string>> 
         {
@@ -43,14 +31,14 @@
 
             public async Task<Result<string>> Handle(SendBaseEmailCommand request, CancellationToken cancellationToken) 
             {
-                var emailService = request.EmailProvider.ToLower() switch
+                var emailService = request.EmailProvider!.ToLower() switch
                 {
                     "smtp" => _serviceProvider.GetRequiredService<ISMTPService>(),
                     "sendgrid" => _serviceProvider.GetRequiredService<ISMTPService>(),
                     _ => throw new ArgumentException("Invalid email provider specified."),
                 };
 
-                var result = await emailService.SendAsync(request);
+                var result = await emailService.SendCustomEmail(request);
 
                 return result;
             }

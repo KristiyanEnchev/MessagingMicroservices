@@ -13,20 +13,6 @@
 
     public class Send : ApiController
     {
-        //[HttpPost(nameof(BaseEmail1))]
-        //[SwaggerOperation("Sends email with custom html body.", "")]
-        //public async Task<IActionResult> BaseEmail1(SendBaseEmailCommand reques)
-        //{
-        //    return await Mediator.Send(reques).ToActionResult();
-        //}
-
-        //[HttpPost(nameof(TemplateEmail1))]
-        //[SwaggerOperation("Sends email with specified local template.", "")]
-        //public async Task<IActionResult> TemplateEmail1(SendTemplateEmailCommand reques)
-        //{
-        //    return await Mediator.Send(reques).ToActionResult();
-        //}
-
         [HttpPost(nameof(BaseEmail))]
         [SwaggerOperation("Sends email with custom html body.")]
         public IActionResult BaseEmail(SendBaseEmailCommand request)
@@ -38,7 +24,7 @@
 
         [HttpPost(nameof(TemplateEmail))]
         [SwaggerOperation("Sends email with specified local template.")]
-        public async Task<IActionResult> TemplateEmail([FromForm] SendTemplateEmailCommand command)
+        public async Task<IActionResult> TemplateEmail([FromBody] SendTemplateEmailCommand command)
         {
             return await Mediator.Send(command).ToActionResult();
         }

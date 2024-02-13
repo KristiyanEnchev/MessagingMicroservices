@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Shared\Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="EmailTemplates\email-confirmation.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

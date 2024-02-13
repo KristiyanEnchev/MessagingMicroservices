@@ -7,34 +7,55 @@
     using MailKit.Security;
     using MailKit.Net.Smtp;
 
+    using AutoMapper;
+
     using Application.Interfaces.Services;
 
     using Models.Mailing;
 
     using Shared;
-    using Application.Handlers.SMTP.Commands;
 
     public class SMTPService : ISMTPService
     {
         private readonly ITemplateService _templateService;
         private readonly IOptions<MailingSettings> _mailingSettings;
+        private readonly IMapper _mapper;
 
-        public SMTPService(ITemplateService templateService, IOptions<MailingSettings> mailingSettings)
+        public SMTPService(ITemplateService templateService, IOptions<MailingSettings> mailingSettings, IMapper mapper)
         {
             _templateService = templateService;
             _mailingSettings = mailingSettings;
+            _mapper = mapper;
         }
 
-        public async Task<Result<string>> SendEmailWithLocalTemplate(SendTemplateEmailCommand model)
+        public async Task<Result<string>> SendCustomEmail(CustomEmailRequest model)
         {
-            if (model.TemplateKey == null)
+            var mappedRequest = _mapper.Map<MailRequest>(model);
+
+            if (model.TemplateData != null)
             {
-                return Result<string>.Failure("Template Key is required");
+                mappedRequest.Body = await _templateService.ProcessEmailTemplate(model.Body, model.TemplateData!);
             }
 
-            model.Body = await _templateService.GenerateEmailTemplate(model.TemplateKey, model.TemplateData!);
+            if (model.AttachmentFiles != null)
+            {
+                mappedRequest.AttachmentData = MapAttachments(model.AttachmentFiles);
+            }
 
-            return await SendAsync(model);
+            return await SendAsync(mappedRequest);
+        }
+
+        public async Task<Result<string>> SendEmailWithLocalTemplate(EmailTemplateKeyModel model)
+        {
+            var mappedRequest = _mapper.Map<MailRequest>(model);
+            mappedRequest.Body = await _templateService.GenerateEmailTemplate(model.TemplateKey!, model.TemplateData!);
+
+            if (model.AttachmentFiles != null)
+            {
+                mappedRequest.AttachmentData = MapAttachments(model.AttachmentFiles);
+            }
+
+            return await SendAsync(mappedRequest);
         }
 
         public async Task<Result<string>> SendAsync(MailRequest request)
@@ -113,6 +134,10 @@
             }
 
             return Result<string>.SuccessResult("Email Sent.");
+        }
+        private IDictionary<string, byte[]> MapAttachments(IEnumerable<FileAttachmentModel> attachments)
+        {
+            return attachments?.ToDictionary(a => a.Name, a => a.ContentBytes) ?? new Dictionary<string, byte[]>();
         }
     }
 }

@@ -4,11 +4,11 @@
 
     using Shared.Mappings;
 
-    public class EmailTemplateKeyModel : BaseEmailRequest, IMapFrom<MailRequest>
+    public class CustomEmailRequest : BaseEmailRequest, IMapFrom<MailRequest>
     {
         [Required]
         public string? EmailProvider { get; set; }
         [Required]
-        public string? TemplateKey { get; set; }
+        public string Body { get; set; }
     }
 }

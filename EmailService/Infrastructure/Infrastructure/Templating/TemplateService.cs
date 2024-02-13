@@ -13,6 +13,13 @@
         {
             string template = await GetLocalEmailTemplateAsync(templateName);
 
+            template = await ProcessEmailTemplate(template, placeholders);
+
+            return template;
+        }
+
+        public async Task<string> ProcessEmailTemplate(string template, IEnumerable<TemplateData> placeholders)
+        {
             if (placeholders == null)
             {
                 placeholders = new List<TemplateData>();

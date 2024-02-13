@@ -21,7 +21,7 @@
 
         public string Subject { get; }
 
-        public virtual string? Body { get; set; }
+        public string? Body { get; set; }
 
         public string? From { get; }
 
@@ -35,7 +35,7 @@
 
         public List<string> Cc { get; }
 
-        public virtual IDictionary<string, byte[]> AttachmentData { get; set; }
+        public IDictionary<string, byte[]> AttachmentData { get; set; }
 
         public IDictionary<string, string> Headers { get; }
     }
