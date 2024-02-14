@@ -25,7 +25,8 @@
                 healthChecks
                     .AddSqlServer(configuration.GetConnectionString("DefaultConnection")!);
 
-                //healthChecks.AddCheck<RedisCacheHealthCheck>("redis-connection");
+                healthChecks
+                    .AddRedis(configuration.GetConnectionString("Redis")!);
             }
 
             return services;
