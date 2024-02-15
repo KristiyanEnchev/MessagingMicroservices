@@ -13,9 +13,9 @@
 
     public class Send : ApiController
     {
-        [HttpPost(nameof(BaseEmail))]
+        [HttpPost(nameof(CustomEmail))]
         [SwaggerOperation("Sends email with custom html body.")]
-        public IActionResult BaseEmail(SendBaseEmailCommand request)
+        public IActionResult CustomEmail(SendBaseEmailCommand request)
         {
             BackgroundJob.Enqueue<MediatorHangfireBridge>(x => x.Send(request));
 
