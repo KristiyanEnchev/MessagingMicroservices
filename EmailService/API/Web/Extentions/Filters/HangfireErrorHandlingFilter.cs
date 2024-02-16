@@ -21,7 +21,6 @@
 
         private void LogToExternalService(string jobId, Exception exception)
         {
-            // Example: Log error details to a database
             //var errorLog = new ErrorLog
             //{
             //    JobId = jobId,
@@ -30,8 +29,6 @@
             //};
 
             // and here some AuditService
-
-            // Assuming _dbContext is your application's database context
 
             Console.WriteLine($"Job {jobId} failed with exception {exception.Message}");
         }
