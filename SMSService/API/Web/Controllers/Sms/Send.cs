@@ -8,7 +8,7 @@
     {
         [HttpPost(nameof(CustomSMS))]
         [SwaggerOperation("Sends email with custom html body.")]
-        public IActionResult CustomSMS(SendBaseSMSCommand request)
+        public async Task<IActionResult> CustomSMS(SendBaseSMSCommand command)
         {
             return await Mediator.Send(command).ToActionResult();
 
