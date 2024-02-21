@@ -1,6 +1,5 @@
 ﻿namespace Application.Common.Mappings
 {
-
     using System.Reflection;
 
     using AutoMapper;
