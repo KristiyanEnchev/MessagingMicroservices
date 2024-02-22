@@ -3,9 +3,9 @@
     using System.Text;
     using System.Reflection;
 
-    using Application.Interfaces.Services;
+    using Models.SMS;
 
-    using Models.Mailing;
+    using Application.Interfaces.SMS;
 
     public class TemplateService : ITemplateService
     {

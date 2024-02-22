@@ -3,6 +3,7 @@
     using System.Reflection;
 
     using AutoMapper;
+    using Shared.Mappings;
 
     public class MappingProfile : Profile
     {
