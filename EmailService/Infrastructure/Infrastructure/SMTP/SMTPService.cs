@@ -62,7 +62,7 @@
         {
             if (request.Body == null)
             {
-                return Result<string>.Failure("Template Key is required");
+                return Result<string>.Failure("Email Body is required");
             }
 
             var email = new MimeMessage();
