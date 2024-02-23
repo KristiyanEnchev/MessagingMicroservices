@@ -25,6 +25,11 @@
 
         public async Task<Result<string>> SendAsync(SmsMessage request)
         {
+            if (request.Body == null)
+            {
+                return Result<string>.Failure("Sms Body is required");
+            }
+
             string accountSid = _mailingSettings.Value.AccountSid!;
             string authToken = _mailingSettings.Value.AuthToken!;
 
