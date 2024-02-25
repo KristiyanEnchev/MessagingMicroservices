@@ -9,9 +9,9 @@
 
     public class TemplateService : ITemplateService
     {
-        public async Task<string> GenerateEmailTemplate(string templateName, IEnumerable<TemplateData> placeholders)
+        public async Task<string> GenerateSmsTemplate(string templateName, IEnumerable<TemplateData> placeholders)
         {
-            string template = await GetLocalEmailTemplateAsync(templateName);
+            string template = await GetLocalSMSTemplateAsync(templateName);
 
             template = await ProcessEmailTemplate(template, placeholders);
 
@@ -33,7 +33,7 @@
             return template;
         }
 
-        public async Task<string> GetLocalEmailTemplateAsync(string templateName)
+        public async Task<string> GetLocalSMSTemplateAsync(string templateName)
         {
             var assemply = typeof(TemplateData).GetTypeInfo().Assembly;
             string baseDirectory = Path.GetDirectoryName(assemply!.Location)!;

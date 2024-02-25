@@ -20,8 +20,9 @@ namespace Host
                 builder.RegisterSerilog();
                 builder.Services.AddWeb(builder.Configuration);
 
-                var app = builder.Build();
+                builder.Configuration.AddJsonFile("Configurations/twilio.json", optional: false, reloadOnChange: true);
 
+                var app = builder.Build();
 
                 app.UseWeb();
                 app.MapEndpoints();
