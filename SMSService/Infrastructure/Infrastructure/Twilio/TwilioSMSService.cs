@@ -11,16 +11,46 @@
     using Models.SMS;
 
     using Shared;
+    using AutoMapper.Internal;
+    using AutoMapper;
 
     public class TwilioSMSService
     {
         private readonly ITemplateService _templateService;
         private readonly IOptions<TwilioSettings> _mailingSettings;
+        private readonly IMapper _mapper;
 
-        public TwilioSMSService(ITemplateService templateService, IOptions<TwilioSettings> mailingSettings)
+        public TwilioSMSService(ITemplateService templateService, IOptions<TwilioSettings> mailingSettings, IMapper mapper)
         {
             _templateService = templateService;
             _mailingSettings = mailingSettings;
+            _mapper = mapper;
+        }
+
+        public async Task<Result<string>> SendCustomSMS(CustomSmsMessage model)
+        {
+            var mappedRequest = _mapper.Map<SmsMessage>(model);
+
+            if (model.TemplateData != null)
+            {
+                mappedRequest.Body = await _templateService.ProcessEmailTemplate(model.Body, model.TemplateData!);
+            }
+
+            return await SendAsync(mappedRequest);
+        }
+
+        public async Task<Result<string>> SendSMSWithLocalTemplate(TemplateSmsMessage model)
+        {
+            var mappedRequest = _mapper.Map<SmsMessage>(model);
+
+            if (model.TemplateData != null)
+            {
+                mappedRequest.Body = await _templateService.ProcessEmailTemplate(model.Body, model.TemplateData!);
+            }
+
+            mappedRequest.Body = await _templateService.GenerateEmailTemplate(model.TemplateKey!, model.TemplateData!);
+
+            return await SendAsync(mappedRequest);
         }
 
         public async Task<Result<string>> SendAsync(SmsMessage request)
