@@ -9,16 +9,16 @@
 
     public class TemplateService : ITemplateService
     {
-        public async Task<string> GenerateSmsTemplate(string templateName, IEnumerable<TemplateData> placeholders)
+        public async Task<string> GenerateSMSTemplate(string templateName, IEnumerable<TemplateData> placeholders)
         {
             string template = await GetLocalSMSTemplateAsync(templateName);
 
-            template = await ProcessEmailTemplate(template, placeholders);
+            template = await ProcessSMSTemplate(template, placeholders);
 
             return template;
         }
 
-        public async Task<string> ProcessEmailTemplate(string template, IEnumerable<TemplateData> placeholders)
+        public async Task<string> ProcessSMSTemplate(string template, IEnumerable<TemplateData> placeholders)
         {
             if (placeholders == null)
             {

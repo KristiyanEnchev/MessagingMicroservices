@@ -6,13 +6,13 @@
     using global::Twilio.Types;
     using global::Twilio.Rest.Api.V2010.Account;
 
+    using AutoMapper;
+
     using Application.Interfaces.SMS;
 
     using Models.SMS;
 
     using Shared;
-    using AutoMapper.Internal;
-    using AutoMapper;
 
     public class TwilioSMSService
     {
@@ -33,7 +33,7 @@
 
             if (model.TemplateData != null)
             {
-                mappedRequest.Body = await _templateService.ProcessEmailTemplate(model.Body, model.TemplateData!);
+                mappedRequest.Body = await _templateService.ProcessSMSTemplate(model.Message!, model.TemplateData!);
             }
 
             return await SendAsync(mappedRequest);
@@ -43,12 +43,7 @@
         {
             var mappedRequest = _mapper.Map<SmsMessage>(model);
 
-            if (model.TemplateData != null)
-            {
-                mappedRequest.Body = await _templateService.ProcessEmailTemplate(model.Body, model.TemplateData!);
-            }
-
-            mappedRequest.Body = await _templateService.GenerateEmailTemplate(model.TemplateKey!, model.TemplateData!);
+            mappedRequest.Body = await _templateService.GenerateSMSTemplate(model.TemplateName!, model.TemplateData!);
 
             return await SendAsync(mappedRequest);
         }
