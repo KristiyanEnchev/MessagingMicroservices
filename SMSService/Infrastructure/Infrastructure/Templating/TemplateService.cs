@@ -35,10 +35,10 @@
 
         public async Task<string> GetLocalSMSTemplateAsync(string templateName)
         {
-            var assemply = typeof(TemplateData).GetTypeInfo().Assembly;
-            string baseDirectory = Path.GetDirectoryName(assemply!.Location)!;
+            var assembly = typeof(TemplateData).GetTypeInfo().Assembly;
+            string baseDirectory = Path.GetDirectoryName(assembly!.Location)!;
             string tmplFolder = Path.Combine(baseDirectory, "SMSTemplates");
-            string filePath = Path.Combine(tmplFolder, $"{templateName}.html");
+            string filePath = Path.Combine(tmplFolder, $"{templateName}.txt");
 
             if (!File.Exists(filePath))
             {
@@ -47,10 +47,10 @@
 
             using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var sr = new StreamReader(fs, Encoding.Default);
-            string mailText = await sr.ReadToEndAsync();
+            string smsText = await sr.ReadToEndAsync();
             sr.Close();
 
-            return mailText;
+            return smsText;
         }
     }
 }

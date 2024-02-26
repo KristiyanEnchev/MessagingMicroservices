@@ -1,1 +1,9 @@
-Hello {{name}}, please confirm your Mobile Number by clicking on this link: {{confirmationurl}}
+Hello {{name}},
+
+Welcome to {{appname}}! Please confirm your phone number by entering the code below on the confirmation screen:
+
+Code: {{confirmationcode}}
+
+Thank you for joining us!
+
+The {{appname}} Team
