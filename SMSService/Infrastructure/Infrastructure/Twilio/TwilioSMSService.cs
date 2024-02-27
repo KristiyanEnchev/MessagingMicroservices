@@ -14,7 +14,7 @@
 
     using Shared;
 
-    public class TwilioSMSService
+    public class TwilioSMSService : ITwilioSMSService
     {
         private readonly ITemplateService _templateService;
         private readonly IOptions<TwilioSettings> _mailingSettings;
@@ -33,7 +33,7 @@
 
             if (model.TemplateData != null)
             {
-                mappedRequest.Body = await _templateService.ProcessSMSTemplate(model.Message!, model.TemplateData!);
+                mappedRequest.Message = await _templateService.ProcessSMSTemplate(model.Message!, model.TemplateData!);
             }
 
             return await SendAsync(mappedRequest);
@@ -43,14 +43,14 @@
         {
             var mappedRequest = _mapper.Map<SmsMessage>(model);
 
-            mappedRequest.Body = await _templateService.GenerateSMSTemplate(model.TemplateName!, model.TemplateData!);
+            mappedRequest.Message = await _templateService.GenerateSMSTemplate(model.TemplateName!, model.TemplateData!);
 
             return await SendAsync(mappedRequest);
         }
 
         public async Task<Result<string>> SendAsync(SmsMessage request)
         {
-            if (request.Body == null)
+            if (request.Message == null)
             {
                 return Result<string>.Failure("Sms Body is required");
             }
@@ -63,7 +63,7 @@
             var message = MessageResource.Create(
                 from: new PhoneNumber(request.From),
                 to: new PhoneNumber(request.To),
-                body: request.Body
+                body: request.Message
             );
 
             return Result<string>.SuccessResult("Sms Sent.");
