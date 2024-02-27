@@ -10,6 +10,8 @@
 
     using Models.SMS;
 
+    using Application.Interfaces.SMS;
+
     public class SendBaseSMSCommand : CustomSmsMessage, IRequest<Result<string>>
     {
         public virtual void Mapping(Profile mapper)
@@ -31,11 +33,11 @@
             {
                 var emailService = request.SmsProvider!.ToLower() switch
                 {
-                    "twilio" => _serviceProvider.GetRequiredService<ISMTPService>(),
-                    _ => throw new ArgumentException("Invalid email provider specified."),
+                    "twilio" => _serviceProvider.GetRequiredService<ITwilioSMSService>(),
+                    _ => throw new ArgumentException("Invalid sms provider specified."),
                 };
 
-                var result = await emailService.SendCustomEmail(request);
+                var result = await emailService.SendCustomSMS(request);
 
                 return result;
             }
