@@ -6,6 +6,8 @@
 
     using AutoMapper;
 
+    using Hangfire;
+
     using Shared;
 
     using Models.SMS;
@@ -31,15 +33,15 @@
 
             public async Task<Result<string>> Handle(SendBaseSMSCommand request, CancellationToken cancellationToken) 
             {
-                var emailService = request.SmsProvider!.ToLower() switch
+                var smsService = request.SmsProvider!.ToLower() switch
                 {
                     "twilio" => _serviceProvider.GetRequiredService<ITwilioSMSService>(),
                     _ => throw new ArgumentException("Invalid sms provider specified."),
                 };
 
-                var result = await emailService.SendCustomSMS(request);
+                BackgroundJob.Enqueue(() => smsService.SendCustomSMS(request));
 
-                return result;
+                return Result<string>.SuccessResult("Email send request queued.");
             }
         }
     }

@@ -6,11 +6,13 @@
 
     using AutoMapper;
 
+    using Hangfire;
+
     using Shared;
 
     using Models.SMS;
+
     using Application.Interfaces.SMS;
-    using Hangfire;
 
     public class SendTemplateSMSCommand : TemplateSmsMessage, IRequest<Result<string>>
     {
