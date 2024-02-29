@@ -4,19 +4,21 @@
 
     using Swashbuckle.AspNetCore.Annotations;
 
+    using Application.Handlers.SMTP.Commands;
+
+    using Web.Extentions;
+
     public class Send : ApiController
     {
         [HttpPost(nameof(CustomSMS))]
-        [SwaggerOperation("Sends email with custom html body.")]
+        [SwaggerOperation("Sends sms with custom text message.")]
         public async Task<IActionResult> CustomSMS(SendBaseSMSCommand command)
         {
             return await Mediator.Send(command).ToActionResult();
-
-            return Accepted("Email send request queued.");
         }
 
         [HttpPost(nameof(TemplateSMS))]
-        [SwaggerOperation("Sends email with specified local template.")]
+        [SwaggerOperation("Sends sms with specified local template.")]
         public async Task<IActionResult> TemplateSMS([FromBody] SendTemplateSMSCommand command)
         {
             return await Mediator.Send(command).ToActionResult();
