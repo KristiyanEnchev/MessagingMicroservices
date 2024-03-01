@@ -4,9 +4,8 @@
 
     using Swashbuckle.AspNetCore.Annotations;
 
-    using Application.Handlers.SMTP.Commands;
-
     using Web.Extentions;
+    using Application.Handlers.Twilio.Commands;
 
     public class Send : ApiController
     {

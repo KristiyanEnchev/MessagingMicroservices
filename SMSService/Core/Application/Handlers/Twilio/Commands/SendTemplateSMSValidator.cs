@@ -1,10 +1,10 @@
-﻿namespace Application.Handlers.SMTP.Commands
+﻿namespace Application.Handlers.Twilio.Commands
 {
     using FluentValidation;
 
     public class SendTemplateSMSValidator : AbstractValidator<SendTemplateSMSCommand>
     {
-        public SendTemplateSMSValidator() 
+        public SendTemplateSMSValidator()
         {
             RuleFor(u => u.SmsProvider)
                 .NotEmpty()

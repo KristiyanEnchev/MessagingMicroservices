@@ -1,4 +1,4 @@
-﻿namespace Application.Handlers.SMTP.Commands
+﻿namespace Application.Handlers.Twilio.Commands
 {
     using Microsoft.Extensions.DependencyInjection;
 
@@ -22,7 +22,7 @@
             mapper.CreateMap<SendBaseSMSCommand, SmsMessage>().ReverseMap();
         }
 
-        public class SendBaseEmailCommandHandler : IRequestHandler<SendBaseSMSCommand, Result<string>> 
+        public class SendBaseEmailCommandHandler : IRequestHandler<SendBaseSMSCommand, Result<string>>
         {
             private readonly IServiceProvider _serviceProvider;
 
@@ -31,7 +31,7 @@
                 _serviceProvider = serviceProvider;
             }
 
-            public async Task<Result<string>> Handle(SendBaseSMSCommand request, CancellationToken cancellationToken) 
+            public async Task<Result<string>> Handle(SendBaseSMSCommand request, CancellationToken cancellationToken)
             {
                 var smsService = request.SmsProvider!.ToLower() switch
                 {

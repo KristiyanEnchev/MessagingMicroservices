@@ -1,4 +1,4 @@
-﻿namespace Application.Handlers.SMTP.Commands
+﻿namespace Application.Handlers.Twilio.Commands
 {
     using Microsoft.Extensions.DependencyInjection;
 
