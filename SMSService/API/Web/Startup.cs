@@ -18,6 +18,7 @@
     using Infrastructure;
 
     using Persistence;
+    using Web.Extentions.Hangfire;
 
     public static class Startup
     {
@@ -35,7 +36,10 @@
 
             services.AddSwaggerDocumentation();
 
+            services.AddRouting(options => options.LowercaseUrls = true);
+
             services.AddHealth(config);
+            services.AddHangfireConfigurations(config);
 
             services.AddScoped<IUser, CurrentUser>();
 
@@ -48,6 +52,7 @@
                     .UseStaticFiles()
                     .UseHttpsRedirection()
                     .UseErrorHandler()
+                    .UseHangfireConfiguration()
                     .UseRouting()
                     .UseAuthentication()
                     .UseAuthorization();
