@@ -4,6 +4,8 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
 
+    using Swashbuckle.AspNetCore.Annotations;
+
     using Models.HealthCheck;
 
     public class HealthController : ApiController
@@ -17,13 +19,10 @@
 
         [HttpGet]
         [AllowAnonymous]
-        /// <summary>
-        /// Controller for testing all dependencies
-        /// </summary>
-        /// <remarks>Test all dependencies using tasks.</remarks>
-        /// <response code="200">Success</response>
-        /// <response code="400">Invalid or missing data supplied</response>
-        /// <response code="500">Internal Server error</response>
+        [SwaggerResponse(200, "Success")]
+        [SwaggerResponse(400, "Invalid or missing data supplied")]
+        [SwaggerResponse(500, "Internal Server error")]
+        [SwaggerOperation("Controller for testing all dependencies.", "Test all dependencies using tasks.")]
         public async Task<IActionResult> CheckHealth()
         {
             var result = await _healthCheckService.CheckHealthAsync();
