@@ -41,7 +41,7 @@
 
                 BackgroundJob.Enqueue(() => smsService.SendCustomSMS(request));
 
-                return Result<string>.SuccessResult("Sms send request queued.");
+                return Result<string>.SuccessResult("Sms send request to queued.");
             }
         }
     }

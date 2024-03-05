@@ -57,16 +57,17 @@
 
             string accountSid = _mailingSettings.Value.AccountSid!;
             string authToken = _mailingSettings.Value.AuthToken!;
+            var from = new PhoneNumber("(205)831-4602");
 
             TwilioClient.Init(accountSid, authToken);
 
             var message = MessageResource.Create(
-                from: new PhoneNumber(request.From),
+                from: from,
                 to: new PhoneNumber(request.To),
                 body: request.Message
             );
 
-            return Result<string>.SuccessResult("Sms Sent.");
+            return Result<string>.SuccessResult($"Sms Sent: {message.Sid}.");
         }
     }
 }

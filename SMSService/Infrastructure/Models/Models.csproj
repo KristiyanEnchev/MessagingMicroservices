@@ -7,7 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="SMSTemplates\" />
+    <ProjectReference Include="..\..\Shared\Shared\Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="SMSTemplates\passwordReset.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SMSTemplates\phone-confirmation.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

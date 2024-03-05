@@ -1,6 +1,8 @@
 ﻿namespace Models.SMS
 {
-    public class TemplateSmsMessage : BaseSmsMessage
+    using Shared.Mappings;
+
+    public class TemplateSmsMessage : BaseSmsMessage, IMapFrom<SmsMessage>
     {
         public string? SmsProvider { get; set; }
         public string? TemplateName { get; set; }

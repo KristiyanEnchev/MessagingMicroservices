@@ -19,7 +19,7 @@
             services.AddHangfire(configuration => configuration
                 .UseRedisStorage(redisConnection, new RedisStorageOptions
                 {
-                    Prefix = "hangfire:",
+                    Prefix = "hangfire:sms:",
                 })
                 .UseSerilogLogProvider()
                 .UseMediatR());
