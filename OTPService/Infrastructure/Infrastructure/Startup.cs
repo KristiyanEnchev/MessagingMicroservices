@@ -4,6 +4,9 @@
     using Microsoft.Extensions.DependencyInjection;
 
     using MediatR;
+    using System.Security.Cryptography;
+    using Infrastructure.OneTimePin;
+    using Application.Interfaces.OneTimePin;
 
     public static class Startup
     {
@@ -20,6 +23,13 @@
         {
             services
                 .AddTransient<IMediator, Mediator>();
+
+            services
+                .AddSingleton<RandomNumberGenerator>(RandomNumberGenerator.Create());
+
+            services
+                .AddSingleton<RandomGenerator>();
+
 
             return services;
         }
