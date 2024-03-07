@@ -19,6 +19,37 @@
             _randomGenerator = randomGenerator;
         }
 
+        public class OneTimePassword
+        {
+            public string OtpId { get; set; }
+            public string Otp { get; set; }
+            public string Username { get; set; }
+            public DateTime ExpiryTime { get; set; }
+        }
+
+        public string GenerateOtp(string username, int expirationMinutes, PasswordOptions opts = null)
+        {
+            string otp = GenerateRandomPassword(opts);
+
+            var otpId = Guid.NewGuid().ToString();
+
+            var otpDetails = new OneTimePassword
+            {
+                OtpId = otpId,
+                Otp = otp,
+                Username = username,
+                ExpiryTime = DateTime.UtcNow.AddMinutes(expirationMinutes)
+            };
+
+            _cache.Set(otpId, otpDetails, new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.UtcNow.AddMinutes(expirationMinutes),
+                Priority = CacheItemPriority.High,
+            });
+
+            return otpId;
+        }
+
        
 
         public string GenerateRandomPassword(PasswordOptions opts = null)
