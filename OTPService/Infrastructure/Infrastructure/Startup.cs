@@ -30,6 +30,7 @@
             services
                 .AddSingleton<RandomGenerator>();
 
+            services.AddScoped<IOneTimePinService, OneTimePinService>();
 
             return services;
         }
