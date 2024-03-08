@@ -53,10 +53,18 @@
         public bool ValidateOtp(string otpId, string username, string otp)
         {
             if (!_cache.TryGetValue(otpId, out OneTimePassword otpDetails))
+            {
                 return false;
+            }
 
-            // Validate username, OTP, and expiration
-            return otpDetails.Username == username && otpDetails.Otp == otp && otpDetails.OtpId == otpId && DateTime.UtcNow <= otpDetails.ExpiryTime;
+            bool isValid = otpDetails.Username == username && otpDetails.Otp == otp && otpDetails.OtpId == otpId && DateTime.UtcNow <= otpDetails.ExpiryTime;
+
+            if (isValid)
+            {
+                _cache.Remove(otpId);
+            }
+
+            return isValid;
         }
 
         public string GenerateRandomPassword(PasswordOptions opts = null)
