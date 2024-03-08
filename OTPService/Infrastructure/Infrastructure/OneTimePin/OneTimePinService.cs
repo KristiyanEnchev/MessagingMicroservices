@@ -4,9 +4,9 @@
     using System.Collections.Generic;
 
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.Extensions.Caching.Memory;
 
     using Application.Interfaces.OneTimePin;
-    using Microsoft.Extensions.Caching.Memory;
 
     public class OneTimePinService : IOneTimePinService
     {
@@ -50,7 +50,14 @@
             return otpId;
         }
 
-       
+        public bool ValidateOtp(string otpId, string username, string otp)
+        {
+            if (!_cache.TryGetValue(otpId, out OneTimePassword otpDetails))
+                return false;
+
+            // Validate username, OTP, and expiration
+            return otpDetails.Username == username && otpDetails.Otp == otp && otpDetails.OtpId == otpId && DateTime.UtcNow <= otpDetails.ExpiryTime;
+        }
 
         public string GenerateRandomPassword(PasswordOptions opts = null)
         {
