@@ -7,6 +7,7 @@
     using Microsoft.Extensions.Caching.Memory;
 
     using Application.Interfaces.OneTimePin;
+    using Shared;
 
     public class OneTimePinService : IOneTimePinService
     {
@@ -27,7 +28,7 @@
             public DateTime ExpiryTime { get; set; }
         }
 
-        public string GenerateOtp(string username, int expirationMinutes, PasswordOptions opts = null)
+        public Result<string> GenerateOtp(string username, int expirationMinutes, PasswordOptions opts = null)
         {
             string otp = GenerateRandomPassword(opts);
 
@@ -46,15 +47,15 @@
                 AbsoluteExpiration = DateTime.UtcNow.AddMinutes(expirationMinutes),
                 Priority = CacheItemPriority.High,
             });
-
-            return otpId;
+            
+            return Result<string>.SuccessResult(otpId);
         }
 
-        public bool ValidateOtp(string otpId, string username, string otp)
+        public Result<bool> ValidateOtp(string otpId, string username, string otp)
         {
             if (!_cache.TryGetValue(otpId, out OneTimePassword otpDetails))
             {
-                return false;
+                return Result<bool>.Failure("Otp not valid.");
             }
 
             bool isValid = otpDetails.Username == username && otpDetails.Otp == otp && otpDetails.OtpId == otpId && DateTime.UtcNow <= otpDetails.ExpiryTime;
@@ -64,7 +65,7 @@
                 _cache.Remove(otpId);
             }
 
-            return isValid;
+            return Result<bool>.SuccessResult(isValid);
         }
 
         public string GenerateRandomPassword(PasswordOptions opts = null)
