@@ -2,8 +2,11 @@
 {
     using Microsoft.AspNetCore.Identity;
 
+    using Shared;
+
     public interface IOneTimePinService
     {
-        string GenerateOtp(string username, int expirationMinutes, PasswordOptions opts = null);
+        Result<string> GenerateOtp(string username, int expirationMinutes, PasswordOptions opts = null);
+        Result<bool> ValidateOtp(string otpId, string username, string otp);
     }
 }
