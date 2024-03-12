@@ -7,7 +7,10 @@
     using Microsoft.Extensions.Caching.Memory;
 
     using Application.Interfaces.OneTimePin;
+
     using Shared;
+
+    using Models.OneTimePin;
 
     public class OneTimePinService : IOneTimePinService
     {
@@ -18,14 +21,6 @@
         {
             _cache = cache;
             _randomGenerator = randomGenerator;
-        }
-
-        public class OneTimePassword
-        {
-            public string OtpId { get; set; }
-            public string Otp { get; set; }
-            public string Username { get; set; }
-            public DateTime ExpiryTime { get; set; }
         }
 
         public Result<string> GenerateOtp(string username, int expirationMinutes, PasswordOptions opts = null)
