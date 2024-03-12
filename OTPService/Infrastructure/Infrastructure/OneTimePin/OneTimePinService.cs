@@ -27,37 +27,37 @@
         {
             string otp = GenerateRandomPassword(opts);
 
-            var otpId = Guid.NewGuid().ToString();
+            var transactionId = Guid.NewGuid().ToString();
 
             var otpDetails = new OneTimePassword
             {
-                OtpId = otpId,
+                TransactionId = transactionId,
                 Otp = otp,
                 Username = username,
                 ExpiryTime = DateTime.UtcNow.AddMinutes(expirationMinutes)
             };
 
-            _cache.Set(otpId, otpDetails, new MemoryCacheEntryOptions
+            _cache.Set(transactionId, otpDetails, new MemoryCacheEntryOptions
             {
                 AbsoluteExpiration = DateTime.UtcNow.AddMinutes(expirationMinutes),
                 Priority = CacheItemPriority.High,
             });
             
-            return Result<string>.SuccessResult(otpId);
+            return Result<string>.SuccessResult(transactionId);
         }
 
-        public Result<bool> ValidateOtp(string otpId, string username, string otp)
+        public Result<bool> ValidateOtp(string transactionId, string username, string otp)
         {
-            if (!_cache.TryGetValue(otpId, out OneTimePassword otpDetails))
+            if (!_cache.TryGetValue(transactionId, out OneTimePassword otpDetails))
             {
                 return Result<bool>.Failure("Otp not valid.");
             }
 
-            bool isValid = otpDetails.Username == username && otpDetails.Otp == otp && otpDetails.OtpId == otpId && DateTime.UtcNow <= otpDetails.ExpiryTime;
+            bool isValid = otpDetails.Username == username && otpDetails.Otp == otp && otpDetails.TransactionId == transactionId && DateTime.UtcNow <= otpDetails.ExpiryTime;
 
             if (isValid)
             {
-                _cache.Remove(otpId);
+                _cache.Remove(transactionId);
             }
 
             return Result<bool>.SuccessResult(isValid);
