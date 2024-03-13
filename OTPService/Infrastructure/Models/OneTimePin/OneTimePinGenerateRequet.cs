@@ -3,6 +3,6 @@
     public class OneTimePinGenerateRequet
     {
         public string? Identifier { get; set; }
-        public int? ExpirationMinutes { get; set; }
+        public int ExpirationMinutes { get; set; }
     }
 }

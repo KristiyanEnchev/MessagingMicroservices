@@ -23,7 +23,7 @@
             _randomGenerator = randomGenerator;
         }
 
-        public Result<string> GenerateOtp(string username, int expirationMinutes, PasswordOptions opts = null)
+        public Result<OneTimePinGenerateResponse> GenerateOtp(string username, int expirationMinutes, PasswordOptions opts = null)
         {
             string otp = GenerateRandomPassword(opts);
 
@@ -43,14 +43,14 @@
                 Priority = CacheItemPriority.High,
             });
             
-            return Result<string>.SuccessResult(transactionId);
+            return Result<OneTimePinGenerateResponse>.SuccessResult(new OneTimePinGenerateResponse { TransactionId = transactionId});
         }
 
-        public Result<bool> ValidateOtp(string transactionId, string username, string otp)
+        public Result<OneTimePinValidateResponse> ValidateOtp(string transactionId, string username, string otp)
         {
             if (!_cache.TryGetValue(transactionId, out OneTimePassword otpDetails))
             {
-                return Result<bool>.Failure("Otp not valid.");
+                return Result<OneTimePinValidateResponse>.Failure("Otp not valid.");
             }
 
             bool isValid = otpDetails.Username == username && otpDetails.Otp == otp && otpDetails.TransactionId == transactionId && DateTime.UtcNow <= otpDetails.ExpiryTime;
@@ -60,7 +60,7 @@
                 _cache.Remove(transactionId);
             }
 
-            return Result<bool>.SuccessResult(isValid);
+            return Result<OneTimePinValidateResponse>.SuccessResult(new OneTimePinValidateResponse { Valid = isValid});
         }
 
         public string GenerateRandomPassword(PasswordOptions opts = null)
