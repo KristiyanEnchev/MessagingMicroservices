@@ -1,4 +1,4 @@
-﻿namespace Application.Common.Mappings
+﻿namespace Shared.Mappings
 {
     using AutoMapper;
 
