@@ -37,6 +37,8 @@
 
             services.AddHealth(config);
 
+            services.AddMemoryCache();
+
             services.AddScoped<IUser, CurrentUser>();
 
             return services;

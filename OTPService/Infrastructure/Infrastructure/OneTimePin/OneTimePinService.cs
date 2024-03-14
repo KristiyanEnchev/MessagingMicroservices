@@ -43,7 +43,7 @@
                 Priority = CacheItemPriority.High,
             });
             
-            return Result<OneTimePinGenerateResponse>.SuccessResult(new OneTimePinGenerateResponse { TransactionId = transactionId});
+            return Result<OneTimePinGenerateResponse>.SuccessResult(new OneTimePinGenerateResponse { TransactionId = transactionId, Otp = otp});
         }
 
         public Result<OneTimePinValidateResponse> ValidateOtp(string transactionId, string username, string otp)
