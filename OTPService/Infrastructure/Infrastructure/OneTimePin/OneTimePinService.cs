@@ -46,14 +46,14 @@
             return Result<OneTimePinGenerateResponse>.SuccessResult(new OneTimePinGenerateResponse { TransactionId = transactionId, Otp = otp });
         }
 
-        public Result<OneTimePinValidateResponse> ValidateOtp(string transactionId, string username, string otp)
+        public Result<OneTimePinValidateResponse> ValidateOtp(string transactionId, string identifier, string otp)
         {
             if (!_cache.TryGetValue(transactionId, out OneTimePassword otpDetails))
             {
                 return Result<OneTimePinValidateResponse>.Failure("Otp not valid.");
             }
 
-            bool isValid = otpDetails.Username == username && otpDetails.Otp == otp && otpDetails.TransactionId == transactionId && DateTime.UtcNow <= otpDetails.ExpiryTime;
+            bool isValid = otpDetails.Username == identifier && otpDetails.Otp == otp && otpDetails.TransactionId == transactionId && DateTime.UtcNow <= otpDetails.ExpiryTime;
 
             if (isValid)
             {

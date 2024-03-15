@@ -16,5 +16,12 @@
         {
             return await Mediator.Send(command).ToActionResult();
         }
+
+        [HttpPost(nameof(Validate))]
+        [SwaggerOperation("Validate One Time Pin.", "Uses Cache to Validate the generated One Time Pin.")]
+        public async Task<IActionResult> Validate(OneTimePinValidateCommand command)
+        {
+            return await Mediator.Send(command).ToActionResult();
+        }
     }
 }
