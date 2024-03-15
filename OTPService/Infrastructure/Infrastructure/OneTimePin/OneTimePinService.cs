@@ -42,8 +42,8 @@
                 AbsoluteExpiration = DateTime.UtcNow.AddMinutes(expirationMinutes),
                 Priority = CacheItemPriority.High,
             });
-            
-            return Result<OneTimePinGenerateResponse>.SuccessResult(new OneTimePinGenerateResponse { TransactionId = transactionId, Otp = otp});
+
+            return Result<OneTimePinGenerateResponse>.SuccessResult(new OneTimePinGenerateResponse { TransactionId = transactionId, Otp = otp });
         }
 
         public Result<OneTimePinValidateResponse> ValidateOtp(string transactionId, string username, string otp)
@@ -60,7 +60,7 @@
                 _cache.Remove(transactionId);
             }
 
-            return Result<OneTimePinValidateResponse>.SuccessResult(new OneTimePinValidateResponse { Valid = isValid});
+            return Result<OneTimePinValidateResponse>.SuccessResult(new OneTimePinValidateResponse { Valid = isValid });
         }
 
         public string GenerateRandomPassword(PasswordOptions opts = null)
@@ -70,9 +70,9 @@
                 RequiredLength = 10,
                 RequiredUniqueChars = 4,
                 RequireDigit = true,
-                RequireLowercase = true,
-                RequireNonAlphanumeric = true,
-                RequireUppercase = true
+                RequireLowercase = false,
+                RequireNonAlphanumeric = false,
+                RequireUppercase = false
             };
 
             string[] randomChars = new[] {
@@ -100,15 +100,37 @@
                 chars.Insert(_randomGenerator.Next(0, chars.Count),
                     randomChars[3][_randomGenerator.Next(0, randomChars[3].Length)]);
 
-            for (int i = chars.Count; i < opts.RequiredLength
-                || chars.Distinct().Count() < opts.RequiredUniqueChars; i++)
+            if (opts.RequireDigit && !opts.RequireNonAlphanumeric && !opts.RequireLowercase && !opts.RequireUppercase)
             {
-                string rcs = randomChars[_randomGenerator.Next(0, randomChars.Length)];
-                chars.Insert(_randomGenerator.Next(0, chars.Count),
-                    rcs[_randomGenerator.Next(0, rcs.Length)]);
+                return RandomString(randomChars[2], opts.RequiredUniqueChars);
+            }
+            else
+            {
+                for (int i = chars.Count; i < opts.RequiredLength
+                    || chars.Distinct().Count() < opts.RequiredUniqueChars; i++)
+                {
+                    string rcs = randomChars[_randomGenerator.Next(0, randomChars.Length)];
+                    chars.Insert(_randomGenerator.Next(0, chars.Count),
+                        rcs[_randomGenerator.Next(0, rcs.Length)]);
+                }
             }
 
             return new string(chars.ToArray());
+        }
+
+        public string RandomString(string digits, int size)
+        {
+            var otp = new char[size];
+            byte[] randomNumber = new byte[1];
+
+            for (int i = 0; i < size; i++)
+            {
+                _randomGenerator.CSP.GetBytes(randomNumber);
+                var randomNumberValue = randomNumber[0] % digits.Length;
+                otp[i] = digits[randomNumberValue];
+            }
+
+            return new string(otp);
         }
     }
 }

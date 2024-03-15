@@ -6,6 +6,8 @@
     {
         private readonly RandomNumberGenerator csp;
 
+        public RandomNumberGenerator CSP => csp;
+
         public RandomGenerator(RandomNumberGenerator randomNumberGenerator)
         {
             csp = randomNumberGenerator;
@@ -61,10 +63,10 @@
                 return;
             }
 
-            if (disposing)
-            {
-                csp?.Dispose();
-            }
+            //if (disposing)
+            //{
+            //    csp?.Dispose();
+            //}
 
             _disposed = true;
         }
