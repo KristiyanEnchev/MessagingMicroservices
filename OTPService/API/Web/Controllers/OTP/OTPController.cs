@@ -12,8 +12,11 @@
     {
         [HttpPost(nameof(Generate))]
         [SwaggerOperation("Generate One Time Pin.", "Uses Cryptography to generate One Time Pin and store's it in cache for validation.")]
-        public async Task<IActionResult> Generate(OneTimePinGenerateCommand command)
+        public async Task<IActionResult> Generate(OneTimePinGenerateCommand command, [FromQuery] bool digits, [FromQuery] int size)
         {
+            command.Digits = digits;
+            command.Size = size;
+
             return await Mediator.Send(command).ToActionResult();
         }
 
