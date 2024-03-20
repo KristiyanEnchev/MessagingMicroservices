@@ -2,7 +2,7 @@
 {
     using Application.Interfaces.Notification;
 
-    public class NotificationStrategyFactory
+    public class NotificationStrategyFactory : INotificationStrategyFactory
     {
         private readonly IServiceProvider _serviceProvider;
 
