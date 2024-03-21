@@ -4,6 +4,8 @@
 
     using Models.Notification;
 
+    using Application.Interfaces.Notification;
+
     using Shared;
 
     public class SendNotificationCommand : NotificationRequest, IRequest<Result<string>>
@@ -19,8 +21,8 @@
 
             public async Task<Result<string>> Handle(SendNotificationCommand command, CancellationToken cancellationToken)
             {
-                var strategy = _strategyFactory.GetStrategy(command.Request.Type);
-                return await strategy.ExecuteAsync(command.Request);
+                var strategy = _strategyFactory.GetStrategy(command.Type!);
+                return await strategy.ExecuteAsync(command);
             }
         }
     }

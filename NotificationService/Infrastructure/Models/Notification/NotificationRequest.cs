@@ -2,5 +2,6 @@
 {
     public class NotificationRequest
     {
+        public string? Type { get; set; }
     }
 }
