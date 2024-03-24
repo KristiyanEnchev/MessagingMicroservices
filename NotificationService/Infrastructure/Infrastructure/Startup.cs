@@ -4,6 +4,8 @@
     using Microsoft.Extensions.DependencyInjection;
 
     using MediatR;
+    using Infrastructure.NotificationFactory;
+    using Infrastructure.NotificationStrategies;
 
     public static class Startup
     {
@@ -20,6 +22,12 @@
         {
             services
                 .AddTransient<IMediator, Mediator>();
+
+            services.AddScoped<EmailNotificationStrategy>();
+            services.AddScoped<SmsNotificationStrategy>();
+            services.AddScoped<RealTimeNotificationStrategy>();
+            services.AddScoped<NotificationStrategyFactory>();
+            services.AddScoped<PushNotificationStrategy>();
 
             return services;
         }
