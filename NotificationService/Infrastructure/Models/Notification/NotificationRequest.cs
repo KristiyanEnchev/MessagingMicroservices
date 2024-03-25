@@ -2,6 +2,6 @@
 {
     public class NotificationRequest
     {
-        public string? Type { get; set; }
+        public StrategyType Type { get; set; }
     }
 }

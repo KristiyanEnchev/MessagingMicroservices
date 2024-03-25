@@ -21,7 +21,7 @@
 
             public async Task<Result<string>> Handle(SendNotificationCommand command, CancellationToken cancellationToken)
             {
-                var strategy = _strategyFactory.GetStrategy(command.Type!);
+                var strategy = _strategyFactory.GetStrategy(command.Type.ToString());
                 return await strategy.ExecuteAsync(command);
             }
         }
