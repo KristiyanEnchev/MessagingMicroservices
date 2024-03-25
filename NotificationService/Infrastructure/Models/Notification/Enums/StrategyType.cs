@@ -1,4 +1,4 @@
-﻿namespace Models.Notification
+﻿namespace Models.Notification.Enums
 {
     public enum StrategyType
     {
