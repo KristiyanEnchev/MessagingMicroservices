@@ -10,7 +10,7 @@
         public NotificationCategory NotificationCategory { get; set; } = NotificationCategory.Transactional;
         public List<string>? TargetAudiences { get; set; }
         public TargetClient TargetClient { get; set; } = TargetClient.WebApp;
-        public string ClienId { get; set; }
+        public string? ClienId { get; set; }
         public List<string>? TargetAreas { get; set; }
     }
 }

@@ -4,8 +4,11 @@
     using Microsoft.Extensions.DependencyInjection;
 
     using MediatR;
+
     using Infrastructure.NotificationFactory;
     using Infrastructure.NotificationStrategies;
+
+    using Application.Interfaces.Notification;
 
     public static class Startup
     {
@@ -23,16 +26,14 @@
             services
                 .AddTransient<IMediator, Mediator>();
 
-            services.AddScoped<EmailNotificationStrategy>();
-            services.AddScoped<SmsNotificationStrategy>();
-            services.AddScoped<RealTimeNotificationStrategy>();
-            services.AddScoped<NotificationStrategyFactory>();
-            services.AddScoped<PushNotificationStrategy>();
+            services.AddScoped<INotificationStrategy, RealTimeNotificationStrategy>();
+            services.AddScoped<INotificationStrategy, PushNotificationStrategy>();
+            services.AddScoped<INotificationStrategy, ScheduledNotificationStrategy>();
+            services.AddScoped<INotificationStrategyFactory, NotificationStrategyFactory>();
 
             return services;
         }
 
-       
         private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
             return services;
