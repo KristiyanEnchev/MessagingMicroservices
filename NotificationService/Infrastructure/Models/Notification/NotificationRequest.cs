@@ -4,6 +4,7 @@
 
     public class NotificationRequest
     {
+        public string Message { get; set; }
         public StrategyType Type { get; set; }
         public Status Status { get; set; } = Status.Basic;
         public Priority Priority { get; set; } = Priority.Low;
