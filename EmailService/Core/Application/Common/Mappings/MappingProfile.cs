@@ -1,4 +1,6 @@
-﻿namespace Shared.Mappings
+﻿using Shared.Mappings;
+
+namespace Application.Common.Mappings
 {
 
     using System.Reflection;

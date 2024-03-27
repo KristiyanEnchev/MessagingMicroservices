@@ -1,4 +1,4 @@
-namespace ApiGateway
+namespace ApiGateways
 {
     using ApiGateways.Extentions;
 
