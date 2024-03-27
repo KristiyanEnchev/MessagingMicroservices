@@ -22,7 +22,7 @@
             services.AddHangfire(configuration => configuration
                 .UseRedisStorage(redisConnection, new RedisStorageOptions
                 {
-                    Prefix = "hangfire:",
+                    Prefix = "hangfire:Email",
                 })
                 .UseSerilogLogProvider()
                 .UseMediatR());
