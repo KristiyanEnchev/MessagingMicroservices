@@ -23,7 +23,10 @@
             if (databaseHealthChecks != null && (bool)databaseHealthChecks)
             {
                 healthChecks
-                    .AddSqlServer(configuration.GetConnectionString("DefaultConnection"));
+                    .AddSqlServer(configuration.GetConnectionString("DefaultConnection")!);
+
+                healthChecks
+                    .AddRedis(configuration.GetConnectionString("Redis")!);
             }
 
             return services;
