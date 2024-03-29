@@ -12,10 +12,12 @@
 
     using Web.Services;
     using Web.Extentions.Swagger;
+    using Web.Extentions.Hangfire;
     using Web.Extentions.Middleware;
     using Web.Extentions.Healtchecks;
 
     using Infrastructure;
+    using Infrastructure.SignalR;
 
     using Persistence;
 
@@ -36,6 +38,7 @@
             services.AddSwaggerDocumentation();
 
             services.AddHealth(config);
+            services.AddHangfireConfigurations(config);
 
             services.AddScoped<IUser, CurrentUser>();
 
@@ -48,6 +51,7 @@
                     .UseStaticFiles()
                     .UseHttpsRedirection()
                     .UseErrorHandler()
+                    .UseHangfireConfiguration()
                     .UseRouting()
                     .UseAuthentication()
                     .UseAuthorization();
@@ -58,8 +62,12 @@
         public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder builder)
         {
             builder.MapControllers();
-            //.RequireAuthorization();
             builder.MapHealthCheck();
+
+            builder.MapHub<NotificationHub>("/notifications", options =>
+            {
+                options.CloseOnAuthenticationExpiration = true;
+            });
 
             return builder;
         }
