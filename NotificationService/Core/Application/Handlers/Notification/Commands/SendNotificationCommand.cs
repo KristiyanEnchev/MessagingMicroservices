@@ -23,7 +23,7 @@
             {
                 var strategy = _strategyFactory.GetStrategy(command.Type.ToString());
 
-                return await strategy.ExecuteAsync(command);
+                return await strategy.ExecuteAsync(command, cancellationToken);
             }
         }
     }
