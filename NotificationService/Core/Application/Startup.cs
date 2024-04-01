@@ -17,6 +17,7 @@
             services.AddAutoMapper();
             services.AddValidators();
             services.AddMediator();
+            services.AddSignalR();
         }
 
         private static void AddAutoMapper(this IServiceCollection services)
