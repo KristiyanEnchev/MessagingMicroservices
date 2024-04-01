@@ -6,6 +6,6 @@
 
     public interface INotificationStrategy
     {
-        Task<Result<string>> ExecuteAsync(NotificationRequest request);
+        Task<Result<string>> ExecuteAsync(NotificationRequest request, CancellationToken cancellationToken);
     }
 }
