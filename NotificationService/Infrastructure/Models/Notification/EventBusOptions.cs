@@ -2,7 +2,14 @@
 {
     public class EventBusOptions
     {
-        public string SubscriptionClientName { get; set; }
-        public int RetryCount { get; set; } = 5;
+        public string HostName { get; set; }
+        public int Port { get; set; }
+        public int RetryCount { get; set; }
+        public NotificationListenerSettings NotificationListenerSettings { get; set; }
+    }
+
+    public class NotificationListenerSettings
+    {
+        public List<string> Priorities { get; set; }
     }
 }
