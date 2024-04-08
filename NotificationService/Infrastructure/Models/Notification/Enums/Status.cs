@@ -2,9 +2,9 @@
 {
     public enum Status
     {
-        Basic,
+        Information,
         Warning,
-        Error,
         Success,
+        Error,
     }
 }
