@@ -2,16 +2,20 @@
 {
     using Models.Notification.Enums;
 
-    public class NotificationRequest
+    using Shared.Notification;
+
+    public class NotificationRequest : INotificationMessage
     {
-        public string Message { get; set; }
+        public string? ClientId { get; set; }
         public StrategyType Type { get; set; }
-        public Status Status { get; set; } = Status.Basic;
         public Priority Priority { get; set; } = Priority.Low;
-        public NotificationCategory NotificationCategory { get; set; } = NotificationCategory.Transactional;
+        public string? Message { get; set; }
         public List<string>? TargetAudiences { get; set; }
-        public TargetClient TargetClient { get; set; } = TargetClient.WebApp;
-        public string? ClienId { get; set; }
-        public List<string>? TargetAreas { get; set; }
+        public Status Label { get; set; } = Status.Information;
+        public bool Activate { get; set; } = true;
+        public DateTimeOffset StartDate { get; set; }
+        public DateTimeOffset EndDate { get; set; }
+        public string? TargetArea { get; set; }
+        //public List<string>? TargetAreas { get; set; }
     }
 }
