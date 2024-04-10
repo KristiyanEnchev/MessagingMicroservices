@@ -15,6 +15,7 @@
         {
             var redisConnection = configuration.GetConnectionString("Redis");
 
+            services.AddSingleton<JobActivator, SmsJobActivator>();
 
             services.AddHangfire(configuration => configuration
                 .UseRedisStorage(redisConnection, new RedisStorageOptions

@@ -5,11 +5,11 @@
     using global::Hangfire;
     using global::Hangfire.Server;
 
-    public class MailingJobActivator : JobActivator
+    public class SmsJobActivator : JobActivator
     {
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public MailingJobActivator(IServiceScopeFactory scopeFactory)
+        public SmsJobActivator(IServiceScopeFactory scopeFactory)
         {
             _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
         }

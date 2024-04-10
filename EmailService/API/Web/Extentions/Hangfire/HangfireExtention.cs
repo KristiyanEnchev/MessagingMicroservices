@@ -18,6 +18,7 @@
             var redisConnection = configuration.GetConnectionString("Redis");
 
             services.AddTransient<MediatorHangfireBridge>();
+            services.AddSingleton<JobActivator, MailingJobActivator>();
 
             services.AddHangfire(configuration => configuration
                 .UseRedisStorage(redisConnection, new RedisStorageOptions
