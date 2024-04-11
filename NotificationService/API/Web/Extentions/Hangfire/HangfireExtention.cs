@@ -11,7 +11,7 @@
 
     public static class HangfireExtention
     {
-        public static IServiceCollection AddHangfireConfigurations(this IServiceCollection services, IConfiguration configuration) 
+        public static IServiceCollection AddHangfireConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
             var redisConnection = configuration.GetConnectionString("Redis");
 
@@ -22,6 +22,7 @@
                 {
                     Prefix = "hangfire:Notification:",
                 })
+                .UseFilter(new AutomaticRetryAttribute { Attempts = 1 })
                 .UseSerilogLogProvider()
                 .UseMediatR());
 
@@ -39,11 +40,11 @@
             configuration.UseSerializerSettings(jsonSettings);
         }
 
-        public static IApplicationBuilder UseHangfireConfiguration(this IApplicationBuilder app) 
+        public static IApplicationBuilder UseHangfireConfiguration(this IApplicationBuilder app)
         {
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
-                Authorization = new[] 
+                Authorization = new[]
                 {
                     new HangfireCustomBasicAuthenticationFilter("Admin", "password")
                 }
