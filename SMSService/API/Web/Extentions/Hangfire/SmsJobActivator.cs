@@ -1,9 +1,12 @@
 ﻿namespace Web.Extentions.Hangfire
 {
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.DependencyInjection;
 
     using global::Hangfire;
     using global::Hangfire.Server;
+
+    using Serilog;
 
     public class SmsJobActivator : JobActivator
     {
@@ -31,8 +34,30 @@
 
             public override object Resolve(Type type)
             {
-                return _serviceProvider.GetService(type) ??
-                       throw new InvalidOperationException($"Requested service of type {type.Name} was not found.");
+                try
+                {
+                    var service = _serviceProvider.GetService(type);
+                    if (service != null)
+                    {
+                        return service;
+                    }
+
+                    var interfaceType = type.GetInterfaces().FirstOrDefault();
+                    if (interfaceType != null)
+                    {
+                        return _serviceProvider.GetService(type) ??
+                            throw new InvalidOperationException($"Requested service of type {type.Name} was not found.");
+                    }
+
+                    throw new InvalidOperationException($"Requested service or interface of type {type.Name} was not found");
+                }
+                catch (Exception ex)
+                {
+                    using var scope = _serviceProvider.CreateScope();
+                    var httpContext = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>()?.HttpContext;
+                    Log.Error($"Error resolving service or interface of type {type.Name}: {ex.Message}");
+                    throw;
+                }
             }
         }
     }

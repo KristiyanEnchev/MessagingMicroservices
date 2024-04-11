@@ -22,6 +22,7 @@
                 {
                     Prefix = "hangfire:sms:",
                 })
+                .UseFilter(new AutomaticRetryAttribute { Attempts = 1})
                 .UseSerilogLogProvider()
                 .UseMediatR());
 

@@ -8,14 +8,13 @@
     using global::RabbitMQ.Client;
 
     using Infrastructure.RabbitMQ;
+    using Infrastructure.SignalR;
     using Infrastructure.NotificationFactory;
     using Infrastructure.NotificationStrategies;
 
     using Application.Interfaces.Notification;
 
     using Models.Notification;
-    using Infrastructure.SignalR;
-    using Microsoft.AspNetCore.Connections;
 
     public static class Startup
     {
