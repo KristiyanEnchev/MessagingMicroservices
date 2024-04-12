@@ -36,6 +36,7 @@
             services.AddPersistence(config);
 
             services.AddSwaggerDocumentation();
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddHealth(config);
             services.AddHangfireConfigurations(config);
