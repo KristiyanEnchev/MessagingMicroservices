@@ -4,6 +4,8 @@
 
     using global::Hangfire;
     using global::Hangfire.Server;
+    using Microsoft.AspNetCore.Http;
+    using Serilog;
 
     public class MailingJobActivator : JobActivator
     {
@@ -31,8 +33,30 @@
 
             public override object Resolve(Type type)
             {
-                return _serviceProvider.GetService(type) ??
-                       throw new InvalidOperationException($"Requested service of type {type.Name} was not found.");
+                try
+                {
+                    var service = _serviceProvider.GetService(type);
+                    if (service != null)
+                    {
+                        return service;
+                    }
+
+                    var interfaceType = type.GetInterfaces().FirstOrDefault();
+                    if (interfaceType != null)
+                    {
+                        return _serviceProvider.GetService(type) ??
+                            throw new InvalidOperationException($"Requested service of type {type.Name} was not found.");
+                    }
+
+                    throw new InvalidOperationException($"Requested service or interface of type {type.Name} was not found");
+                }
+                catch (Exception ex)
+                {
+                    using var scope = _serviceProvider.CreateScope();
+                    var httpContext = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>()?.HttpContext;
+                    Log.Error($"Error resolving service or interface of type {type.Name}: {ex.Message}");
+                    throw;
+                }
             }
         }
     }
