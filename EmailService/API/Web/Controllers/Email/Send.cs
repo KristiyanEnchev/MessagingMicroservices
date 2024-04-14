@@ -13,18 +13,18 @@
 
     public class Send : ApiController
     {
-        [HttpPost(nameof(CustomEmail))]
+        [HttpPost(nameof(Custom))]
         [SwaggerOperation("Sends email with custom html body.")]
-        public IActionResult CustomEmail(SendBaseEmailCommand request)
+        public IActionResult Custom(SendBaseEmailCommand request)
         {
             BackgroundJob.Enqueue<MediatorHangfireBridge>(x => x.Send(request));
 
             return Accepted("Email send request queued.");
         }
 
-        [HttpPost(nameof(TemplateEmail))]
+        [HttpPost(nameof(Template))]
         [SwaggerOperation("Sends email with specified local template.")]
-        public async Task<IActionResult> TemplateEmail([FromBody] SendTemplateEmailCommand command)
+        public async Task<IActionResult> Template([FromBody] SendTemplateEmailCommand command)
         {
             return await Mediator.Send(command).ToActionResult();
         }

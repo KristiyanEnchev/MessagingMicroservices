@@ -21,6 +21,44 @@
       "Key": "email-health"
     },
     {
+      "DownstreamPathTemplate": "/api/send/custom",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 5070
+        }
+      ],
+      "UpstreamPathTemplate": "/email/custom",
+      "UpstreamHttpMethod": [ "POST" ],
+      "SwaggerKey": "emailservice",
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "10s",
+        "PeriodTimespan": 10,
+        "Limit": 3
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/send/template",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 5070
+        }
+      ],
+      "UpstreamPathTemplate": "/email/template",
+      "UpstreamHttpMethod": [ "POST" ],
+      "SwaggerKey": "emailservice",
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "10s",
+        "PeriodTimespan": 10,
+        "Limit": 3
+      }
+    },
+    {
       "DownstreamPathTemplate": "/api/Health",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
