@@ -5,7 +5,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "host.docker.internal",
           "Port": 5070
         }
       ],
@@ -25,7 +25,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "host.docker.internal",
           "Port": 5071
         }
       ],
@@ -45,7 +45,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "host.docker.internal",
           "Port": 5072
         }
       ],
@@ -65,7 +65,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "host.docker.internal",
           "Port": 5072
         }
       ],
@@ -84,7 +84,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "host.docker.internal",
           "Port": 5072
         }
       ],
@@ -103,7 +103,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "host.docker.internal",
           "Port": 5073
         }
       ],
@@ -126,7 +126,7 @@
         {
           "Name": "Email Service",
           "Version": "v1",
-          "Url": "http://localhost:5070/swagger/v1/swagger.json"
+          "Url": "http://host.docker.internal:5070/swagger/v1/swagger.json"
         }
       ]
     },
@@ -136,7 +136,7 @@
         {
           "Name": "Notification Service",
           "Version": "v1",
-          "Url": "http://localhost:5071/swagger/v1/swagger.json"
+          "Url": "http://host.docker.internal:5071/swagger/v1/swagger.json"
         }
       ]
     },
@@ -146,7 +146,7 @@
         {
           "Name": "OTP Service",
           "Version": "v1",
-          "Url": "http://localhost:5072/swagger/v1/swagger.json"
+          "Url": "http://host.docker.internal:5072/swagger/v1/swagger.json"
         }
       ]
     },
@@ -156,7 +156,7 @@
         {
           "Name": "SMS Service",
           "Version": "v1",
-          "Url": "http://localhost:5073/swagger/v1/swagger.json"
+          "Url": "http://host.docker.internal:5073/swagger/v1/swagger.json"
         }
       ]
     }

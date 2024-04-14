@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.8' 
 services:
   emailservice:
     container_name: email.api
@@ -51,7 +51,7 @@ services:
       context: ./ApiGateways
       dockerfile: ApiGateways/Dockerfile
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://0.0.0.0:80
     ports:
       - "5008:80"
