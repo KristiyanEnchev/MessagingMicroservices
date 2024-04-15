@@ -79,6 +79,25 @@
       "Key": "notification-health"
     },
     {
+      "DownstreamPathTemplate": "/api/notification",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 5071
+        }
+      ],
+      "UpstreamPathTemplate": "/notification",
+      "UpstreamHttpMethod": [ "POST" ],
+      "SwaggerKey": "notificationservice",
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "10s",
+        "PeriodTimespan": 10,
+        "Limit": 3
+      }
+    },
+    {
       "DownstreamPathTemplate": "/api/Health",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

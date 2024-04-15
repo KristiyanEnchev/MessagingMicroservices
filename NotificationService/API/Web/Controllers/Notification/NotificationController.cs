@@ -10,9 +10,9 @@
 
     public class NotificationController : ApiController
     {
-        [HttpPost(nameof(SendNotification))]
+        [HttpPost]
         [SwaggerOperation("Send Notification.", "")]
-        public async Task<ActionResult> SendNotification([FromBody] SendNotificationCommand command)
+        public async Task<ActionResult> Send([FromBody] SendNotificationCommand command)
         {
             return await Mediator.Send(command).ToActionResult();
         }
