@@ -155,6 +155,44 @@
         "Limit": 3
       },
       "Key": "sms-health"
+    },
+    {
+      "DownstreamPathTemplate": "/api/send/custom",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 5073
+        }
+      ],
+      "UpstreamPathTemplate": "/sms/custom",
+      "UpstreamHttpMethod": [ "POST" ],
+      "SwaggerKey": "smsservice",
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "10s",
+        "PeriodTimespan": 10,
+        "Limit": 3
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/send/template",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "host.docker.internal",
+          "Port": 5073
+        }
+      ],
+      "UpstreamPathTemplate": "/sms/template",
+      "UpstreamHttpMethod": [ "POST" ],
+      "SwaggerKey": "smsservice",
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "10s",
+        "PeriodTimespan": 10,
+        "Limit": 3
+      }
     }
   ],
   "SwaggerEndPoints": [
