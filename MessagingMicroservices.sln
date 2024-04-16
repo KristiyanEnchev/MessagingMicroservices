@@ -116,6 +116,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yaml = docker-compose.yaml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Redis", "Redis", "{2480DEBE-31C1-4647-B192-F55D1D9A0728}"
+	ProjectSection(SolutionItems) = preProject
+		Redis\redis.conf = Redis\redis.conf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RabbitMQ", "RabbitMQ", "{EBA424FD-85CA-4C36-A930-BD16FC8CB55C}"
+	ProjectSection(SolutionItems) = preProject
+		RabbitMQ\definitions.json = RabbitMQ\definitions.json
+		RabbitMQ\Dockerfile = RabbitMQ\Dockerfile
+		RabbitMQ\rabbitmq.conf = RabbitMQ\rabbitmq.conf
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -308,6 +320,8 @@ Global
 		{25F7CF38-EA39-4926-AB80-256AD68E0FF5} = {B2604DFC-693E-42CA-995E-A68525BBCFA6}
 		{EF8D9E80-9D9A-46D2-8473-E042578FE48D} = {FED912F8-6BF3-4904-94EB-608C3CAD5456}
 		{4DF3665D-16A3-49BA-9BD3-6865C266152E} = {8096EE5F-65C4-4F07-91F8-995D1637615B}
+		{2480DEBE-31C1-4647-B192-F55D1D9A0728} = {B427F3A4-0759-4EF9-ACAF-E201E21CA1F3}
+		{EBA424FD-85CA-4C36-A930-BD16FC8CB55C} = {B427F3A4-0759-4EF9-ACAF-E201E21CA1F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A40E7226-FEBC-4738-B9DB-51898D177255}

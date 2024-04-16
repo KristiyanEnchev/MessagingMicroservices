@@ -14,14 +14,11 @@
         private readonly ILogger<TRequest> _logger;
         private readonly IUser _user;
 
-        public PerformanceBehaviour(
-            ILogger<TRequest> logger,
-            IUser user)
+        public PerformanceBehaviour(ILogger<TRequest> logger, IUser user)
         {
-            _timer = new Stopwatch();
-
             _logger = logger;
             _user = user;
+            _timer = new Stopwatch();
         }
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
@@ -38,10 +35,10 @@
             {
                 var requestName = typeof(TRequest).Name;
                 var userId = _user.Id ?? string.Empty;
-                var userName = string.Empty;
+                string? email = _user.Id;
 
-                _logger.LogWarning("Authentication.Api Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@Request}",
-                    requestName, elapsedMilliseconds, userId, userName, request);
+                _logger.LogWarning("Email Service Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@Email} {@Request}",
+                    requestName, elapsedMilliseconds, userId, email, request);
             }
 
             return response;

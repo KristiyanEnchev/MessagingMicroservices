@@ -1,11 +1,12 @@
 ﻿namespace Web.Extentions.Hangfire
 {
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.DependencyInjection;
+
+    using Serilog;
 
     using global::Hangfire;
     using global::Hangfire.Server;
-    using Microsoft.AspNetCore.Http;
-    using Serilog;
 
     public class MailingJobActivator : JobActivator
     {
@@ -44,7 +45,7 @@
                     var interfaceType = type.GetInterfaces().FirstOrDefault();
                     if (interfaceType != null)
                     {
-                        return _serviceProvider.GetService(type) ??
+                        return _serviceProvider.GetService(interfaceType) ??
                             throw new InvalidOperationException($"Requested service of type {type.Name} was not found.");
                     }
 

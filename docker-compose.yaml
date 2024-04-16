@@ -1,5 +1,48 @@
 version: '3.8' 
 services:
+
+  redis:
+    image: redis:latest
+    container_name: master
+    command: bash -c "redis-server --appendonly yes --requirepass password"
+    ports:
+        - '6379:6379'
+    volumes:
+        - ./Redis/data:/data
+
+  redis-slave:
+    image: redis:latest
+    container_name: slave
+    ports:
+      - '6380:6379'
+    command: redis-server /etc/redis.conf --replicaof master 6379
+    depends_on:
+      - redis
+    volumes:
+      - ./Redis/redis.conf:/etc/redis.conf
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=slave
+      - REDIS_HOST=master
+      - REDIS_PASSWORD=password
+      - HTTP_USER=masterauth
+      - HTTP_PASSWORD=password
+    ports:
+      - 8081:8081
+    depends_on:
+      - redis
+
+  demo-message-broker:
+    build:
+      context: ./RabbitMQ
+      dockerfile: Dockerfile
+    container_name: demo-broker
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
   emailservice:
     container_name: email.api
     build:
@@ -8,6 +51,7 @@ services:
     environment:
       - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=EmailService;User Id=localAdmin;Password=localAdmin;Encrypt=False;
       - ASPNETCORE_URLS=http://0.0.0.0:80
+      - ASPNETCORE_ENVIRONMENT=DEV
     ports:
       - "5070:80"
     restart: on-failure
@@ -44,6 +88,10 @@ services:
       - ASPNETCORE_URLS=http://0.0.0.0:80
     ports:
       - "5071:80"
+    restart: on-failure
+    depends_on:
+      - demo-message-broker
+      - redis
 
   apigateway:
     container_name: apigateway
@@ -56,6 +104,8 @@ services:
     ports:
       - "5008:80"
     depends_on:
+      - redis
+      - demo-message-broker
       - emailservice
       - smsservice
       - otpservice

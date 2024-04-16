@@ -249,7 +249,6 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /.vs/VSWorkspaceState.json
-/Multitenant.API/Multitenant.Host/ssl/private_key_unencrypted.pem
-/Multitenant.API/Multitenant.Host/ssl/ssl_certificate.crt
-/EmailService/API/Host/Configurations/smtpSettings.json
 /EmailService/API/Host/appsettings.DEV.json
+/Redis/data/
+/SMSService/API/Host/appsettings.DEV.json

@@ -18,6 +18,8 @@
 
         public string? Id => _userIdOverride ?? _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
 
+        public string? Email => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email);
+
         public void SetUserId(string userId)
         {
             _userIdOverride = userId;

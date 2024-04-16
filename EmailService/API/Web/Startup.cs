@@ -2,6 +2,7 @@
 {
     using System.Reflection;
 
+    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.Extensions.Configuration;
@@ -57,6 +58,20 @@
                     .UseAuthorization();
 
             return builder;
+        }
+
+        public static IServiceCollection AddConfigurations(this IServiceCollection services, IWebHostBuilder hostBulder, IWebHostEnvironment env)
+        {
+            hostBulder.ConfigureAppConfiguration(config =>
+            {
+                config.SetBasePath(AppDomain.CurrentDomain.BaseDirectory);
+                config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                config.AddEnvironmentVariables();
+                config.Build();
+            });
+
+            return services;
         }
 
         public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder builder)

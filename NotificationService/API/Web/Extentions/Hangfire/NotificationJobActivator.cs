@@ -45,7 +45,7 @@
                     var interfaceType = type.GetInterfaces().FirstOrDefault();
                     if (interfaceType != null)
                     {
-                        return _serviceProvider.GetService(type) ??
+                        return _serviceProvider.GetService(interfaceType) ??
                             throw new InvalidOperationException($"Requested service of type {type.Name} was not found.");
                     }
 

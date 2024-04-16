@@ -21,7 +21,7 @@ namespace Web.Extentions.Hangfire
         public bool Authorize(DashboardContext context)
         {
             var httpContext = context.GetHttpContext();
-            string authHeader = httpContext.Request.Headers["Authorization"];
+            string authHeader = httpContext.Request.Headers["Authorization"]!;
 
             if (string.IsNullOrWhiteSpace(authHeader) || !authHeader.StartsWith("Basic ", StringComparison.OrdinalIgnoreCase))
             {

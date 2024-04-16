@@ -38,10 +38,10 @@
             {
                 var requestName = typeof(TRequest).Name;
                 var userId = _user.Id ?? string.Empty;
-                var userName = string.Empty;
+                var email = _user.Email;
 
-                _logger.LogWarning("Authentication.Api Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@Request}",
-                    requestName, elapsedMilliseconds, userId, userName, request);
+                _logger.LogWarning("Authentication.Api Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@Email} {@Request}",
+                    requestName, elapsedMilliseconds, email, request);
             }
 
             return response;

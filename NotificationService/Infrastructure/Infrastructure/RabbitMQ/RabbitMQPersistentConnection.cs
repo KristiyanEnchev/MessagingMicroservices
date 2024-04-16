@@ -12,10 +12,12 @@
         private readonly IConnectionFactory _connectionFactory;
         private IConnection _connection;
         private bool _disposed;
+        private readonly int _retryCount;
 
-        public RabbitMQPersistentConnection(IConnectionFactory connectionFactory)
+        public RabbitMQPersistentConnection(IConnectionFactory connectionFactory, int retryCount = 7)
         {
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
+            _retryCount = retryCount;
             if (!IsConnected)
             {
                 TryConnect();
@@ -26,24 +28,29 @@
 
         public bool TryConnect()
         {
-            try
+            for (int i = 0; i <= _retryCount; i++)
             {
-                _connection = _connectionFactory.CreateConnection();
-                if (IsConnected)
+                try
                 {
-                    return true;
+                    _connection = _connectionFactory.CreateConnection();
+                    if (IsConnected)
+                    {
+                        return true;
+                    }
+                }
+                catch (SocketException ex)
+                {
+                    Console.WriteLine($"Retry {i} failed: {ex.Message}");
+                }
+                catch (BrokerUnreachableException ex)
+                {
+                    Console.WriteLine($"Retry {i} failed: {ex.Message}");
                 }
 
-                return false;
+                Thread.Sleep((int)Math.Pow(2, i) * 1000);
             }
-            catch (SocketException ex)
-            {
-                throw new CustomException("Could not create connection to RabbitMQ", new List<string> { ex.Message, ex.InnerException!.ToString() ?? ""});
-            }
-            catch (BrokerUnreachableException ex)
-            {
-                throw new CustomException("Could not reach RabbitMQ broker", new List<string> { ex.Message, ex.InnerException!.ToString() ?? "" });
-            }
+
+            throw new CustomException("Failed to connect to RabbitMQ after several attempts.");
         }
 
         public IModel CreateModel()
@@ -67,7 +74,7 @@
             }
             catch (IOException ex)
             {
-                throw new CustomException("Could not dispose the RabbitMQ connection", new List<string> { ex.Message, ex.InnerException!.ToString() ?? "" });
+                throw new CustomException("Could not dispose the RabbitMQ connection", new List<string> { ex.Message, ex.InnerException?.ToString() ?? "" });
             }
         }
     }
