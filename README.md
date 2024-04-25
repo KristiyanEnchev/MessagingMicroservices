@@ -51,7 +51,7 @@ Access real-time operational data through the following dashboards:
 - [SMTP](https://developers.google.com/gmail/imap/imap-smtp)
 
 ## 📸 Flow Diagram
-![Architectural Diagram](MessagingMicroservices.PNG)
+<img src="MessagingMicroservices.PNG" width="500" height="300" alt="Architectural Diagram">
 
 ## ✏️ License
 
