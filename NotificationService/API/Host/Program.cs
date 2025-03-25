@@ -23,7 +23,7 @@ namespace Host
                 var app = builder.Build();
 
 
-                app.UseWeb();
+                app.UseWeb(builder.Configuration);
                 app.MapEndpoints();
 
                 app.Run();
