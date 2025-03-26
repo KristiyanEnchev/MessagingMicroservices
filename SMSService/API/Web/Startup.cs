@@ -20,6 +20,7 @@
     using Infrastructure;
 
     using Persistence;
+    using Web.Extentions.Cors;
 
     public static class Startup
     {
@@ -43,11 +44,12 @@
             services.AddHangfireConfigurations(config);
 
             services.AddScoped<IUser, CurrentUser>();
+            services.AddCustomCorsPolicy(config);
 
             return services;
         }
 
-        public static IApplicationBuilder UseWeb(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseWeb(this IApplicationBuilder builder, IConfiguration configuration)
         {
             builder.UseSwaggerDocumentation()
                     .UseStaticFiles()
@@ -56,6 +58,7 @@
                     .UseHangfireConfiguration()
                     .UseRouting()
                     .UseAuthentication()
+                    .UseCustomCorsPolicy(configuration)
                     .UseAuthorization();
 
             return builder;
