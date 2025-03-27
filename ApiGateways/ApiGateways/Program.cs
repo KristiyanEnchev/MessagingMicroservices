@@ -1,6 +1,7 @@
 namespace ApiGateways
 {
     using ApiGateways.Extentions;
+    using ApiGateways.Extentions.Cors;
 
     using Ocelot.Middleware;
 
@@ -22,6 +23,8 @@ namespace ApiGateways
             builder.Configuration.AddJsonFile($"ocelot.{builder.Environment.EnvironmentName}.json", optional: false, reloadOnChange: true);
 
             builder.Services.AddOcelotWithSwagger(builder.Configuration);
+            builder.Services.AddCustomCorsPolicy(builder.Configuration);
+
 
             var app = builder.Build();
 
@@ -29,6 +32,7 @@ namespace ApiGateways
             app.UseHttpsRedirection();
             app.MapControllers();
             app.UseAuthentication();
+            app.UseCustomCorsPolicy(builder.Configuration);
             app.UseAuthorization();
 
             app.UseSwaggerForOcelotUI(opt =>

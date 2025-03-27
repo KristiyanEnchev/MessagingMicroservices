@@ -1,4 +1,4 @@
-version: '3.8' 
+version: '3.8'
 services:
 
   redis:
@@ -64,6 +64,7 @@ services:
     environment:
       - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=SMSService;User Id=localAdmin;Password=localAdmin;Encrypt=False;
       - ASPNETCORE_URLS=http://0.0.0.0:80
+      - ASPNETCORE_ENVIRONMENT=DEV
     ports:
       - "5073:80"
 
