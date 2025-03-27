@@ -1,0 +1,78 @@
+﻿@baseUrl = http://localhost:8080
+@timestamp = {{$timestamp}}
+@userEmail = {{$timestamp}}@mailinator.com
+@adminEmail = admin@admin.com
+@adminPassword = 123456
+@userPassword = 123456
+
+### Register
+# @name register
+POST {{baseUrl}}/api/identity/register
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "{{userEmail}}",
+  "password": "{{userPassword}}",
+  "confirmPassword": "{{userPassword}}"
+}
+
+### Login set the login after regiser
+@userEmail = 1743961246@mailinator.com
+
+### Login
+# @name login
+POST {{baseUrl}}/api/identity/login
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}",
+  "password": "{{userPassword}}",
+  "rememberMe": false
+}
+
+### Extract token
+@authToken = {{login.response.body.$.access_token}}
+@refreshToken = {{login.response.body.$.refresh_token}}
+
+### Refresh token
+POST {{baseUrl}}/api/identity/refresh
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Logout
+POST {{baseUrl}}/api/identity/logout
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}"
+}
+
+### Login as Admin
+# @name adminLogin
+POST {{baseUrl}}/api/identity/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}",
+  "rememberMe": false
+}
+
+### Extract admin token
+@adminToken = {{adminLogin.response.body.$.access_token}}
+
+### Unlock user account (Admin only)
+POST {{baseUrl}}/api/identity/unlock
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}"
+}

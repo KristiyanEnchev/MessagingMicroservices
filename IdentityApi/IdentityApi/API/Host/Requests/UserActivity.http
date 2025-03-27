@@ -1,0 +1,21 @@
+﻿@baseUrl = http://localhost:8080
+@userEmail = user@example.com
+@userPassword = Password123!
+
+### Login
+# @name login
+POST {{baseUrl}}/api/identity/login
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}",
+  "password": "{{userPassword}}",
+  "rememberMe": false
+}
+
+### Extract token
+@userToken = {{login.response.body.$.access_token}}
+
+### Get user activities
+GET {{baseUrl}}/api/user-activity?take=20
+Authorization: Bearer {{userToken}}

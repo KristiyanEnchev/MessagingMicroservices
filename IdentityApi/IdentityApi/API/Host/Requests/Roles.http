@@ -1,0 +1,71 @@
+﻿@baseUrl = http://localhost:8080
+@adminEmail = admin@admin.com
+@adminPassword = 123456
+@testUser = user@example.com
+
+### Login as admin
+# @name adminLogin
+POST {{baseUrl}}/api/identity/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}",
+  "rememberMe": false
+}
+
+### Store the token for admin operations
+@adminToken = {{adminLogin.response.body.$.access_token}}
+
+### Get all roles
+GET {{baseUrl}}/api/roles
+Authorization: Bearer {{adminToken}}
+
+### Create a new role
+# @name createRole
+POST {{baseUrl}}/api/roles
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "roleName": "TestRole_{{$timestamp}}"
+}
+
+### Store the created role name
+@roleName = {{createRole.response.body.$.roleName}}
+
+### Get User ID
+@userId = 9c2d0c0c-2cd8-407f-9c17-9ad8f9b4d22d
+# @userId = USER_ID_GOES_HERE
+
+### Add user to role
+POST {{baseUrl}}/api/roles/add-user
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "userId": "{{userId}}",
+  "roleName": "{{roleName}}"
+}
+
+### Get users in role
+GET {{baseUrl}}/api/roles/{{roleName}}/users
+Authorization: Bearer {{adminToken}}
+
+### Get user roles
+GET {{baseUrl}}/api/roles/user/{{userId}}
+Authorization: Bearer {{adminToken}}
+
+### Remove user from role
+POST {{baseUrl}}/api/roles/remove-user
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "userId": "{{userId}}",
+  "roleName": "{{roleName}}"
+}
+
+### Delete role
+DELETE {{baseUrl}}/api/roles/{{roleName}}
+Authorization: Bearer {{adminToken}}

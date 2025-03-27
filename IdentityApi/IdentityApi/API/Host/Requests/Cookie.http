@@ -1,0 +1,16 @@
+﻿@baseUrl = http://localhost:8080
+@userEmail = user@example.com
+@userPassword = Password123!
+
+### Login with Cookie
+POST {{baseUrl}}/api/cookie/login-with-cookie
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}",
+  "password": "{{userPassword}}",
+  "rememberMe": true
+}
+
+### Logout Cookie
+POST {{baseUrl}}/api/cookie/logout-cookie

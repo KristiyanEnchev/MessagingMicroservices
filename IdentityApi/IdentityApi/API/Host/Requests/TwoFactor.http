@@ -1,0 +1,61 @@
+﻿@baseUrl = http://localhost:8080
+# @userEmail = user@example.com
+@userPassword = Password123!
+@userEmail = kristiqnenchevv+1743937715@gmail.com
+
+### Login as user
+# @name userLogin
+POST {{baseUrl}}/api/identity/login
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}",
+  "password": "{{userPassword}}",
+  "rememberMe": false
+}
+
+### Store the token and userId
+@userToken = {{userLogin.response.body.$.access_token}}
+# You'll need to extract the user ID from the token or store it from a previous response
+@userId = 9c2d0c0c-2cd8-407f-9c17-9ad8f9b4d22d
+# @userId = USER_ID_FROM_TOKEN_OR_PREVIOUS_RESPONSE
+
+### Generate 2FA Code
+# @name generate2fa
+POST {{baseUrl}}/api/twofactorauth/generate
+Content-Type: application/json
+
+{
+  "userId": "{{userId}}"
+}
+
+### Store the transaction ID from the response
+@transactionId = {{generate2fa.response.body.$.transactionId}}
+
+### Verify 2FA Code
+POST {{baseUrl}}/api/twofactorauth/verify
+Content-Type: application/json
+
+{
+  "userId": "{{userId}}",
+  "code": "976733",
+  "transactionId": "{{transactionId}}"
+}
+
+### Enable 2FA
+POST {{baseUrl}}/api/twofactorauth/enable2fa
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}"
+}
+
+### Disable 2FA
+POST {{baseUrl}}/api/twofactorauth/disable2fa
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}"
+}

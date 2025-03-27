@@ -1,0 +1,18 @@
+﻿@baseUrl = http://localhost:8080
+@timestamp = {{$timestamp}}
+@userEmail = {{$timestamp}}@mailinator.com
+@confirmationToken = Q2ZESjhGVjgrb3ExS3FKSW1hZDdNUDRVMWNVTCtvTDltT0o3SklWUkdpVXdQbDUvU2R1K3cydmloNzNKVnIwSEp3dlEzUjFCVVNUdzFNSy9mcWhaRVcrSTRxQW1weTBycmhyOVd4V1Q4Qm9IU2UxaHhPc2ZUaHpPSXRyKzYxc3czR05CREpBeXBqZTFQRGRBalZlbXppT0ZsTW5pL1ZZYWFXL3U5QUZJVEFmYjFmczJ3M21HWGxlRGJvakNLOVlMcGFYYWlSTDFvOVFadG1vdWNCK0tTUERvWXJYakFPYTdROWZtODY4S2pFaXdvdVg5U2RyVHpLWkNwcmtEenRhaWI0ZmN1QT09
+@otpCode = 575684
+
+@userEmail = 1743959366@mailinator.com
+### Confirm Email
+GET {{baseUrl}}/api/email/confirm?email={{userEmail}}&token={{confirmationToken}}&otp={{otpCode}}&tid=8411bb5e-3527-48c6-9cf4-b5729706dda6
+
+### Resend Verification Email
+POST {{baseUrl}}/api/email/resend
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}",
+  "origin": "http://localhost:8080"
+}
