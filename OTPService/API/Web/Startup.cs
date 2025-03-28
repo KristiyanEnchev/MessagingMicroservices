@@ -11,6 +11,7 @@
     using Application.Interfaces;
 
     using Web.Services;
+    using Web.Extentions.Cors;
     using Web.Extentions.Swagger;
     using Web.Extentions.Middleware;
     using Web.Extentions.Healtchecks;
@@ -18,7 +19,6 @@
     using Infrastructure;
 
     using Persistence;
-    using Web.Extentions.Cors;
 
     public static class Startup
     {
@@ -45,6 +45,11 @@
             services.AddCustomCorsPolicy(config);
 
             return services;
+        }
+
+        public static async Task InitializeDatabase(this IServiceProvider services, IConfiguration config)
+        {
+            await services.InitializeDatabaseAsync(config);
         }
 
         public static IApplicationBuilder UseWeb(this IApplicationBuilder builder, IConfiguration configuration)

@@ -10,6 +10,11 @@
             : base(options)
         {
         }
+        public async Task CreateDatabaseAsync(string dbName)
+        {
+            var createSql = $"IF DB_ID(N'{dbName}') IS NULL CREATE DATABASE [{dbName}]";
+            await this.Database.ExecuteSqlRawAsync(createSql);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

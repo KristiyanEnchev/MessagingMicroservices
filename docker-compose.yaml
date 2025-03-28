@@ -1,6 +1,39 @@
 version: '3.8'
 services:
 
+  mssql:
+    image: mcr.microsoft.com/mssql/server:latest
+    container_name: identity-mssql
+    environment:
+      SA_PASSWORD: "Aa!123456"
+      ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+      - "1433:1433"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Aa!123456' -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - sqldata:${MSSQL_DATA_DIR:-/var/opt/mssql}
+    networks:
+      - identity-api-network
+  
+  sqlpad:
+    image: sqlpad/sqlpad:latest
+    container_name: sqlpad
+    ports:
+        - "3000:3000"
+    environment:
+        SQLPAD_ADMIN: "admin"
+        SQLPAD_ADMIN_PASSWORD: "admin123"
+        SQLPAD_APP_LOG_LEVEL: "info"
+    restart: always
+    networks:
+      - identity-api-network
+
   redis:
     image: redis:latest
     container_name: master
@@ -9,6 +42,8 @@ services:
         - '6379:6379'
     volumes:
         - ./Redis/data:/data
+    networks:
+      - identity-api-network
 
   redis-slave:
     image: redis:latest
@@ -20,6 +55,8 @@ services:
       - redis
     volumes:
       - ./Redis/redis.conf:/etc/redis.conf
+    networks:
+      - identity-api-network
 
   redis-commander:
     image: rediscommander/redis-commander:latest
@@ -33,6 +70,8 @@ services:
       - 8081:8081
     depends_on:
       - redis
+    networks:
+      - identity-api-network
 
   demo-message-broker:
     build:
@@ -42,6 +81,37 @@ services:
     ports:
       - '5672:5672'
       - '15672:15672'
+    networks:
+      - identity-api-network
+
+  authenticationservice:
+    container_name: authentication.api
+    build:
+      context: ./IdentityApi
+      dockerfile: API/Host/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=identity-mssql,1433;Database=NewAuthenticationDB;User Id=SA;Password=Aa!123456;Encrypt=False;
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    ports:
+      - '8080:8080'
+    restart: always
+    networks:
+      - identity-api-network
+    volumes:
+      - datakeys:/root/.aspnet/DataProtection-Keys
+    command:
+      - sh
+      - -c
+      - |
+        echo "Waiting for MSSQL..." ;
+        until /opt/mssql-tools/bin/sqlcmd -S identity-mssql -U sa -P "Aa!123456" -Q "SELECT 1" > /dev/null 2>&1;
+        do
+          echo "SQL not ready yet...";
+          sleep 5;
+        done;
+        echo "SQL ready. Starting API...";
+        dotnet API.Host.dll
 
   emailservice:
     container_name: email.api
@@ -49,12 +119,17 @@ services:
       context: ./EmailService
       dockerfile: /API/Host/Dockerfile
     environment:
-      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=EmailService;User Id=localAdmin;Password=localAdmin;Encrypt=False;
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=EmailService;User Id=SA;Password=Aa!123456;Encrypt=False;
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ASPNETCORE_ENVIRONMENT=DEV
     ports:
       - "5070:80"
     restart: on-failure
+    depends_on:
+        authenticationservice:
+          condition: service_started
+    networks:
+      - identity-api-network
 
   smsservice:
     container_name: sms.api
@@ -62,11 +137,16 @@ services:
       context: ./SMSService
       dockerfile: /API/Host/Dockerfile
     environment:
-      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=SMSService;User Id=localAdmin;Password=localAdmin;Encrypt=False;
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=SMSService;User Id=SA;Password=Aa!123456;Encrypt=False;
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ASPNETCORE_ENVIRONMENT=DEV
     ports:
       - "5073:80"
+    depends_on:
+        authenticationservice:
+          condition: service_started
+    networks:
+      - identity-api-network
 
   otpservice:
     container_name: otp.api
@@ -74,10 +154,15 @@ services:
       context: ./OTPService
       dockerfile: /API/Host/Dockerfile
     environment:
-      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=OTPService;User Id=localAdmin;Password=localAdmin;Encrypt=False;
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=OTPService;User Id=SA;Password=Aa!123456;Encrypt=False;
       - ASPNETCORE_URLS=http://0.0.0.0:80
     ports:
       - "5072:80"
+    depends_on:
+        authenticationservice:
+          condition: service_started
+    networks:
+      - identity-api-network
 
   notificationservice:
     container_name: notification.api
@@ -85,14 +170,20 @@ services:
       context: ./NotificationService
       dockerfile: /API/Host/Dockerfile
     environment:
-      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=NotificationService;User Id=localAdmin;Password=localAdmin;Encrypt=False;
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=NotificationService;User Id=SA;Password=Aa!123456;Encrypt=False;
       - ASPNETCORE_URLS=http://0.0.0.0:80
     ports:
       - "5071:80"
     restart: on-failure
     depends_on:
-      - demo-message-broker
-      - redis
+      authenticationservice:
+        condition: service_started
+      demo-message-broker:
+        condition: service_started
+      redis:
+        condition: service_started
+    networks:
+      - identity-api-network
 
   apigateway:
     container_name: apigateway
@@ -111,3 +202,12 @@ services:
       - smsservice
       - otpservice
       - notificationservice
+    networks:
+      - identity-api-network
+
+volumes:
+  datakeys:
+  sqldata:
+
+networks:
+  identity-api-network:

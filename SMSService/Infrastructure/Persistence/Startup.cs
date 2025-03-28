@@ -1,5 +1,6 @@
 ﻿namespace Persistence
 {
+    using Microsoft.Data.SqlClient;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,21 @@
                options.UseSqlServer(connectionString,
                    builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
+        }
+
+        public static async Task InitializeDatabaseAsync(this IServiceProvider services, IConfiguration config)
+        {
+            var masterConnection = config.GetConnectionString("master");
+            var targetDbName = "SMSService";
+
+            using var conn = new SqlConnection(masterConnection);
+            await conn.OpenAsync();
+
+            var command = conn.CreateCommand();
+            command.CommandText = $"IF DB_ID(N'{targetDbName}') IS NULL CREATE DATABASE [{targetDbName}]";
+            await command.ExecuteNonQueryAsync();
+
+            await conn.CloseAsync();
         }
     }
 }

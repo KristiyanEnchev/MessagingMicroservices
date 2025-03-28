@@ -48,6 +48,11 @@
             return services;
         }
 
+        public static async Task InitializeDatabase(this IServiceProvider services, IConfiguration config)
+        {
+            await services.InitializeDatabaseAsync(config);
+        }
+
         public static IApplicationBuilder UseWeb(this IApplicationBuilder builder, IConfiguration configuration)
         {
             builder.UseSwaggerDocumentation()
