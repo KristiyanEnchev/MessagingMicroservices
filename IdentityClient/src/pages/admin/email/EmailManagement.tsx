@@ -20,7 +20,6 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
-// Form validation schema for custom email
 const customEmailSchema = z.object({
   to: z.string().min(1, 'At least one recipient is required'),
   cc: z.string().optional(),
@@ -33,7 +32,6 @@ const customEmailSchema = z.object({
 
 type CustomEmailFormValues = z.infer<typeof customEmailSchema>;
 
-// Form validation schema for template email
 const templateEmailSchema = z.object({
   to: z.string().min(1, 'At least one recipient is required'),
   cc: z.string().optional(),
@@ -52,7 +50,6 @@ type TemplateEmailFormValues = {
   templateData: Record<string, string>;
 };
 
-// Mock email data - this would typically come from your backend
 const mockEmails = [
   {
     id: '1',
@@ -78,7 +75,6 @@ const mockEmails = [
   },
 ];
 
-// Mock templates
 const mockTemplates = [
   {
     id: '1',
@@ -107,7 +103,6 @@ const EmailManagement = () => {
   const [sendCustomEmail, { isLoading: isSendingCustom }] = useSendCustomEmailMutation();
   const [sendTemplateEmail, { isLoading: isSendingTemplate }] = useSendTemplateEmailMutation();
 
-  // Custom email form
   const { register: registerCustom, handleSubmit: handleSubmitCustom, formState: { errors: errorsCustom }, reset: resetCustom } = useForm<CustomEmailFormValues>({
     resolver: zodResolver(customEmailSchema),
     defaultValues: {
@@ -115,7 +110,6 @@ const EmailManagement = () => {
     }
   });
 
-  // Template email form
   const { register: registerTemplate, handleSubmit: handleSubmitTemplate, formState: { errors: errorsTemplate }, reset: resetTemplate, setValue } = useForm<TemplateEmailFormValues>({
     resolver: zodResolver(templateEmailSchema),
     defaultValues: {
@@ -123,7 +117,6 @@ const EmailManagement = () => {
     }
   });
 
-  // Handle template selection
   const handleTemplateSelect = (templateId: string) => {
     setSelectedTemplate(templateId);
     const template = mockTemplates.find(t => t.id === templateId);
@@ -131,7 +124,6 @@ const EmailManagement = () => {
     if (template) {
       setValue('templateName', template.name);
 
-      // Initialize fields with empty strings
       const initialFields: Record<string, string> = {};
       template.variables.forEach(v => {
         initialFields[v] = '';
@@ -141,7 +133,6 @@ const EmailManagement = () => {
     }
   };
 
-  // Handle template field change
   const handleTemplateFieldChange = (field: string, value: string) => {
     setTemplateFields(prev => ({
       ...prev,
@@ -154,10 +145,8 @@ const EmailManagement = () => {
     });
   };
 
-  // Submit custom email
   const onSubmitCustom = async (data: CustomEmailFormValues) => {
     try {
-      // Convert comma-separated emails to arrays as required by the API
       const toArray = data.to.split(',').map(email => email.trim()).filter(Boolean);
       const ccArray = data.cc ? data.cc.split(',').map(email => email.trim()).filter(Boolean) : [];
       const bccArray = data.bcc ? data.bcc.split(',').map(email => email.trim()).filter(Boolean) : [];
@@ -178,15 +167,12 @@ const EmailManagement = () => {
     }
   };
 
-  // Submit template email
   const onSubmitTemplate = async (data: TemplateEmailFormValues) => {
     try {
-      // Convert comma-separated emails to arrays as required by the API
       const toArray = data.to.split(',').map(email => email.trim()).filter(Boolean);
       const ccArray = data.cc ? data.cc.split(',').map(email => email.trim()).filter(Boolean) : [];
       const bccArray = data.bcc ? data.bcc.split(',').map(email => email.trim()).filter(Boolean) : [];
 
-      // Convert template fields to required format
       const templateDataArray = Object.entries(templateFields).map(([field, value]) => ({
         field,
         value

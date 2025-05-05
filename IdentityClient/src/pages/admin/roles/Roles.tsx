@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
-import { 
-  Shield, 
-  UserPlus, 
-  Trash2, 
-  UserX, 
-  Plus, 
+import {
+  Shield,
+  UserPlus,
+  Trash2,
+  UserX,
+  Plus,
   Search,
   User,
   Users as UsersIcon,
   CheckCircle,
   X
 } from 'lucide-react';
-import { 
-  useGetAllRolesQuery, 
-  useCreateRoleMutation, 
+import {
+  useGetAllRolesQuery,
+  useCreateRoleMutation,
   useDeleteRoleMutation,
   useGetRoleUsersQuery,
   useAddUserToRoleMutation,
@@ -24,74 +24,66 @@ import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Roles = () => {
-  // State management
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [userSearchTerm, setUserSearchTerm] = useState('');
   const [isAddingRole, setIsAddingRole] = useState(false);
   const [newRoleName, setNewRoleName] = useState('');
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  
-  // API queries
+
   const { data: rolesData, isLoading: rolesLoading, refetch: refetchRoles, error: rolesError } = useGetAllRolesQuery();
   const roles = rolesData?.data || [];
-  
+
   const { data: roleUsers, isLoading: roleUsersLoading, refetch: refetchRoleUsers } = useGetRoleUsersQuery(
-    selectedRole || '', 
-    { 
+    selectedRole || '',
+    {
       skip: !selectedRole,
       refetchOnMountOrArgChange: true
     }
   );
-  
-  const { data: allUsers, isLoading: allUsersLoading, refetch: refetchAllUsers } = 
+
+  const { data: allUsers, isLoading: allUsersLoading, refetch: refetchAllUsers } =
     useGetUsersPagedQuery({ pageNumber: 1, pageSize: 50, searchTerm: userSearchTerm }, {
       refetchOnMountOrArgChange: true
     });
-    
-  // Extract users from the paginated response ensuring type safety
-  const users = allUsers?.data && ('items' in allUsers.data) 
-    ? (allUsers.data as any).items 
-    : Array.isArray(allUsers?.data) 
-      ? allUsers.data 
+
+  const users = allUsers?.data && ('items' in allUsers.data)
+    ? (allUsers.data as any).items
+    : Array.isArray(allUsers?.data)
+      ? allUsers.data
       : [];
-  
-  // Mutations
+
   const [createRole, { isLoading: isCreatingRole }] = useCreateRoleMutation();
   const [deleteRole, { isLoading: isDeletingRole }] = useDeleteRoleMutation();
   const [assignUserToRole, { isLoading: isAssigningUserLoading }] = useAddUserToRoleMutation();
   const [removeUserFromRole, { isLoading: isRemovingUserLoading }] = useRemoveUserFromRoleMutation();
-  
-  // Error handling
+
   useEffect(() => {
     if (rolesError) {
       console.error('Error fetching roles:', rolesError);
       toast.error('Failed to load roles');
     }
   }, [rolesError]);
-  
-  // Set initial role when data loads and fetch its users
+
   useEffect(() => {
     if (roles.length > 0 && !selectedRole) {
       setSelectedRole(roles[0]);
       console.log('Setting initial selected role:', roles[0]);
     }
   }, [roles, selectedRole]);
-  
-  // Refetch role users when role selection changes
+
   useEffect(() => {
     if (selectedRole) {
       refetchRoleUsers();
     }
   }, [selectedRole, refetchRoleUsers]);
-  
-  // Create a new role
+
   const handleCreateRole = async () => {
     if (!newRoleName.trim()) {
       toast.error('Role name cannot be empty');
       return;
     }
-    
+
     try {
       await createRole({ roleName: newRoleName }).unwrap();
       toast.success(`Role '${newRoleName}' created successfully`);
@@ -103,58 +95,54 @@ const Roles = () => {
       toast.error('Failed to create role');
     }
   };
-  
-  // Delete a role
+
   const handleDeleteRole = async (roleName: string) => {
     if (!confirm(`Are you sure you want to delete role '${roleName}'?`)) return;
-    
+
     try {
       await deleteRole(roleName).unwrap();
       toast.success(`Role '${roleName}' deleted successfully`);
-      
+
       if (selectedRole === roleName) {
         const nextRole = roles.find(r => r !== roleName) || null;
         setSelectedRole(nextRole);
       }
-      
+
       refetchRoles();
     } catch (error) {
       console.error('Error deleting role:', error);
       toast.error('Failed to delete role');
     }
   };
-  
-  // Toggle user selection for role assignment
+
   const toggleUserSelection = (userId: string) => {
-    setSelectedUsers(prev => 
-      prev.includes(userId) 
+    setSelectedUsers(prev =>
+      prev.includes(userId)
         ? prev.filter(id => id !== userId)
         : [...prev, userId]
     );
   };
-  
-  // Check if user is assigned to the selected role
+
   const isUserInRole = (userId: string) => {
     if (!roleUsers?.data) return false;
     return roleUsers.data.some(user => user.userId === userId);
   };
-  
+
   const getAssignedUserIds = () => {
     if (!roleUsers?.data) return [];
     return roleUsers.data.map(user => user.userId);
   };
-  
-  // Assign selected users to the selected role
+
   const handleAssignSelectedUsers = async () => {
     if (!selectedRole || selectedUsers.length === 0) {
       toast.error('Please select a role and at least one user');
       return;
     }
-    
+
     try {
       let successCount = 0;
       let errorCount = 0;
-      
+
       for (const userId of selectedUsers) {
         try {
           await assignUserToRole({ roleName: selectedRole, userId }).unwrap();
@@ -163,30 +151,29 @@ const Roles = () => {
           errorCount++;
         }
       }
-      
+
       if (successCount > 0) {
         toast.success(`${successCount} user${successCount > 1 ? 's' : ''} assigned to role successfully`);
       }
-      
+
       if (errorCount > 0) {
         toast.error(`Failed to assign ${errorCount} user${errorCount > 1 ? 's' : ''}`);
       }
-      
+
       setSelectedUsers([]);
       refetchRoleUsers();
     } catch (error) {
       toast.error('Error assigning users to role');
     }
   };
-  
-  // Remove a user from the selected role
+
   const handleRemoveUserFromRole = async (userId: string) => {
     if (!selectedRole) return;
-    
+
     try {
-      await removeUserFromRole({ 
-        roleName: selectedRole, 
-        userId 
+      await removeUserFromRole({
+        roleName: selectedRole,
+        userId
       }).unwrap();
       toast.success('User removed from role');
       refetchRoleUsers();
@@ -196,13 +183,12 @@ const Roles = () => {
       toast.error('Failed to remove user from role');
     }
   };
-  
-  // Filter users for the current view
-  const filteredUsers = (users as any[]).filter(user => 
+
+  const filteredUsers = (users as any[]).filter(user =>
     (user.userName || '').toLowerCase().includes(userSearchTerm.toLowerCase()) ||
     (user.email || '').toLowerCase().includes(userSearchTerm.toLowerCase())
   );
-  
+
   if (rolesLoading) {
     return (
       <div className="flex flex-col min-h-screen p-6">
@@ -216,7 +202,7 @@ const Roles = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="flex flex-col min-h-screen p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -234,7 +220,7 @@ const Roles = () => {
           </button>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
         {/* Role list - Left side */}
         <div className="md:col-span-2 bg-card rounded-lg shadow-sm p-4 border border-border h-[calc(100vh-13rem)]">
@@ -244,9 +230,8 @@ const Roles = () => {
               roles.map((role) => (
                 <div
                   key={role}
-                  className={`flex items-center justify-between p-3 rounded-md cursor-pointer ${
-                    selectedRole === role ? 'bg-primary/10 border-primary/30' : 'bg-background hover:bg-muted'
-                  } border border-border transition-colors`}
+                  className={`flex items-center justify-between p-3 rounded-md cursor-pointer ${selectedRole === role ? 'bg-primary/10 border-primary/30' : 'bg-background hover:bg-muted'
+                    } border border-border transition-colors`}
                   onClick={() => setSelectedRole(role)}
                 >
                   <div className="flex items-center">
@@ -274,7 +259,7 @@ const Roles = () => {
             )}
           </div>
         </div>
-        
+
         {/* Users and role assignment - Right side */}
         <div className="md:col-span-5 bg-card rounded-lg shadow-sm border border-border h-[calc(100vh-13rem)] flex flex-col">
           {selectedRole ? (
@@ -284,8 +269,8 @@ const Roles = () => {
                   {selectedRole} Role Management
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  {roleUsersLoading 
-                    ? 'Loading user data...' 
+                  {roleUsersLoading
+                    ? 'Loading user data...'
                     : `${roleUsers?.data?.length || 0} users assigned to this role.`
                   }
                 </p>
@@ -293,7 +278,7 @@ const Roles = () => {
                   Click on a user to select for assignment. Use the red X to remove from role.
                 </p>
               </div>
-              
+
               <div className="p-4 border-b border-border">
                 <div className="relative">
                   <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
@@ -306,7 +291,7 @@ const Roles = () => {
                   />
                 </div>
               </div>
-              
+
               <div className="p-4 flex-grow overflow-auto">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-2">
                   <div className="flex items-center justify-between w-full sm:w-auto">
@@ -315,7 +300,7 @@ const Roles = () => {
                       {selectedUsers.length} selected
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 text-xs">
                     <span className="inline-flex items-center px-2 py-1 rounded-md bg-primary/10 text-primary">
                       <CheckCircle className="h-3 w-3 mr-1" /> In role
@@ -326,7 +311,7 @@ const Roles = () => {
                   </div>
 
                 </div>
-                
+
                 {allUsersLoading ? (
                   <div className="flex justify-center py-8">
                     <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full"></div>
@@ -340,16 +325,15 @@ const Roles = () => {
                     {filteredUsers.map((user) => {
                       const inRole = isUserInRole(user.id);
                       return (
-                        <div 
-                          key={user.id} 
+                        <div
+                          key={user.id}
                           onClick={() => !inRole && toggleUserSelection(user.id)}
-                          className={`flex items-center justify-between p-3 rounded-md border ${
-                            inRole 
-                              ? 'bg-primary/5 border-primary/20' 
+                          className={`flex items-center justify-between p-3 rounded-md border ${inRole
+                              ? 'bg-primary/5 border-primary/20'
                               : selectedUsers.includes(user.id)
                                 ? 'bg-muted/80 border-border'
                                 : 'bg-background border-border hover:bg-muted/30'
-                          } transition-all ${!inRole ? 'cursor-pointer' : ''}`}
+                            } transition-all ${!inRole ? 'cursor-pointer' : ''}`}
                         >
                           <div className="flex items-center">
                             <div className="flex items-center min-w-0">
@@ -362,7 +346,7 @@ const Roles = () => {
                               </div>
                             </div>
                           </div>
-                          
+
                           <div>
                             {inRole ? (
                               <div className="flex items-center">
@@ -387,11 +371,10 @@ const Roles = () => {
                                   e.stopPropagation();
                                   toggleUserSelection(user.id);
                                 }}
-                                className={`p-2 rounded-md transition-colors ${
-                                  selectedUsers.includes(user.id)
+                                className={`p-2 rounded-md transition-colors ${selectedUsers.includes(user.id)
                                     ? 'bg-primary/20 text-primary hover:bg-primary/30'
                                     : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                                }`}
+                                  }`}
                               >
                                 {selectedUsers.includes(user.id) ? (
                                   <X className="h-4 w-4" />
@@ -407,29 +390,29 @@ const Roles = () => {
                   </div>
                 )}
               </div>
-              
+
               <div className="p-4 border-t border-border bg-muted/30">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <h3 className="text-sm font-medium flex items-center">
                     <UsersIcon className="h-4 w-4 mr-1.5 text-primary" />
                     <span>
-                      {roleUsersLoading 
-                        ? 'Loading...' 
+                      {roleUsersLoading
+                        ? 'Loading...'
                         : `${roleUsers?.data?.length || 0} users assigned to this role`
                       }
                     </span>
                   </h3>
-                  
+
                   <div className="flex gap-2">
                     {getAssignedUserIds().length > 0 && (
-                      <button 
+                      <button
                         onClick={() => refetchRoleUsers()}
                         className="text-xs px-2 py-1 rounded-md border border-border bg-background hover:bg-muted transition-colors"
                       >
                         Refresh list
                       </button>
                     )}
-                    
+
                     {selectedUsers.length > 0 && (
                       <div className="flex gap-2">
                         <button
@@ -464,7 +447,7 @@ const Roles = () => {
           )}
         </div>
       </div>
-      
+
       {/* Add Role Modal */}
       <AnimatePresence>
         {isAddingRole && (
@@ -496,7 +479,7 @@ const Roles = () => {
                   placeholder="Enter role name..."
                 />
               </div>
-              
+
               <div className="flex justify-end space-x-3">
                 <button
                   onClick={() => setIsAddingRole(false)}

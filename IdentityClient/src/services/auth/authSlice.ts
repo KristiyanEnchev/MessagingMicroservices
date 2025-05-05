@@ -33,7 +33,6 @@ export interface AuthResponse {
     userId?: string;
     transactionId?: string;
   };
-  // Direct token properties for APIs that return token data directly
   access_token?: string;
   token_type?: string;
   refresh_token?: string;
@@ -61,14 +60,14 @@ export const logoutUser = createAsyncThunk(
     const userEmail = state.auth.user?.email;
 
     if (userEmail) {
-        try {
-            await dispatch(authApi.endpoints.logout.initiate({ email: userEmail })).unwrap();
-        } catch (error) {
-            console.error('Server logout failed:', error);
-        }
+      try {
+        await dispatch(authApi.endpoints.logout.initiate({ email: userEmail })).unwrap();
+      } catch (error) {
+        console.error('Server logout failed:', error);
+      }
     }
     dispatch(authSlice.actions.clearAuth());
-}
+  }
 );
 
 const parseUserFromToken = (token: string): UserData => {
@@ -85,10 +84,9 @@ const parseUserFromToken = (token: string): UserData => {
 
   try {
     const decoded: any = jwt_decode.jwtDecode(token);
-    
-    // Extract roles with better handling for different token formats
+
     let roles: string[] = [];
-    
+
     if (Array.isArray(decoded.roles)) {
       roles = decoded.roles;
     } else if (typeof decoded.roles === 'string') {
@@ -98,7 +96,7 @@ const parseUserFromToken = (token: string): UserData => {
     } else if (decoded.Role) {
       roles = Array.isArray(decoded.Role) ? decoded.Role : [decoded.Role];
     }
-    
+
     return {
       id: decoded.sub || decoded.id || decoded.userId || '',
       userName: decoded.name || decoded.username || decoded.preferred_username || 'User',
@@ -123,22 +121,18 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action: PayloadAction<AuthResponse>) => {
-      // Handle different token response formats
 
-      // First determine where the token data is actually located
       let access_token = '';
       let refresh_token = '';
       let expires_at = '';
       let expires_in = 0;
 
-      // The token could be directly on the payload
       if (action.payload.access_token) {
         access_token = action.payload.access_token;
         refresh_token = action.payload.refresh_token || '';
         expires_at = action.payload.expires_at || '';
         expires_in = action.payload.expires_in || 0;
       }
-      // Or inside the data property
       else if (action.payload.data && action.payload.data.access_token) {
         access_token = action.payload.data.access_token;
         refresh_token = action.payload.data.refresh_token || '';
@@ -151,22 +145,17 @@ export const authSlice = createSlice({
         return;
       }
 
-      // Parse user info from token
       const user = parseUserFromToken(access_token);
       state.user = user;
       state.token = access_token;
       state.refreshToken = refresh_token;
       state.isAuthenticated = true;
 
-      // Calculate token expiration time
       const expiresAtTimestamp = expires_at
         ? new Date(expires_at).getTime()
-        : (expires_in ? Date.now() + expires_in * 1000 : Date.now() + 3600 * 1000); // Default 1 hour if not specified
+        : (expires_in ? Date.now() + expires_in * 1000 : Date.now() + 3600 * 1000);
 
       state.expiresAt = expiresAtTimestamp;
-
-      // Tokens will be automatically persisted through Redux persist
-      // No need to manually store in localStorage
     },
 
     updateToken: (state, action: PayloadAction<{ token: string; refreshToken?: string; expiresAt?: number }>) => {
@@ -196,14 +185,11 @@ export const authSlice = createSlice({
       state.isLoading = false;
     },
 
-    // New reducer to handle restoration of auth state after page reload
     restoreAuthState: (state) => {
-      // If we have a token but isAuthenticated is false, restore the authenticated state
       if (state.token && !state.isAuthenticated && state.user) {
         state.isAuthenticated = true;
       }
 
-      // If we have a token that's expired, clear auth
       if (state.expiresAt && state.expiresAt < Date.now()) {
         state.user = null;
         state.token = null;
@@ -218,8 +204,6 @@ export const authSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(logoutUser.fulfilled, (state) => {
-      // Already handled in the clearAuth reducer
-      // Just need to reset loading state
       state.isLoading = false;
     });
     builder.addCase(logoutUser.rejected, (state) => {
@@ -230,7 +214,6 @@ export const authSlice = createSlice({
 
 export const { setCredentials, updateToken, updateUser, clearAuth, restoreAuthState } = authSlice.actions;
 
-// Selectors
 export { selectCurrentUser, selectToken, selectRefreshToken, selectIsAuthenticated, selectExpiresAt, selectAuthLoading } from '@/store/selectors';
 
 export default authSlice.reducer;

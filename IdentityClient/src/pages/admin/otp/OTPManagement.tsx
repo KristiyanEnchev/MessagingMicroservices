@@ -19,7 +19,6 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
-// Form validation schema for generate
 const generateOtpSchema = z.object({
   identifier: z.string().min(1, 'Identifier is required'),
   expirationMinutes: z.number().int().min(1, 'Expiration must be at least 1 minute').max(60, 'Expiration cannot exceed 60 minutes').default(5),
@@ -29,7 +28,6 @@ const generateOtpSchema = z.object({
 
 type GenerateOtpFormValues = z.infer<typeof generateOtpSchema>;
 
-// Verify OTP schema
 const verifyOtpSchema = z.object({
   identifier: z.string().min(1, 'Identifier is required'),
   transactionId: z.string().min(1, 'Transaction ID is required'),
@@ -38,7 +36,6 @@ const verifyOtpSchema = z.object({
 
 type VerifyOtpFormValues = z.infer<typeof verifyOtpSchema>;
 
-// Mock OTP history data
 const mockOtpHistory = [
   {
     id: '1',
@@ -75,7 +72,6 @@ const OTPManagement = () => {
   const [generateOTP, { isLoading: isGenerating }] = useGenerateOtpMutation();
   const [validateOTP, { isLoading: isValidating }] = useValidateOtpMutation();
 
-  // Generate OTP form
   const { register: registerGenerate, handleSubmit: handleSubmitGenerate, formState: { errors: errorsGenerate }, reset: resetGenerate } = useForm<GenerateOtpFormValues>({
     resolver: zodResolver(generateOtpSchema),
     defaultValues: {
@@ -85,16 +81,12 @@ const OTPManagement = () => {
     }
   });
 
-  // Verify OTP form
   const { register: registerVerify, handleSubmit: handleSubmitVerify, formState: { errors: errorsVerify }, reset: resetVerify } = useForm<VerifyOtpFormValues>({
     resolver: zodResolver(verifyOtpSchema),
   });
 
-  // Submit generate OTP
   const onSubmitGenerate = async (data: GenerateOtpFormValues) => {
     try {
-      // We're mocking this response since we don't have an actual API
-      // const result = await generateOTP(data).unwrap();
       const mockOtp = {
         otp: Array.from({ length: data.size }, () => Math.floor(Math.random() * 10)).join(''),
         transactionId: `txn${Math.random().toString(36).substring(2, 10)}`,
@@ -108,12 +100,8 @@ const OTPManagement = () => {
     }
   };
 
-  // Submit verify OTP
   const onSubmitVerify = async (data: VerifyOtpFormValues) => {
     try {
-      // We're mocking this response since we don't have an actual API
-      // const result = await validateOTP(data).unwrap();
-      // const isValid = Math.random() > 0.3; // 70% chance of success for demo purposes
       const isValid = await validateOTP(data).unwrap();
       if (isValid) {
         toast.success('OTP verified successfully');
@@ -132,37 +120,34 @@ const OTPManagement = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">OTP Management</h1>
       </div>
-      
+
       <Card>
         <div className="border-b border-gray-200 dark:border-gray-700">
           <nav className="flex">
             <button
               onClick={() => setActiveTab('generate')}
-              className={`px-4 py-3 text-sm font-medium ${
-                activeTab === 'generate'
-                  ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-              }`}
+              className={`px-4 py-3 text-sm font-medium ${activeTab === 'generate'
+                ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
+                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
             >
               Generate OTP
             </button>
             <button
               onClick={() => setActiveTab('verify')}
-              className={`px-4 py-3 text-sm font-medium ${
-                activeTab === 'verify'
-                  ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-              }`}
+              className={`px-4 py-3 text-sm font-medium ${activeTab === 'verify'
+                ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
+                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
             >
               Verify OTP
             </button>
             <button
               onClick={() => setActiveTab('history')}
-              className={`px-4 py-3 text-sm font-medium ${
-                activeTab === 'history'
-                  ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-              }`}
+              className={`px-4 py-3 text-sm font-medium ${activeTab === 'history'
+                ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
+                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
             >
               OTP History
             </button>
@@ -184,7 +169,7 @@ const OTPManagement = () => {
                     leftIcon={<User className="h-5 w-5 text-gray-400" />}
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
                     <label htmlFor="generate-expiration" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -202,7 +187,7 @@ const OTPManagement = () => {
                       <p className="mt-1 text-sm text-red-600 dark:text-red-500">{errorsGenerate.expirationMinutes.message}</p>
                     )}
                   </div>
-                  
+
                   <div>
                     <label htmlFor="generate-size" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       OTP Length
@@ -220,7 +205,7 @@ const OTPManagement = () => {
                     )}
                   </div>
                 </div>
-                
+
                 <div className="flex items-center">
                   <input
                     id="generate-digits"
@@ -232,20 +217,19 @@ const OTPManagement = () => {
                     Digits only (no letters)
                   </label>
                 </div>
-                
+
                 <div className="flex justify-end">
                   <Button
                     type="submit"
                     variant="default"
                     isLoading={isGenerating}
-                    // Icon can be added inside the button component
                   >
                     <Key className="h-5 w-5 mr-2" />
-                  Generate OTP
+                    Generate OTP
                   </Button>
                 </div>
               </form>
-              
+
               {generatedOtp && (
                 <div className="mt-6 p-4 border border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-900/20 rounded-md">
                   <h3 className="text-lg font-medium text-green-800 dark:text-green-300 flex items-center">
@@ -270,7 +254,7 @@ const OTPManagement = () => {
               )}
             </div>
           )}
-          
+
           {activeTab === 'verify' && (
             <form onSubmit={handleSubmitVerify(onSubmitVerify)} className="space-y-4">
               <div>
@@ -284,7 +268,7 @@ const OTPManagement = () => {
                   startIcon={<User className="h-5 w-5 text-gray-400" />}
                 />
               </div>
-              
+
               <div>
                 <Input
                   label="Transaction ID"
@@ -296,7 +280,7 @@ const OTPManagement = () => {
                   startIcon={<Fingerprint className="h-5 w-5 text-gray-400" />}
                 />
               </div>
-              
+
               <div>
                 <Input
                   label="OTP Code"
@@ -308,7 +292,7 @@ const OTPManagement = () => {
                   startIcon={<Key className="h-5 w-5 text-gray-400" />}
                 />
               </div>
-              
+
               <div className="flex justify-end">
                 <Button
                   type="submit"
@@ -321,7 +305,7 @@ const OTPManagement = () => {
               </div>
             </form>
           )}
-          
+
           {activeTab === 'history' && (
             <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">

@@ -1,7 +1,3 @@
-/**
- * Common API response types that can be used across all API endpoints
- */
-
 // Base API response type
 export interface ApiResponse<T = any> {
   succeeded: boolean;

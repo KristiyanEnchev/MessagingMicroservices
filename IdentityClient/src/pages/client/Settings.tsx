@@ -1,71 +1,59 @@
 import React, { useState } from 'react';
-import { 
-  Save, 
-  User, 
-  Mail, 
-  Phone, 
-  Lock, 
-  Bell, 
-  Moon, 
+import {
+  Save,
+  User,
+  Mail,
+  Phone,
+  Lock,
+  Bell,
+  Moon,
   Sun,
   Check
 } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/hooks/useAuth';
 
-/**
- * Client Settings page
- * Allows users to manage their profile and preferences
- */
 const ClientSettings = () => {
   const { user, updateUser } = useAuth();
   const { isDarkMode, toggleTheme } = useTheme();
-  
-  // Profile form state
+
   const [profileForm, setProfileForm] = useState({
     name: user?.name || '',
     email: user?.email || '',
     phoneNumber: '',
     bio: '',
   });
-  
-  // Notification preferences state
+
   const [notificationPreferences, setNotificationPreferences] = useState({
     emailNotifications: true,
     smsNotifications: false,
     activitySummary: true,
     securityAlerts: true,
   });
-  
-  // Password form state
+
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
   });
 
-  // Success message state
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  
-  // Handle profile form change
+
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setProfileForm((prev) => ({ ...prev, [name]: value }));
   };
-  
-  // Handle notification preference change
+
   const handleNotificationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setNotificationPreferences((prev) => ({ ...prev, [name]: checked }));
   };
-  
-  // Handle password form change
+
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPasswordForm((prev) => ({ ...prev, [name]: value }));
   };
-  
-  // Handle profile form submit
+
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Simulate API call
@@ -75,16 +63,14 @@ const ClientSettings = () => {
       setTimeout(() => setShowSuccessMessage(false), 3000);
     }, 500);
   };
-  
-  // Handle password form submit
+
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Validate and submit password change
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
-    
+
     // Simulate API call
     setTimeout(() => {
       setPasswordForm({
@@ -96,7 +82,7 @@ const ClientSettings = () => {
       setTimeout(() => setShowSuccessMessage(false), 3000);
     }, 500);
   };
-  
+
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="flex flex-col space-y-8">
@@ -105,7 +91,7 @@ const ClientSettings = () => {
           <h1 className="text-2xl font-bold">Settings</h1>
           <p className="text-gray-400">Manage your account settings and preferences</p>
         </div>
-        
+
         {/* Success message */}
         {showSuccessMessage && (
           <div className="bg-green-600 bg-opacity-20 border border-green-500 text-green-400 px-4 py-3 rounded-md flex items-center">
@@ -113,7 +99,7 @@ const ClientSettings = () => {
             Changes saved successfully!
           </div>
         )}
-        
+
         {/* Settings Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Sidebar Navigation */}
@@ -141,7 +127,7 @@ const ClientSettings = () => {
               </a>
             </nav>
           </div>
-          
+
           {/* Settings Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Profile Section */}
@@ -167,7 +153,7 @@ const ClientSettings = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1">
                     Email
@@ -191,7 +177,7 @@ const ClientSettings = () => {
                     Email cannot be changed. Contact support for assistance.
                   </p>
                 </div>
-                
+
                 <div>
                   <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-400 mb-1">
                     Phone Number (Optional)
@@ -211,7 +197,7 @@ const ClientSettings = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div>
                   <label htmlFor="bio" className="block text-sm font-medium text-gray-400 mb-1">
                     Bio (Optional)
@@ -228,7 +214,7 @@ const ClientSettings = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="flex justify-end">
                   <button
                     type="submit"
@@ -240,7 +226,7 @@ const ClientSettings = () => {
                 </div>
               </form>
             </section>
-            
+
             {/* Notifications Section */}
             <section id="notifications" className="bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold mb-4">Notification Preferences</h2>
@@ -261,7 +247,7 @@ const ClientSettings = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-sm font-medium text-white">SMS Notifications</h3>
@@ -278,7 +264,7 @@ const ClientSettings = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-sm font-medium text-white">Activity Summary</h3>
@@ -295,7 +281,7 @@ const ClientSettings = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-sm font-medium text-white">Security Alerts</h3>
@@ -312,7 +298,7 @@ const ClientSettings = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="flex justify-end pt-4">
                   <button
                     type="button"
@@ -328,7 +314,7 @@ const ClientSettings = () => {
                 </div>
               </div>
             </section>
-            
+
             {/* Password Section */}
             <section id="password" className="bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold mb-4">Change Password</h2>
@@ -353,7 +339,7 @@ const ClientSettings = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div>
                   <label htmlFor="newPassword" className="block text-sm font-medium text-gray-400 mb-1">
                     New Password
@@ -374,7 +360,7 @@ const ClientSettings = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div>
                   <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-400 mb-1">
                     Confirm New Password
@@ -395,7 +381,7 @@ const ClientSettings = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="flex justify-end">
                   <button
                     type="submit"
@@ -407,7 +393,7 @@ const ClientSettings = () => {
                 </div>
               </form>
             </section>
-            
+
             {/* Appearance Section */}
             <section id="appearance" className="bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold mb-4">Appearance</h2>
@@ -425,9 +411,8 @@ const ClientSettings = () => {
                     >
                       <span className="sr-only">Toggle dark mode</span>
                       <span
-                        className={`${
-                          isDarkMode ? 'translate-x-6' : 'translate-x-1'
-                        } inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ease-in-out`}
+                        className={`${isDarkMode ? 'translate-x-6' : 'translate-x-1'
+                          } inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ease-in-out`}
                       />
                     </button>
                   </div>

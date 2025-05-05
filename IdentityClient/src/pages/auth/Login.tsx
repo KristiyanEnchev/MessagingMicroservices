@@ -41,14 +41,11 @@ const Login = () => {
     setErrorMessage(null);
 
     try {
-      // Get the raw response from the login API
       const responseData = await login(loginData).unwrap();
       console.log('Login API response:', responseData);
 
-      // Normalize the response structure to handle different API response formats
       let normalizedResponse = responseData;
 
-      // Check if the response is a direct token structure without nested data
       if (responseData.access_token && !responseData.success && !responseData.data) {
         normalizedResponse = {
           success: true,
@@ -67,12 +64,10 @@ const Login = () => {
       }
 
       if (normalizedResponse.success === false || (normalizedResponse.errors && normalizedResponse.errors.length > 0)) {
-        // Handle error response
         setErrorMessage(normalizedResponse.errors?.[0] || 'Login failed. Please check your credentials.');
         return;
       }
 
-      // Handle 2FA requirement if present
       if (normalizedResponse.data?.requires_2fa) {
         navigate('/auth/two-factor', {
           state: {
@@ -83,14 +78,11 @@ const Login = () => {
         return;
       }
 
-      // Update Redux state with credentials
       dispatch(setCredentials(normalizedResponse));
 
-      // Get roles from Redux store after state update
       const { user } = store.getState().auth;
       const isAdmin = user?.roles?.some(role => ['Admin', 'Administrator'].includes(role));
 
-      // Navigate based on user role
       navigate(isAdmin ? '/admin/dashboard' : '/client/dashboard');
     } catch (error: any) {
       console.error('Login error:', error);

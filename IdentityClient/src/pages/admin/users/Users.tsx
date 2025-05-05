@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  User, 
-  UserCheck, 
-  UserX, 
-  Lock, 
-  Unlock, 
-  Shield, 
-  Mail, 
-  Search, 
+import {
+  User,
+  UserCheck,
+  UserX,
+  Lock,
+  Unlock,
+  Shield,
+  Mail,
+  Search,
   CheckCircle,
   XCircle,
   Eye,
@@ -22,69 +22,62 @@ import {
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { 
-  useGetUsersPagedQuery, 
-  useToggleUserStatusMutation, 
-  SortBy, 
-  Sort, 
+import {
+  useGetUsersPagedQuery,
+  useToggleUserStatusMutation,
+  SortBy,
+  Sort,
   ToggleUserValue,
   FindBy
 } from '@/services/identity/identityApi';
 
 const Users = () => {
-  // Pagination state
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [sortBy, setSortBy] = useState<SortBy>(SortBy.Id);
   const [sortOrder, setSortOrder] = useState<Sort>(Sort.Desc);
-  
-  // Filter and search state
+
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
-  
-  // Action states
+
   const [actionMenuOpen, setActionMenuOpen] = useState<string | null>(null);
-  
-  // API hooks
+
   const { data: usersData, isLoading, isFetching, refetch } = useGetUsersPagedQuery({
     pageNumber,
     pageSize,
     sortBy,
     order: sortOrder,
   });
-  
+
   const [toggleUserStatus, { isLoading: isToggling }] = useToggleUserStatusMutation();
-  
-  // Debounce search term
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
     }, 300);
-    
+
     return () => clearTimeout(timer);
   }, [searchTerm]);
-  
-  // Handle click outside of action menu
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (actionMenuOpen && !((event.target as Element).closest('.action-menu'))) {
         setActionMenuOpen(null);
       }
     };
-    
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [actionMenuOpen]);
-  
-  // Filter users based on search term and filters
+
   const filteredUsers = usersData?.data.filter(user => {
     if (!debouncedSearchTerm && selectedFilter === 'all') return true;
-    
+
     let matchesSearch = true;
     let matchesFilter = true;
-    
+
     if (debouncedSearchTerm) {
       const searchLower = debouncedSearchTerm.toLowerCase();
       matchesSearch = (
@@ -93,7 +86,7 @@ const Users = () => {
         (user.role?.toLowerCase() || '').includes(searchLower)
       );
     }
-    
+
     if (selectedFilter !== 'all') {
       switch (selectedFilter) {
         case 'active':
@@ -110,18 +103,17 @@ const Users = () => {
           break;
       }
     }
-    
+
     return matchesSearch && matchesFilter;
   });
-  
-  // Handle toggling user active status
+
   const handleToggleActive = async (userId: string, isActive: boolean) => {
     try {
       await toggleUserStatus({
         identifier: userId,
         toggleValue: ToggleUserValue.IsActive
       }).unwrap();
-      
+
       toast.success(`User ${isActive ? 'deactivated' : 'activated'} successfully`);
       refetch();
     } catch (error) {
@@ -129,15 +121,14 @@ const Users = () => {
       console.error('Failed to toggle user status:', error);
     }
   };
-  
-  // Handle toggling user locked status
+
   const handleToggleLocked = async (userId: string, isLocked: boolean) => {
     try {
       await toggleUserStatus({
         identifier: userId,
         toggleValue: ToggleUserValue.IsLockedOut
       }).unwrap();
-      
+
       toast.success(`User ${isLocked ? 'unlocked' : 'locked'} successfully`);
       refetch();
     } catch (error) {
@@ -145,15 +136,14 @@ const Users = () => {
       console.error('Failed to toggle user lock status:', error);
     }
   };
-  
-  // Handle toggling email verification status
+
   const handleToggleEmailVerified = async (userId: string, isEmailVerified: boolean) => {
     try {
       await toggleUserStatus({
         identifier: userId,
         toggleValue: ToggleUserValue.IsEmailConfirmed
       }).unwrap();
-      
+
       toast.success(`User email ${isEmailVerified ? 'marked as unverified' : 'marked as verified'} successfully`);
       refetch();
     } catch (error) {
@@ -161,8 +151,7 @@ const Users = () => {
       console.error('Failed to toggle email verification status:', error);
     }
   };
-  
-  // Handle sort change
+
   const handleSort = (field: SortBy) => {
     if (sortBy === field) {
       setSortOrder(sortOrder === Sort.Asc ? Sort.Desc : Sort.Asc);
@@ -171,11 +160,11 @@ const Users = () => {
       setSortOrder(Sort.Asc);
     }
   };
-  
+
   const getSortIcon = (field: SortBy) => {
     if (sortBy !== field) return <ArrowUpDown className="h-4 w-4 ml-1" />;
-    return sortOrder === Sort.Asc ? 
-      <ChevronDown className="h-4 w-4 ml-1 rotate-180" /> : 
+    return sortOrder === Sort.Asc ?
+      <ChevronDown className="h-4 w-4 ml-1 rotate-180" /> :
       <ChevronDown className="h-4 w-4 ml-1" />;
   };
 
@@ -197,7 +186,7 @@ const Users = () => {
           </Link>
         </div>
       </div>
-      
+
       <div className="bg-card shadow-sm rounded-lg overflow-hidden">
         <div className="p-4 border-b border-border">
           <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
@@ -213,7 +202,7 @@ const Users = () => {
                 placeholder="Search users..."
               />
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <button
                 type="button"
@@ -224,7 +213,7 @@ const Users = () => {
                 Filters
                 <ChevronDown className={`ml-1 h-4 w-4 transform transition-transform ${showFilters ? 'rotate-180' : ''}`} />
               </button>
-              
+
               <select
                 value={pageSize.toString()}
                 onChange={(e) => setPageSize(Number(e.target.value))}
@@ -237,7 +226,7 @@ const Users = () => {
               </select>
             </div>
           </div>
-          
+
           <AnimatePresence>
             {showFilters && (
               <motion.div
@@ -252,8 +241,8 @@ const Users = () => {
                     <button
                       onClick={() => setSelectedFilter('all')}
                       className={`px-3 py-1 rounded-full text-sm ${
-                        selectedFilter === 'all' 
-                          ? 'bg-primary/10 text-primary border-primary' 
+                        selectedFilter === 'all'
+                          ? 'bg-primary/10 text-primary border-primary'
                           : 'bg-muted/30 text-muted-foreground hover:bg-muted'
                       } border transition-colors`}
                     >
@@ -262,8 +251,8 @@ const Users = () => {
                     <button
                       onClick={() => setSelectedFilter('active')}
                       className={`px-3 py-1 rounded-full text-sm ${
-                        selectedFilter === 'active' 
-                          ? 'bg-green-500/10 text-green-500 border-green-500' 
+                        selectedFilter === 'active'
+                          ? 'bg-green-500/10 text-green-500 border-green-500'
                           : 'bg-muted/30 text-muted-foreground hover:bg-muted'
                       } border transition-colors`}
                     >
@@ -272,8 +261,8 @@ const Users = () => {
                     <button
                       onClick={() => setSelectedFilter('inactive')}
                       className={`px-3 py-1 rounded-full text-sm ${
-                        selectedFilter === 'inactive' 
-                          ? 'bg-red-500/10 text-red-500 border-red-500' 
+                        selectedFilter === 'inactive'
+                          ? 'bg-red-500/10 text-red-500 border-red-500'
                           : 'bg-muted/30 text-muted-foreground hover:bg-muted'
                       } border transition-colors`}
                     >
@@ -282,8 +271,8 @@ const Users = () => {
                     <button
                       onClick={() => setSelectedFilter('admin')}
                       className={`px-3 py-1 rounded-full text-sm ${
-                        selectedFilter === 'admin' 
-                          ? 'bg-blue-500/10 text-blue-500 border-blue-500' 
+                        selectedFilter === 'admin'
+                          ? 'bg-blue-500/10 text-blue-500 border-blue-500'
                           : 'bg-muted/30 text-muted-foreground hover:bg-muted'
                       } border transition-colors`}
                     >
@@ -292,8 +281,8 @@ const Users = () => {
                     <button
                       onClick={() => setSelectedFilter('user')}
                       className={`px-3 py-1 rounded-full text-sm ${
-                        selectedFilter === 'user' 
-                          ? 'bg-purple-500/10 text-purple-500 border-purple-500' 
+                        selectedFilter === 'user'
+                          ? 'bg-purple-500/10 text-purple-500 border-purple-500'
                           : 'bg-muted/30 text-muted-foreground hover:bg-muted'
                       } border transition-colors`}
                     >
@@ -305,7 +294,7 @@ const Users = () => {
             )}
           </AnimatePresence>
         </div>
-        
+
         {/* Table */}
         <div className="overflow-x-auto">
           {isLoading ? (
@@ -380,7 +369,7 @@ const Users = () => {
                         >
                           <Eye className="h-4 w-4" />
                         </Link>
-                        
+
                         <button
                           onClick={() => handleToggleActive(user.id, user.isActive)}
                           className={`${user.isActive ? 'text-red-500 hover:text-red-600' : 'text-green-500 hover:text-green-600'} transition-colors`}
@@ -389,7 +378,7 @@ const Users = () => {
                         >
                           {user.isActive ? <UserX className="h-4 w-4" /> : <UserCheck className="h-4 w-4" />}
                         </button>
-                        
+
                         <div className="relative action-menu">
                           <button
                             onClick={() => setActionMenuOpen(actionMenuOpen === user.id ? null : user.id)}
@@ -397,7 +386,7 @@ const Users = () => {
                           >
                             <MoreHorizontal className="h-4 w-4" />
                           </button>
-                          
+
                           {actionMenuOpen === user.id && (
                             <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-card ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
                               <button
@@ -463,7 +452,7 @@ const Users = () => {
             </div>
           )}
         </div>
-        
+
         {/* Pagination */}
         {usersData && usersData.totalPages > 0 && (
           <div className="px-4 py-3 flex items-center justify-between border-t border-border sm:px-6">
@@ -485,7 +474,7 @@ const Users = () => {
                     <span className="sr-only">Previous</span>
                     &larr;
                   </button>
-                  
+
                   {Array.from({ length: usersData.totalPages }, (_, i) => i + 1).map((page) => (
                     <button
                       key={page}
@@ -499,7 +488,7 @@ const Users = () => {
                       {page}
                     </button>
                   ))}
-                  
+
                   <button
                     onClick={() => setPageNumber(pageNumber + 1)}
                     disabled={!usersData.hasNextPage}

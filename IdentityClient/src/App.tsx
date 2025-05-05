@@ -8,25 +8,20 @@ import { useEffect } from 'react';
 import { syncThemeWithDOM } from '@/services/theme/themeSlice';
 import { restoreAuthState } from '@/services/auth/authSlice';
 
-// Loading component that shows while Redux state is being rehydrated
 const LoadingState = () => (
   <div className="flex items-center justify-center h-screen bg-background">
     <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
   </div>
 );
 
-// Component to initialize app state (theme and auth)
 const AppStateInitializer = () => {
   const isDark = store.getState().theme?.isDark;
-  
+
   useEffect(() => {
-    // Apply theme immediately when component mounts
     syncThemeWithDOM(isDark);
-    
-    // Restore auth state to handle page reloads properly
     store.dispatch(restoreAuthState());
   }, []);
-  
+
   return null;
 };
 

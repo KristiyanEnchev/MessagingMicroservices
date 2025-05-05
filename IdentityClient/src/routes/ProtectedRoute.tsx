@@ -11,15 +11,15 @@ interface ProtectedRouteProps {
 export const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps) => {
   const { isAuthenticated, user, token } = useSelector((state: RootState) => state.auth);
   const [persistLoaded, setPersistLoaded] = useState(false);
-  
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setPersistLoaded(true);
     }, 300);
-    
+
     return () => clearTimeout(timer);
   }, []);
-  
+
   useEffect(() => {
     if (token && !isAuthenticated && persistLoaded) {
       console.warn('Auth inconsistency detected: Has token but not authenticated', { token, isAuthenticated });
@@ -32,23 +32,21 @@ export const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps)
       </div>
     );
   }
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/auth/login" replace />;
   }
-  
+
   if (requiredRoles && user?.roles && Array.isArray(user.roles)) {
     const isAdmin = user.roles.includes('Admin') || user.roles.includes('Administrator');
-    
-    // Allow admins to access client routes
-    // Only check required roles if the user is not an admin or if we're accessing admin routes
+
     const isClientRoute = window.location.pathname.startsWith('/client');
-    
+
     if (!isAdmin || !isClientRoute) {
-      const hasRequiredRole = requiredRoles.some(role => 
+      const hasRequiredRole = requiredRoles.some(role =>
         user.roles.includes(role)
       );
-      
+
       if (!hasRequiredRole) {
         if (isAdmin) {
           return <Navigate to="/admin/dashboard" replace />;
@@ -58,6 +56,6 @@ export const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps)
       }
     }
   }
-  
+
   return <>{children}</>;
 };

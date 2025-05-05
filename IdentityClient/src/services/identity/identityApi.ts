@@ -1,23 +1,22 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { identityBaseQuery } from '../auth/baseQueryWithReauth';
 
-// Updated enums to match Swagger documentation
-export enum SortBy { 
-  Id = 'Id', 
+export enum SortBy {
+  Id = 'Id',
   Email = 'Email',
   FirstName = 'FirstName',
   LastName = 'LastName'
 }
 
-export enum Sort { 
-  Asc = 'Asc', 
-  Desc = 'Desc' 
+export enum Sort {
+  Asc = 'Asc',
+  Desc = 'Desc'
 }
 
-export enum ToggleUserValue { 
-  IsActive = 'IsActive', 
-  IsLockedOut = 'IsLockedOut', 
-  IsEmailConfirmed = 'IsEmailConfirmed' 
+export enum ToggleUserValue {
+  IsActive = 'IsActive',
+  IsLockedOut = 'IsLockedOut',
+  IsEmailConfirmed = 'IsEmailConfirmed'
 }
 
 export enum FindBy {
@@ -69,13 +68,11 @@ export const identityApi = createApi({
   baseQuery: identityBaseQuery,
   tagTypes: ['User'],
   endpoints: (builder) => ({
-    // Get all users - matches /api/account/users
     getUsers: builder.query({
       query: () => 'api/account/users',
       providesTags: ['User']
     }),
-    
-    // Get paged users - matches /api/account/pagedusers with proper parameters
+
     getUsersPaged: builder.query<UserResponseGetModelPaginatedResult, any>({
       query: (params) => ({
         url: 'api/account/pagedusers',
@@ -89,20 +86,18 @@ export const identityApi = createApi({
       }),
       providesTags: ['User']
     }),
-    
-    // Get user by ID or email - matches /api/account/userby
+
     getUserBy: builder.query({
-      query: ({findBy, value}) => ({
+      query: ({ findBy, value }) => ({
         url: 'api/account/userby',
         params: {
           findBy,
           value
         }
       }),
-      providesTags: (_, __, {value}) => [{ type: 'User', id: value }]
+      providesTags: (_, __, { value }) => [{ type: 'User', id: value }]
     }),
-    
-    // Update user - matches /api/account/update
+
     updateUser: builder.mutation({
       query: (data) => ({
         url: 'api/account/update',
@@ -111,8 +106,7 @@ export const identityApi = createApi({
       }),
       invalidatesTags: (_, __, data) => [{ type: 'User', id: data.id }, 'User']
     }),
-    
-    // Delete user - matches /api/account/update with DELETE method
+
     deleteUser: builder.mutation({
       query: (id) => ({
         url: 'api/account/update',
@@ -121,8 +115,7 @@ export const identityApi = createApi({
       }),
       invalidatesTags: ['User']
     }),
-    
-    // Toggle user status - matches /api/account/togglestatus
+
     toggleUserStatus: builder.mutation({
       query: (data) => ({
         url: 'api/account/togglestatus',

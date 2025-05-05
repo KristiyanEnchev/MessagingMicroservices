@@ -8,26 +8,8 @@ export const AuthLayout = () => {
   const dispatch = useDispatch();
   const { isDark } = useSelector((state: RootState) => state.theme);
 
-  const handleToggleTheme = () => {
-    dispatch(toggleTheme());
-  };
-
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* <div className="flex h-16 items-center justify-end px-6 border-b border-border">
-        <button
-          onClick={handleToggleTheme}
-          className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/20"
-          aria-label="Toggle theme"
-        >
-          {isDark ? (
-            <Sun className="h-5 w-5" />
-          ) : (
-            <Moon className="h-5 w-5" />
-          )}
-        </button>
-      </div> */}
-
       <header className="flex items-center justify-between px-6 py-4 border-b border-border bg-background">
         <div className="flex items-center">
           <Link to="/" className="flex items-center gap-2">

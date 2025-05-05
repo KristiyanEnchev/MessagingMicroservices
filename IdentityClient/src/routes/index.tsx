@@ -96,8 +96,6 @@ export const AppRoutes = () => {
         </Route>
       </Route>
 
-      {/* No additional landing page route needed since it's already on root */}
-
       {/* 404 Route */}
       <Route path="*" element={<PageWrapper component={NotFound} />} />
     </Routes>

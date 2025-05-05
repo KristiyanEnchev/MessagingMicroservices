@@ -8,14 +8,10 @@ interface PageWrapperProps {
     showHeader?: boolean;
 }
 
-/**
- * PageWrapper component that wraps page components with error boundary and suspense for lazy loading
- * Provides consistent layout for pages with optional title header
- */
-export default function PageWrapper({ 
-    component: Component, 
-    title, 
-    showHeader = true 
+export default function PageWrapper({
+    component: Component,
+    title,
+    showHeader = true
 }: PageWrapperProps) {
     return (
         <div className="container mx-auto px-4 py-6">

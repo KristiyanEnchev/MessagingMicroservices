@@ -3,12 +3,12 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-hot-toast';
-import { 
-  User, 
-  Mail, 
-  Key, 
-  Shield, 
-  Save, 
+import {
+  User,
+  Mail,
+  Key,
+  Shield,
+  Save,
   CheckCircle,
   XCircle,
   Eye,
@@ -17,7 +17,6 @@ import {
 
 import { useAuth } from '../../hooks/useAuth';
 
-// Profile update form schema
 const profileSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
@@ -26,14 +25,13 @@ const profileSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
-// Password change form schema
 const passwordSchema = z.object({
   currentPassword: z.string().min(6, 'Password must be at least 6 characters'),
   newPassword: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string().min(6, 'Password must be at least 6 characters'),
 }).refine((data) => data.newPassword === data.confirmPassword, {
   message: "Passwords don't match",
-  path: ['confirmPassword'], 
+  path: ['confirmPassword'],
 });
 
 type PasswordFormValues = z.infer<typeof passwordSchema>;
@@ -48,11 +46,10 @@ const Profile = () => {
   const [setupStep, setSetupStep] = useState<1 | 2 | 3>(1);
   const [otpCode, setOtpCode] = useState('');
   const [qrCodeUrl] = useState('https://via.placeholder.com/200x200'); // Placeholder for QR code
-  
-  // Profile form setup
-  const { 
-    register: registerProfile, 
-    handleSubmit: handleSubmitProfile, 
+
+  const {
+    register: registerProfile,
+    handleSubmit: handleSubmitProfile,
     formState: { errors: errorsProfile },
     reset: resetProfile,
   } = useForm<ProfileFormValues>({
@@ -63,11 +60,10 @@ const Profile = () => {
       email: user?.email || '',
     },
   });
-  
-  // Password form setup
-  const { 
-    register: registerPassword, 
-    handleSubmit: handleSubmitPassword, 
+
+  const {
+    register: registerPassword,
+    handleSubmit: handleSubmitPassword,
     formState: { errors: errorsPassword },
     reset: resetPassword,
   } = useForm<PasswordFormValues>({
@@ -78,51 +74,43 @@ const Profile = () => {
       confirmPassword: '',
     },
   });
-  
-  // Handle profile update
+
   const onSubmitProfile = async (data: ProfileFormValues) => {
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       toast.success('Profile updated successfully');
       setIsEditing(false);
     } catch (error) {
       toast.error('Failed to update profile');
     }
   };
-  
-  // Handle password change
+
   const onSubmitPassword = async (data: PasswordFormValues) => {
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       toast.success('Password changed successfully');
       resetPassword();
     } catch (error) {
       toast.error('Failed to change password');
     }
   };
-  
-  // Handle 2FA setup
+
   const setupTwoFactor = async () => {
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       setSetupStep(2);
     } catch (error) {
       toast.error('Failed to setup 2FA');
     }
   };
-  
-  // Handle 2FA verification
+
   const verifyTwoFactor = async () => {
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       if (otpCode === '123456') { // Simulated correct code
         setTwoFactorEnabled(true);
         setSetupStep(3);
@@ -134,13 +122,11 @@ const Profile = () => {
       toast.error('Failed to verify 2FA');
     }
   };
-  
-  // Handle 2FA disable
+
   const disableTwoFactor = async () => {
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       setTwoFactorEnabled(false);
       setSetupStep(1);
       toast.success('Two-factor authentication disabled successfully');
@@ -148,47 +134,44 @@ const Profile = () => {
       toast.error('Failed to disable 2FA');
     }
   };
-  
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">Your Profile</h2>
-      
+
       {/* Tabs */}
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
           <button
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === 'profile'
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'profile'
                 ? 'border-blue-500 text-blue-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            }`}
+              }`}
             onClick={() => setActiveTab('profile')}
           >
             Profile Information
           </button>
           <button
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === 'security'
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'security'
                 ? 'border-blue-500 text-blue-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            }`}
+              }`}
             onClick={() => setActiveTab('security')}
           >
             Security
           </button>
           <button
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === 'twoFactor'
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'twoFactor'
                 ? 'border-blue-500 text-blue-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            }`}
+              }`}
             onClick={() => setActiveTab('twoFactor')}
           >
             Two-Factor Authentication
           </button>
         </nav>
       </div>
-      
+
       {/* Profile Information */}
       {activeTab === 'profile' && (
         <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -215,7 +198,7 @@ const Profile = () => {
               </button>
             )}
           </div>
-          
+
           <div className="p-6">
             {isEditing ? (
               <form onSubmit={handleSubmitProfile(onSubmitProfile)} className="space-y-6">
@@ -239,7 +222,7 @@ const Profile = () => {
                       <p className="mt-1 text-sm text-red-600">{errorsProfile.firstName.message}</p>
                     )}
                   </div>
-                  
+
                   <div>
                     <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
                       Last Name
@@ -260,7 +243,7 @@ const Profile = () => {
                     )}
                   </div>
                 </div>
-                
+
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                     Email Address
@@ -281,7 +264,7 @@ const Profile = () => {
                     To change your email address, please contact support.
                   </p>
                 </div>
-                
+
                 <div className="flex justify-end">
                   <button
                     type="submit"
@@ -299,18 +282,18 @@ const Profile = () => {
                     <h4 className="text-sm font-medium text-gray-500">First Name</h4>
                     <p className="mt-1">{user?.name?.split(' ')[0] || 'First'}</p>
                   </div>
-                  
+
                   <div>
                     <h4 className="text-sm font-medium text-gray-500">Last Name</h4>
                     <p className="mt-1">{user?.name?.split(' ')[1] || 'Last'}</p>
                   </div>
                 </div>
-                
+
                 <div>
                   <h4 className="text-sm font-medium text-gray-500">Email Address</h4>
                   <p className="mt-1">{user?.email || 'user@example.com'}</p>
                 </div>
-                
+
                 <div>
                   <h4 className="text-sm font-medium text-gray-500">Account Status</h4>
                   <p className="mt-1 inline-flex items-center text-green-700">
@@ -318,7 +301,7 @@ const Profile = () => {
                     Active
                   </p>
                 </div>
-                
+
                 <div>
                   <h4 className="text-sm font-medium text-gray-500">Member Since</h4>
                   <p className="mt-1">January 1, 2023</p>
@@ -328,14 +311,14 @@ const Profile = () => {
           </div>
         </div>
       )}
-      
+
       {/* Security */}
       {activeTab === 'security' && (
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
             <h3 className="text-lg font-medium">Security Settings</h3>
           </div>
-          
+
           <div className="p-6">
             <form onSubmit={handleSubmitPassword(onSubmitPassword)} className="space-y-6">
               <div>
@@ -368,7 +351,7 @@ const Profile = () => {
                   <p className="mt-1 text-sm text-red-600">{errorsPassword.currentPassword.message}</p>
                 )}
               </div>
-              
+
               <div>
                 <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
                   New Password
@@ -399,7 +382,7 @@ const Profile = () => {
                   <p className="mt-1 text-sm text-red-600">{errorsPassword.newPassword.message}</p>
                 )}
               </div>
-              
+
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
                   Confirm New Password
@@ -419,7 +402,7 @@ const Profile = () => {
                   <p className="mt-1 text-sm text-red-600">{errorsPassword.confirmPassword.message}</p>
                 )}
               </div>
-              
+
               <div className="bg-blue-50 p-4 rounded-md">
                 <h4 className="text-sm font-medium text-blue-800 mb-2">Password Requirements</h4>
                 <ul className="text-xs text-blue-700 space-y-1">
@@ -441,7 +424,7 @@ const Profile = () => {
                   </li>
                 </ul>
               </div>
-              
+
               <div className="flex justify-end">
                 <button
                   type="submit"
@@ -454,14 +437,14 @@ const Profile = () => {
           </div>
         </div>
       )}
-      
+
       {/* Two-Factor Authentication */}
       {activeTab === 'twoFactor' && (
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
             <h3 className="text-lg font-medium">Two-Factor Authentication</h3>
           </div>
-          
+
           <div className="p-6">
             {twoFactorEnabled ? (
               <div className="space-y-6">
@@ -476,7 +459,7 @@ const Profile = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="border-t border-b border-gray-200 py-6">
                   <h4 className="font-medium mb-4">Recovery Codes</h4>
                   <p className="text-sm text-gray-700 mb-4">
@@ -491,7 +474,7 @@ const Profile = () => {
                     View Recovery Codes
                   </button>
                 </div>
-                
+
                 <div>
                   <h4 className="font-medium mb-4">Disable Two-Factor Authentication</h4>
                   <p className="text-sm text-gray-700 mb-4">
@@ -522,21 +505,21 @@ const Profile = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <h4 className="font-medium mb-2">What is Two-Factor Authentication?</h4>
                     <p className="text-sm text-gray-700 mb-4">
                       Two-factor authentication (2FA) adds an additional layer of security to your account.
                       When enabled, you'll need to provide both your password and a verification code from an
                       authentication app when signing in.
                     </p>
-                    
+
                     <h4 className="font-medium mb-2">How It Works</h4>
                     <ol className="text-sm text-gray-700 mb-6 space-y-2 list-decimal pl-5">
                       <li>Download an authentication app (like Google Authenticator, Microsoft Authenticator, or Authy)</li>
                       <li>Scan the QR code provided by our system</li>
                       <li>Enter the verification code displayed in your app to complete setup</li>
                     </ol>
-                    
+
                     <button
                       type="button"
                       className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
@@ -546,23 +529,23 @@ const Profile = () => {
                     </button>
                   </div>
                 )}
-                
+
                 {setupStep === 2 && (
                   <div>
                     <h4 className="font-medium mb-4">Step 1: Scan QR Code</h4>
                     <p className="text-sm text-gray-700 mb-4">
                       Scan this QR code with your authentication app (Google Authenticator, Microsoft Authenticator, or Authy).
                     </p>
-                    
+
                     <div className="flex justify-center mb-6">
                       <img src={qrCodeUrl} alt="QR Code" className="border border-gray-200 p-2 rounded-md" />
                     </div>
-                    
+
                     <h4 className="font-medium mb-2">Step 2: Verify Code</h4>
                     <p className="text-sm text-gray-700 mb-4">
                       Enter the verification code shown in your authentication app.
                     </p>
-                    
+
                     <div className="mb-6">
                       <input
                         type="text"
@@ -573,7 +556,7 @@ const Profile = () => {
                         maxLength={6}
                       />
                     </div>
-                    
+
                     <div className="flex space-x-3">
                       <button
                         type="button"
@@ -592,7 +575,7 @@ const Profile = () => {
                     </div>
                   </div>
                 )}
-                
+
                 {setupStep === 3 && (
                   <div className="text-center py-8">
                     <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-green-100 text-green-600 mb-4">

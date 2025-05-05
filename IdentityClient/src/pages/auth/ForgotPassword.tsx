@@ -27,11 +27,10 @@ const ForgotPassword = () => {
 
   const onSubmit = async (data: ForgotPasswordFormValues) => {
     setIsSubmitting(true);
-    
+
     try {
-      // Replace with your actual API call to request password reset
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulating API call
-      
+
       setEmailSent(true);
       showToast.success('Password reset link has been sent to your email');
     } catch (error: any) {

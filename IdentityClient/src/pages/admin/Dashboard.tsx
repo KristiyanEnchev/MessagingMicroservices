@@ -6,7 +6,6 @@ import { useHealthCheckQuery as useEmailHealthQuery } from '@/services/email/ema
 import { useHealthCheckQuery as useNotificationHealthQuery } from '@/services/notification/notificationApi';
 import { motion } from 'framer-motion';
 
-// Activity type colors mapping
 const ActivityTypeColors: Record<string, string> = {
   'Login': 'bg-emerald-100 text-emerald-800',
   'Logout': 'bg-amber-100 text-amber-800',
@@ -28,7 +27,7 @@ const Dashboard = () => {
   const { data: otpHealth, isLoading: otpHealthLoading } = useOtpHealthQuery();
   const { data: emailHealth, isLoading: emailHealthLoading } = useEmailHealthQuery();
   const { data: notificationHealth, isLoading: notificationHealthLoading } = useNotificationHealthQuery();
-  
+
   const formatTimestamp = (timestamp: string) => {
     try {
       return format(new Date(timestamp), 'MMM dd, yyyy HH:mm:ss');
@@ -36,7 +35,7 @@ const Dashboard = () => {
       return timestamp;
     }
   };
-  
+
   return (
     <div className="px-4 py-6 space-y-8">
       <header>
@@ -45,7 +44,7 @@ const Dashboard = () => {
           <h1 className="text-2xl font-bold text-foreground">Dashboard Overview</h1>
         </div>
       </header>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* OTP Service Card */}
         <div className="bg-card p-6 rounded-lg border border-border shadow-sm">
@@ -66,7 +65,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Identity API Card */}
         <div className="bg-card p-6 rounded-lg border border-border shadow-sm">
           <div className="flex items-center justify-between">
@@ -87,7 +86,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Service Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         {/* Email Service Card */}
@@ -109,7 +108,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        
+
         {/* SMS Service Card */}
         <div className="bg-card p-6 rounded-lg border border-border shadow-sm">
           <div className="flex items-center justify-between">
@@ -129,7 +128,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Notification Service Card */}
         <div className="bg-card p-6 rounded-lg border border-border shadow-sm">
           <div className="flex items-center justify-between">
@@ -150,7 +149,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Activities and Status panels */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {/* Recent Activities */}
@@ -159,7 +158,7 @@ const Dashboard = () => {
             <ActivitySquare className="h-5 w-5 mr-2 text-primary" />
             Recent Activity
           </h2>
-          
+
           <div className="mt-6 border rounded-md border-border">
             {activityLoading ? (
               <div className="flex justify-center items-center h-full">
@@ -176,7 +175,7 @@ const Dashboard = () => {
                 </thead>
                 <tbody className="divide-y divide-border">
                   {activity.map((item, index) => (
-                    <motion.tr 
+                    <motion.tr
                       key={item.id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -195,7 +194,7 @@ const Dashboard = () => {
                         </div>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs rounded-full inline-block ${ActivityTypeColors[item.activityType] || 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'}`}>
+                        <span className={`px-2 py-1 text-xs rounded-full inline-block ${ActivityTypeColors[item.activityType] || 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'}`}>
                           {item.activityType}
                         </span>
                       </td>
@@ -217,14 +216,14 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-        
+
         {/* Service Status */}
         <div className="bg-card p-6 rounded-lg border border-border shadow-sm">
           <h2 className="text-lg font-semibold text-foreground flex items-center">
             <ShieldCheck className="h-5 w-5 mr-2 text-primary" />
             Service Status
           </h2>
-          
+
           <div className="mt-6 space-y-3">
             <div className="flex items-center justify-between p-3 bg-background rounded border border-border">
               <div className="flex items-center">
@@ -242,7 +241,7 @@ const Dashboard = () => {
                 </span>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 bg-background rounded border border-border">
               <div className="flex items-center">
                 <div className="h-8 w-8 rounded-full flex items-center justify-center bg-emerald-100 text-emerald-700">
@@ -255,7 +254,7 @@ const Dashboard = () => {
                 <span className="ml-3 text-xs text-muted-foreground">89ms</span>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 bg-background rounded border border-border">
               <div className="flex items-center">
                 <div className={`h-8 w-8 rounded-full flex items-center justify-center ${!emailHealthLoading && emailHealth?.status === 'Healthy' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
@@ -272,7 +271,7 @@ const Dashboard = () => {
                 </span>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 bg-background rounded border border-border">
               <div className="flex items-center">
                 <div className={`h-8 w-8 rounded-full flex items-center justify-center ${!notificationHealthLoading && notificationHealth?.status === 'Healthy' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
@@ -289,7 +288,7 @@ const Dashboard = () => {
                 </span>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 bg-background rounded border border-border">
               <div className="flex items-center">
                 <div className="h-8 w-8 rounded-full flex items-center justify-center bg-emerald-100 text-emerald-700">
@@ -302,7 +301,7 @@ const Dashboard = () => {
                 <span className="ml-3 text-xs text-muted-foreground">45ms</span>
               </div>
             </div>
-            
+
             <div className="pt-2 mt-4 border-t border-border">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">System Uptime</span>

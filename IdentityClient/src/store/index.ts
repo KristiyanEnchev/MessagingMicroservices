@@ -3,7 +3,6 @@ import { persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 
 import toast from 'react-hot-toast';
 import { rootReducer } from './rootReducer';
 
-// Import all API services
 import { authApi } from '@/services/auth/authApi';
 import { identityApi } from '@/services/identity/identityApi';
 import { emailApi } from '@/services/email/emailApi';
@@ -26,7 +25,6 @@ const rtkQueryErrorLogger: Middleware = () => (next) => (action) => {
   return next(action);
 };
 
-// Configure store with all middleware and APIs
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
@@ -35,7 +33,6 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }).concat(
-      // API middlewares
       authApi.middleware,
       identityApi.middleware,
       emailApi.middleware,
@@ -46,17 +43,13 @@ export const store = configureStore({
       activityApi.middleware,
       twoFactorAuthApi.middleware,
       dashboardApi.middleware,
-      // Custom middleware
       rtkQueryErrorLogger
     ),
   devTools: process.env.NODE_ENV !== 'production',
 });
 
-// Create the persistor with more specific configuration
 export const persistor = persistStore(store, {
-  // Adding a small delay can help ensure proper persistence
   manualPersist: false,
-  // Adding these callbacks for debugging persistence issues
   ...(process.env.NODE_ENV !== 'production' ? {
     onBeforeLift: () => console.log('Redux Persist: Before state rehydration'),
     onRehydrate: (state) => console.log('Redux Persist: State rehydrated', state ? 'successfully' : 'with issues')

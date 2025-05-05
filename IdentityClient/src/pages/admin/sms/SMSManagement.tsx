@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { 
-  MessageSquare, 
-  Search, 
-  Plus, 
-  RefreshCw, 
-  ArrowUpDown, 
+import {
+  MessageSquare,
+  Search,
+  Plus,
+  RefreshCw,
+  ArrowUpDown,
   MoreHorizontal,
   Check,
   Trash,
@@ -18,10 +18,6 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
-/**
- * SMS Management page for administrators
- * Allows monitoring and management of SMS messages
- */
 const SMSManagement = () => {
   const [activeTab, setActiveTab] = useState<'logs' | 'send'>('logs');
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,9 +26,8 @@ const SMSManagement = () => {
   const [offset, setOffset] = useState(0);
   const [recipient, setRecipient] = useState('');
   const [message, setMessage] = useState('');
-  
-  // Use RTK Query to fetch SMS messages
-  const { 
+
+  const {
     data: smsData,
     isLoading,
     isFetching,
@@ -42,11 +37,9 @@ const SMSManagement = () => {
     offset,
     status: statusFilter
   });
-  
-  // Send SMS mutation hook
+
   const [sendSms, sendSmsResult] = useSendCustomSmsMutation();
 
-  // Combine API data with local filter for search
   const smsMessages = smsData?.data?.messages || [
     {
       id: '1',
@@ -81,16 +74,15 @@ const SMSManagement = () => {
     },
   ];
 
-  // Filter SMS messages based on search query
   const filteredSMSMessages = smsMessages.filter(message => {
-    const matchesSearch = 
-      message.recipient?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch =
+      message.recipient?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       message.message?.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesStatus = 
-      statusFilter === 'all' || 
+
+    const matchesStatus =
+      statusFilter === 'all' ||
       message.status === statusFilter;
-    
+
     return matchesSearch && matchesStatus;
   });
 
@@ -105,7 +97,7 @@ const SMSManagement = () => {
         message,
         smsProvider: 'twilio'
       }).unwrap();
-      
+
       setRecipient('');
       setMessage('');
     } catch (error) {
@@ -118,27 +110,25 @@ const SMSManagement = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">SMS Management</h1>
       </div>
-      
+
       <Card>
         <div className="border-b border-gray-200 dark:border-gray-700">
           <nav className="flex">
             <button
               onClick={() => setActiveTab('logs')}
-              className={`px-4 py-3 text-sm font-medium ${
-                activeTab === 'logs'
-                  ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-              }`}
+              className={`px-4 py-3 text-sm font-medium ${activeTab === 'logs'
+                ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
+                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
             >
               SMS Logs
             </button>
             <button
               onClick={() => setActiveTab('send')}
-              className={`px-4 py-3 text-sm font-medium ${
-                activeTab === 'send'
-                  ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-              }`}
+              className={`px-4 py-3 text-sm font-medium ${activeTab === 'send'
+                ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
+                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
             >
               Send SMS
             </button>
@@ -161,7 +151,7 @@ const SMSManagement = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <select
                     className="px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
@@ -173,7 +163,7 @@ const SMSManagement = () => {
                     <option value="pending">Pending</option>
                     <option value="failed">Failed</option>
                   </select>
-                  
+
                   <Button
                     variant="outline"
                     size="sm"
@@ -268,31 +258,31 @@ const SMSManagement = () => {
                   )}
                 </div>
                 <div className="flex space-x-2">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     disabled={offset === 0}
                     onClick={() => setOffset(Math.max(0, offset - limit))}
                   >
                     Previous
                   </Button>
-                  <Button 
-                    variant="primary" 
+                  <Button
+                    variant="primary"
                     size="sm"
                   >
                     {Math.floor(offset / limit) + 1}
                   </Button>
                   {smsData?.data?.totalCount && offset + limit < smsData.data.totalCount && (
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       onClick={() => setOffset(offset + limit)}
                     >
                       {Math.floor(offset / limit) + 2}
                     </Button>
                   )}
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     disabled={!smsData?.data?.totalCount || offset + limit >= smsData.data.totalCount}
                     onClick={() => setOffset(offset + limit)}
@@ -317,7 +307,7 @@ const SMSManagement = () => {
                   startIcon={<Phone className="h-5 w-5 text-gray-400" />}
                 />
               </div>
-              
+
               <div>
                 <label htmlFor="sms-message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Message
@@ -334,7 +324,7 @@ const SMSManagement = () => {
                   {message.length}/160 characters {message.length > 160 ? `(${Math.ceil(message.length / 160)} messages)` : ''}
                 </p>
               </div>
-              
+
               <div className="flex justify-end">
                 <Button
                   type="button"

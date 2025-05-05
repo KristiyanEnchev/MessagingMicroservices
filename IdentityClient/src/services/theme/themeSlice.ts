@@ -25,33 +25,32 @@ const themeSlice = createSlice({
     toggleTheme: (state) => {
       state.isDark = !state.isDark;
       state.theme = state.isDark ? 'dark' : 'light';
-      
+
       try {
         if (state.isDark) {
           document.documentElement.classList.add('dark');
         } else {
           document.documentElement.classList.remove('dark');
         }
-      } catch (e) {}
+      } catch (e) { }
     },
     setTheme: (state, action: PayloadAction<boolean>) => {
       state.isDark = action.payload;
       state.theme = state.isDark ? 'dark' : 'light';
-      
+
       try {
         if (state.isDark) {
           document.documentElement.classList.add('dark');
         } else {
           document.documentElement.classList.remove('dark');
         }
-      } catch (e) {}
+      } catch (e) { }
     },
   },
 });
 
 export const { toggleTheme, setTheme } = themeSlice.actions;
 
-// Helper function to sync theme with DOM (can be called anywhere)
 export const syncThemeWithDOM = (isDark: boolean) => {
   try {
     if (isDark) {

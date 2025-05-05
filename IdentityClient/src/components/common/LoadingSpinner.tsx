@@ -15,7 +15,6 @@ const LoadingSpinner = ({ size = 'medium', fullScreen = false, text }: LoadingSp
     large: 'h-16 w-16',
   };
 
-  // Define the dot variants for staggered animation
   const containerVariants = {
     animate: {
       transition: {
@@ -26,12 +25,12 @@ const LoadingSpinner = ({ size = 'medium', fullScreen = false, text }: LoadingSp
 
   const dotVariants = {
     initial: { scale: 0.5, opacity: 0.3 },
-    animate: { 
+    animate: {
       scale: 1,
       opacity: 1,
-      transition: { 
-        duration: 0.7, 
-        repeat: Infinity, 
+      transition: {
+        duration: 0.7,
+        repeat: Infinity,
         repeatType: "reverse" as const
       }
     }
@@ -39,7 +38,7 @@ const LoadingSpinner = ({ size = 'medium', fullScreen = false, text }: LoadingSp
 
   const spinner = (
     <div className={`flex flex-col items-center justify-center ${fullScreen ? 'h-screen' : 'h-full'}`}>
-      <motion.div 
+      <motion.div
         className="flex space-x-2"
         variants={containerVariants}
         initial="initial"
@@ -58,9 +57,9 @@ const LoadingSpinner = ({ size = 'medium', fullScreen = false, text }: LoadingSp
           className={`${sizeMap[size]} rounded-full bg-primary`}
         />
       </motion.div>
-      
+
       {text && (
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}

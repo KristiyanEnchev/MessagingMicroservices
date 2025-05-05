@@ -44,7 +44,6 @@ export const rolesApi = createApi({
       query: () => 'api/roles',
       providesTags: ['Role'],
       transformResponse: (response) => {
-        // Handle case where response is directly an array of strings
         if (Array.isArray(response)) {
           return {
             success: true,
@@ -52,7 +51,6 @@ export const rolesApi = createApi({
             errors: null
           };
         }
-        // Handle case where response has a data property
         return {
           success: true,
           data: response.data || [],
@@ -60,26 +58,24 @@ export const rolesApi = createApi({
         };
       }
     }),
-    
+
     getRoleUsers: builder.query<UserInRoleDtoListResult, string | { roleName: string, pageNumber?: number, pageSize?: number }>({
       query: (arg) => {
-        // Handle both string and object parameter formats
         const roleName = typeof arg === 'string' ? arg : arg.roleName;
         const pageNumber = typeof arg === 'string' ? 1 : (arg.pageNumber || 1);
         const pageSize = typeof arg === 'string' ? 10 : (arg.pageSize || 10);
-        
+
         console.log('Fetching users for role:', roleName);
-        
+
         if (!roleName) {
           throw new Error('Role name is required but was undefined or empty');
         }
-        
+
         return {
           url: `api/roles/${roleName}/users`,
           params: { pageNumber, pageSize }
         };
       },
-      // Add error handling for the transformation
       transformResponse: (response, meta, arg) => {
         if (!response) {
           return {
@@ -88,8 +84,7 @@ export const rolesApi = createApi({
             errors: null
           };
         }
-        
-        // Handle direct array response
+
         if (Array.isArray(response)) {
           return {
             success: true,
@@ -97,8 +92,7 @@ export const rolesApi = createApi({
             errors: null
           };
         }
-        
-        // Handle object with data property
+
         return {
           success: true,
           data: response.data || [],
@@ -106,7 +100,6 @@ export const rolesApi = createApi({
         };
       },
       providesTags: ['Role'],
-      // Add proper error handling
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {
           await queryFulfilled;
@@ -115,12 +108,12 @@ export const rolesApi = createApi({
         }
       }
     }),
-    
+
     getUserRoles: builder.query<StringListResult, string>({
       query: (userId) => `api/roles/user/${userId}`,
       providesTags: (_, __, userId) => [{ type: 'Role', id: userId }]
     }),
-    
+
     createRole: builder.mutation<RoleResultResult, { roleName: string }>({
       query: (data) => ({
         url: 'api/roles',
@@ -129,7 +122,7 @@ export const rolesApi = createApi({
       }),
       invalidatesTags: ['Role']
     }),
-    
+
     deleteRole: builder.mutation<StringResult, string>({
       query: (roleName) => ({
         url: `api/roles/${roleName}`,
@@ -137,7 +130,7 @@ export const rolesApi = createApi({
       }),
       invalidatesTags: ['Role']
     }),
-    
+
     addUserToRole: builder.mutation<StringResult, { userId: string, roleName: string }>({
       query: (data) => ({
         url: 'api/roles/add-user',
@@ -146,7 +139,7 @@ export const rolesApi = createApi({
       }),
       invalidatesTags: ['Role']
     }),
-    
+
     removeUserFromRole: builder.mutation<StringResult, { userId: string, roleName: string }>({
       query: (data) => ({
         url: 'api/roles/remove-user',

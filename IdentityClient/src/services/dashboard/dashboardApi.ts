@@ -43,10 +43,7 @@ export const dashboardApi = createApi({
     getSystemStatistics: builder.query<SystemStatistics, void>({
       query: () => 'api/dashboard/statistics',
       providesTags: ['Statistics'],
-      // Using a mock response for development
-      // This ensures we have data regardless of API availability
       transformResponse: (response, meta, arg) => ({
-        // Mock data for development
         totalUsers: 1250,
         activeUsers: 980,
         totalRoles: 8,
@@ -67,11 +64,10 @@ export const dashboardApi = createApi({
         }))
       })
     }),
-    
+
     getSystemStatus: builder.query<SystemStatusResponse, void>({
       query: () => 'api/dashboard/status',
       providesTags: ['Status'],
-      // Mock data for development
       transformResponse: (response, meta, arg) => ({
         data: {
           status: 'Operational',
