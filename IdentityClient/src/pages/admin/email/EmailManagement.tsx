@@ -6,13 +6,9 @@ import { toast } from 'react-hot-toast';
 import {
   Send,
   FileText,
-  Plus,
-  X,
-  Check,
   Mail,
   AlertCircle,
   CheckCircle,
-  ClockIcon
 } from 'lucide-react';
 
 import { useSendCustomEmailMutation, useSendTemplateEmailMutation } from '@/services/email/emailApi';
@@ -105,9 +101,6 @@ const EmailManagement = () => {
 
   const { register: registerCustom, handleSubmit: handleSubmitCustom, formState: { errors: errorsCustom }, reset: resetCustom } = useForm<CustomEmailFormValues>({
     resolver: zodResolver(customEmailSchema),
-    defaultValues: {
-      isHtml: true,
-    }
   });
 
   const { register: registerTemplate, handleSubmit: handleSubmitTemplate, formState: { errors: errorsTemplate }, reset: resetTemplate, setValue } = useForm<TemplateEmailFormValues>({
@@ -183,7 +176,7 @@ const EmailManagement = () => {
         to: toArray,
         cc: ccArray,
         bcc: bccArray,
-        templateKey: data.templateName,
+        // templateKey: data.templateName,
         templateData: templateDataArray,
         emailProvider: 'smtp'
       }).unwrap();

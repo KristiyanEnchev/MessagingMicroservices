@@ -11,12 +11,13 @@ import {
   LogOut,
   Settings
 } from 'lucide-react';
-import { useDispatch } from 'react-redux';
 import { logoutUser } from '@/services/auth/authSlice';
 import { toggleTheme } from '@/services/theme/themeSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/index';
 import { toast } from 'react-hot-toast';
+import { useAppDispatch } from '@/store/hooks';
+
 
 interface HeaderProps {
   isSidebarOpen: boolean;
@@ -30,7 +31,7 @@ export const Header = ({ isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
   
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { isDark } = useSelector((state: RootState) => state.theme);
   const { user } = useSelector((state: RootState) => state.auth);
   
@@ -51,7 +52,7 @@ export const Header = ({ isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
   const handleLogout = async () => {
     try {
       if (user?.email) {
-        await dispatch(logoutUser()).unwrap();
+        dispatch(logoutUser());
         toast.success('Logged out successfully');
       }
     } catch (error) {

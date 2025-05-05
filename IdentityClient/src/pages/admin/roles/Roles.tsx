@@ -25,7 +25,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const Roles = () => {
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
   const [userSearchTerm, setUserSearchTerm] = useState('');
   const [isAddingRole, setIsAddingRole] = useState(false);
   const [newRoleName, setNewRoleName] = useState('');

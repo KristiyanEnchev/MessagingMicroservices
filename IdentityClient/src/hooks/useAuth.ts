@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
@@ -9,7 +9,7 @@ import {
   setCredentials
 } from '@/services/auth/authSlice';
 import { useLoginMutation, useLogoutMutation } from '@/services/auth/authApi';
-import { AuthResponse, LoginRequest, User } from '@/types/authTypes';
+import { AuthResponse, LoginRequest } from '@/types/authTypes';
 import { toast } from 'react-hot-toast';
 
 export const useAuth = () => {
@@ -25,14 +25,16 @@ export const useAuth = () => {
 
   const login = useCallback(async (credentials: LoginRequest) => {
     try {
-      const result = await loginMutation(credentials).unwrap();
+      const safeCredentials = { ...credentials, rememberMe: credentials.rememberMe ?? false } as import('@/services/auth/authApi').LoginRequest;
+      const response = await loginMutation(safeCredentials);
+      const result = response.data as AuthResponse;
 
-      if (result.requiresTwoFactor) {
+      if (result.requiresTwoFactor || result.requires_2fa) {
         navigate('/two-factor', {
           state: {
             email: credentials.email,
-            userId: result.userId,
-            transactionId: result.transactionId
+            userId: result.userId || result.data?.userId,
+            transactionId: result.transactionId || result.data?.transactionId
           }
         });
         return result;
@@ -41,7 +43,7 @@ export const useAuth = () => {
       dispatch(setCredentials(result));
       toast.success('Login successful');
 
-      const role = (result.user?.role || result.data?.role || '');
+      const role = (result.user?.roles || result.data?.role || '');
       const redirectPath = role === 'Administrator' ? '/admin/dashboard' : '/client/dashboard';
       navigate(redirectPath);
 
@@ -55,7 +57,7 @@ export const useAuth = () => {
 
   const handleLogout = useCallback(async () => {
     try {
-      await logoutMutation().unwrap();
+      await logoutMutation({ email: user?.email || '' });
       dispatch(logoutUser());
       navigate('/login');
       toast.success('Logged out successfully');
@@ -66,13 +68,13 @@ export const useAuth = () => {
     }
   }, [dispatch, logoutMutation, navigate]);
 
-  const updateUser = useCallback((userUpdate: Partial<typeof user>) => {
-    toast.info('User update functionality not implemented');
+  const updateUser = useCallback((_userUpdate: Partial<typeof user>) => {
+    // This function is not currently implemented
   }, [user]);
 
   const completeTwoFactor = useCallback((authResponse: AuthResponse) => {
-    dispatch(setCredentials(authResponse));
-    const role = (authResponse.user?.role || authResponse.data?.role || '');
+    dispatch(setCredentials(authResponse as AuthResponse));
+    const role = (authResponse.user?.roles || authResponse.data?.role || '');
     const redirectPath = role === 'Administrator' ? '/admin/dashboard' : '/client/dashboard';
     navigate(redirectPath);
     toast.success('Authentication successful');

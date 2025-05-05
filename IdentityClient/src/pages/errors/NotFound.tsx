@@ -4,7 +4,7 @@ import { selectCurrentUser } from '@/services/auth/authSlice';
 
 const NotFound = () => {
   const user = useAppSelector(selectCurrentUser);
-  const dashboardLink = user?.role === 'Administrator' ? '/admin/dashboard' : '/client/dashboard';
+  const dashboardLink = user?.roles.includes('Administrator') ? '/admin/dashboard' : '/client/dashboard';
 
   return (
     <div className="flex flex-col items-center justify-center h-full p-6">

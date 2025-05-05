@@ -278,10 +278,10 @@ const Profile = () => {
         <div className="bg-muted/50 p-4 rounded-lg border border-border">
           <div className="flex flex-wrap gap-2">
             {user?.roles?.map((role, index) => (
-              <Badge key={index} variant="primary">{role}</Badge>
+          <Badge key={index} variant="default">{role}</Badge>
             )) || (
               <>
-                <Badge variant="primary">Admin</Badge>
+       <Badge variant="default">Admin</Badge>
                 <Badge variant="secondary">Manager</Badge>
               </>
             )}

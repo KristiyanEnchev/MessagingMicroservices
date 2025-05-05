@@ -1,10 +1,4 @@
 import { useEffect, useState } from 'react';
-import { QueryDefinition } from '@reduxjs/toolkit/dist/query/endpointDefinitions';
-import {
-  QueryHooks,
-  QueryResult,
-  QueryCacheKey
-} from '@reduxjs/toolkit/dist/query/react/buildHooks';
 
 interface UseFetchOptions<TData> {
   skipInitialLoad?: boolean;
@@ -18,15 +12,13 @@ interface UseFetchOptions<TData> {
 export function useFetch<
   TArgs,
   TData,
-  TError = unknown
 >(
-  useQueryHook: (...args: any[]) => QueryResult<QueryDefinition<TArgs, any, any, TData>>,
+  useQueryHook: (...args: any[]) => any,
   args: TArgs,
   options: UseFetchOptions<TData> = {}
 ) {
   const {
     skipInitialLoad = false,
-    initialData,
     onSuccess,
     onError,
     requiresRefresh = false,

@@ -1,9 +1,10 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { BaseQueryApi, FetchArgs } from '@reduxjs/toolkit/query';
 import { RootState } from '@/store/index';
 import { logoutUser, updateToken } from './authSlice';
 import { RefreshTokenRequest } from '@/types/authTypes';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://api.example.com/';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/';
 
 export const createBaseQuery = (isAuth = false) => {
   const baseQuery = fetchBaseQuery({
@@ -23,7 +24,7 @@ export const createBaseQuery = (isAuth = false) => {
     credentials: 'include',
   });
 
-  return async (args, api, extraOptions) => {
+  return async (args: FetchArgs, api: BaseQueryApi, extraOptions: any) => {
     const state = api.getState() as RootState;
     const { auth } = state;
 

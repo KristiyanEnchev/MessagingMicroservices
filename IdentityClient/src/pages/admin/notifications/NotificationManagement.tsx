@@ -6,7 +6,6 @@ import {
   Bell,
   Users,
   Send,
-  Clock,
   ArrowUp,
   ArrowDown
 } from 'lucide-react';
@@ -33,7 +32,7 @@ interface Notification {
 }
 
 const NotificationManagement = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, _setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [isSendNotificationOpen, setIsSendNotificationOpen] = useState(false);
@@ -183,7 +182,7 @@ const NotificationManagement = () => {
   const getNotificationTypeColor = (type: NotificationType) => {
     switch (type) {
       case NotificationType.SYSTEM:
-        return 'primary';
+        return 'default';
       case NotificationType.SECURITY:
         return 'destructive';
       case NotificationType.FEATURE:

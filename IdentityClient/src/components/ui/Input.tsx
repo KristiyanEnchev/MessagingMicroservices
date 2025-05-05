@@ -23,16 +23,20 @@ const inputVariants = cva(
   }
 );
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
   error?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  icon?: React.ReactNode;
+  startIcon?: React.ReactNode;
   size?: "sm" | "default" | "lg";
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, leftIcon, rightIcon, size, ...props }, ref) => {
+  ({ className, label, error, leftIcon, rightIcon, icon, startIcon, size, ...props }, ref) => {
+    const effectiveLeftIcon = leftIcon || startIcon;
+    const effectiveRightIcon = rightIcon || icon;
     return (
       <div className="w-full space-y-1.5">
         {label && (
@@ -45,9 +49,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         
         <div className="relative">
-          {leftIcon && (
+          {effectiveLeftIcon && (
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              {leftIcon}
+              {effectiveLeftIcon}
             </div>
           )}
           
@@ -59,15 +63,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 error: Boolean(error),
                 className 
               }),
-              leftIcon && "pl-10",
-              rightIcon && "pr-10"
+              effectiveLeftIcon && "pl-10",
+              effectiveRightIcon && "pr-10"
             )}
             {...props}
           />
           
-          {rightIcon && (
+          {effectiveRightIcon && (
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-              {rightIcon}
+              {effectiveRightIcon}
             </div>
           )}
         </div>

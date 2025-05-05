@@ -14,8 +14,10 @@ RUN npm install --frozen-lockfile
 COPY . .
 
 # Pass the environment variable at build time for Vite
-ARG VITE_API_BASE_URL
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ARG VITE_IDENTITY_API_URL
+ARG VITE_GATEWAY_API_URL
+ENV VITE_IDENTITY_API_URL=$VITE_IDENTITY_API_URL
+ENV VITE_GATEWAY_API_URL=$VITE_GATEWAY_API_URL
 
 # Build the application
 RUN npm run build

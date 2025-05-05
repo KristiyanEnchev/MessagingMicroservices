@@ -35,7 +35,7 @@ export const smsApi = createApi({
       }),
       invalidatesTags: ['SMS']
     }),
-    
+
     sendTemplateSms: builder.mutation<any, SendTemplateSMSCommand>({
       query: (data) => ({
         url: 'sms/template',
@@ -44,11 +44,11 @@ export const smsApi = createApi({
       }),
       invalidatesTags: ['SMS']
     }),
-    
+
     healthCheck: builder.query<any, void>({
       query: () => 'sms/Health'
     }),
-    
+
     getSmsStats: builder.query({
       query: () => 'sms/stats',
       transformResponse: () => ({
@@ -62,25 +62,28 @@ export const smsApi = createApi({
         last30Days: 1250
       })
     }),
-    
+
     getSmsMessages: builder.query({
-      query: (params) => ({
-        url: 'sms/messages',
-        params
-      }),
+      query: (params) => {
+        return { url: '', skip: true };
+        return {
+          url: 'sms/messages',
+          params
+        };
+      },
       transformResponse: () => ({
         messages: Array(20).fill(0).map((_, i) => ({
           id: `sms-${i}`,
           recipient: `+1${Math.floor(1000000000 + Math.random() * 9000000000)}`,
-          message: i % 3 === 0 ? 'Your verification code is 123456' : 
-                  i % 3 === 1 ? 'Your appointment is confirmed' : 
-                  'Your password has been reset',
+          message: i % 3 === 0 ? 'Your verification code is 123456' :
+            i % 3 === 1 ? 'Your appointment is confirmed' :
+              'Your password has been reset',
           status: i % 4 === 0 ? 'delivered' : i % 4 === 1 ? 'failed' : i % 4 === 2 ? 'pending' : 'sent',
           createdAt: new Date(Date.now() - i * 1800000).toISOString()
         }))
       })
     }),
-    
+
     getTemplates: builder.query({
       query: () => 'sms/templates',
       transformResponse: () => ([
@@ -104,7 +107,7 @@ export const smsApi = createApi({
         }
       ])
     }),
-    
+
     getTemplateById: builder.query({
       query: (id) => `sms/templates/${id}`,
       transformResponse: (_, __, id) => {
@@ -128,7 +131,7 @@ export const smsApi = createApi({
             variables: []
           }
         ];
-        
+
         return templates.find(t => t.id === id) || null;
       }
     })

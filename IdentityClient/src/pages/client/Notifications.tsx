@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { 
   Search, 
-  Bell, 
   CheckCircle, 
   XCircle, 
-  Clock, 
   Filter, 
   Eye,
   Calendar
@@ -125,7 +123,7 @@ const Notifications = () => {
   const getNotificationTypeColor = (type: NotificationType) => {
     switch (type) {
       case NotificationType.SYSTEM:
-        return 'primary';
+        return 'secondary';
       case NotificationType.SECURITY:
         return 'destructive';
       case NotificationType.FEATURE:

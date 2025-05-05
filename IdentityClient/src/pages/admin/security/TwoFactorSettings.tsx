@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import {
   Shield,
   Lock,
-  Unlock,
-  Smartphone,
   Mail,
   AlertCircle,
   CheckCircle,
@@ -16,7 +14,7 @@ import {
   useDisable2FAMutation,
   useGenerate2FACodeMutation
 } from '@/services/auth/twoFactorAuthApi';
-import { useGetUsersPagedQuery, ToggleUserValue } from '@/services/identity/identityApi';
+import { useGetUsersPagedQuery } from '@/services/identity/identityApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { toast } from 'react-hot-toast';
@@ -41,7 +39,7 @@ const TwoFactorSettings = () => {
 
   const [enable2FA, { isLoading: isEnabling }] = useEnable2FAMutation();
   const [disable2FA, { isLoading: isDisabling }] = useDisable2FAMutation();
-  const [generate2FA, { isLoading: isGenerating }] = useGenerate2FACodeMutation();
+  const [generate2FA] = useGenerate2FACodeMutation();
 
   useEffect(() => {
     if (user?.requires2fa !== undefined) {

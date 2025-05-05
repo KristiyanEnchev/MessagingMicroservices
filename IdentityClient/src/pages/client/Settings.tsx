@@ -18,7 +18,7 @@ const ClientSettings = () => {
   const { isDarkMode, toggleTheme } = useTheme();
 
   const [profileForm, setProfileForm] = useState({
-    name: user?.name || '',
+    name: user?.userName || '',
     email: user?.email || '',
     phoneNumber: '',
     bio: '',
@@ -58,7 +58,7 @@ const ClientSettings = () => {
     e.preventDefault();
     // Simulate API call
     setTimeout(() => {
-      updateUser({ name: profileForm.name });
+      updateUser({ userName: profileForm.name });
       setShowSuccessMessage(true);
       setTimeout(() => setShowSuccessMessage(false), 3000);
     }, 500);

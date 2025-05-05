@@ -3,8 +3,17 @@ import { Moon, Shield, Sun } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/index';
 import { toggleTheme } from '@/services/theme/themeSlice';
+import { ReactNode } from 'react';
 
-export const AuthLayout = () => {
+
+interface AuthLayoutProps {
+  title: string;
+  description: string;
+  showBackLink: boolean;
+  children: ReactNode;
+}
+
+export const AuthLayout = ({  }: AuthLayoutProps) => {
   const dispatch = useDispatch();
   const { isDark } = useSelector((state: RootState) => state.theme);
 

@@ -10,7 +10,6 @@ import {
   Fingerprint,
   UserCheck,
   User,
-  Clock,
   ShieldCheck
 } from 'lucide-react';
 
@@ -72,7 +71,7 @@ const OTPManagement = () => {
   const [generateOTP, { isLoading: isGenerating }] = useGenerateOtpMutation();
   const [validateOTP, { isLoading: isValidating }] = useValidateOtpMutation();
 
-  const { register: registerGenerate, handleSubmit: handleSubmitGenerate, formState: { errors: errorsGenerate }, reset: resetGenerate } = useForm<GenerateOtpFormValues>({
+  const { register: registerGenerate, handleSubmit: handleSubmitGenerate, formState: { errors: errorsGenerate } } = useForm<GenerateOtpFormValues>({
     resolver: zodResolver(generateOtpSchema),
     defaultValues: {
       expirationMinutes: 5,
@@ -87,11 +86,7 @@ const OTPManagement = () => {
 
   const onSubmitGenerate = async (data: GenerateOtpFormValues) => {
     try {
-      const mockOtp = {
-        otp: Array.from({ length: data.size }, () => Math.floor(Math.random() * 10)).join(''),
-        transactionId: `txn${Math.random().toString(36).substring(2, 10)}`,
-      };
-      var otpResult = await generateOTP(data).unwrap();
+      const otpResult = await generateOTP(data).unwrap();
       setGeneratedOtp(otpResult.data);
       toast.success('OTP generated successfully');
     } catch (error) {

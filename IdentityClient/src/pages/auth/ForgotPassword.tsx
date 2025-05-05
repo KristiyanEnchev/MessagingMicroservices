@@ -25,7 +25,7 @@ const ForgotPassword = () => {
     },
   });
 
-  const onSubmit = async (data: ForgotPasswordFormValues) => {
+  const onSubmit = async (_data: ForgotPasswordFormValues) => {
     setIsSubmitting(true);
 
     try {

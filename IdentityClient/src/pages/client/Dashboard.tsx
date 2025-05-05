@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { 
   BarChart, 
   User, 
@@ -12,15 +12,15 @@ import { useAuth } from '@/hooks/useAuth';
 
 const ClientDashboard = () => {
   const { user } = useAuth();
-  const [notifications, setNotifications] = useState(4);
-  const [documents, setDocuments] = useState(12);
-  const [upcomingEvents, setUpcomingEvents] = useState([
+  const [notifications] = useState(4);
+  const [documents] = useState(12);
+  const [upcomingEvents] = useState([
     { id: 1, title: 'Weekly Meeting', date: '2025-04-15T10:00:00', type: 'meeting' },
     { id: 2, title: 'Project Deadline', date: '2025-04-18T17:00:00', type: 'deadline' },
     { id: 3, title: 'Review Session', date: '2025-04-20T14:30:00', type: 'meeting' },
   ]);
   
-  const [recentActivity, setRecentActivity] = useState([
+  const [recentActivity] = useState([
     { id: 1, type: 'document', title: 'Annual Report.pdf', date: '2025-04-11T08:30:00' },
     { id: 2, type: 'message', title: 'Chat with Support', date: '2025-04-10T15:45:00' },
     { id: 3, type: 'login', title: 'System Login', date: '2025-04-10T09:15:00' },

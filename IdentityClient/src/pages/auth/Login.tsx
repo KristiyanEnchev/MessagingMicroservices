@@ -49,6 +49,13 @@ const Login = () => {
       if (responseData.access_token && !responseData.success && !responseData.data) {
         normalizedResponse = {
           success: true,
+          access_token: responseData.access_token,
+          token_type: responseData.token_type || 'Bearer',
+          refresh_token: responseData.refresh_token,
+          expires_in: responseData.expires_in,
+          expires_at: responseData.expires_at || new Date(Date.now() + (responseData.expires_in * 1000)).toISOString(),
+          requires_2fa: responseData.requires_2fa || false,
+          errors: null,
           data: {
             access_token: responseData.access_token,
             token_type: responseData.token_type || 'Bearer',
@@ -58,8 +65,7 @@ const Login = () => {
             requires_2fa: responseData.requires_2fa || false,
             userId: '',
             transactionId: ''
-          },
-          errors: null
+          }
         };
       }
 

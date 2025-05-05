@@ -23,12 +23,39 @@ export interface LogoutRequest {
 }
 
 export interface AuthResponse {
-  accessToken: string;
-  tokenType: string;
-  refreshToken: string;
+  accessToken?: string;
+  tokenType?: string;
+  refreshToken?: string;
   expiresIn?: number;
-  expiresAt?: number;
+  expiresAt?: string | number;
   requiresTwoFactor?: boolean;
+  isAuthenticated?: boolean;
+  access_token?: string;
+  token_type?: string;
+  refresh_token?: string;
+  expires_in?: number;
+  expires_at?: string;
+  requires_2fa?: boolean;
+  
+  userId?: string;
+  transactionId?: string;
+  success?: boolean;
+  
+  errors?: string[] | null;
+  
+  user?: UserData;
+  
+  data?: {
+    userId?: string;
+    transactionId?: string;
+    access_token?: string;
+    token_type?: string;
+    refresh_token?: string;
+    expires_in?: number;
+    expires_at?: string;
+    requires_2fa?: boolean;
+    role?: string;
+  };
 }
 
 export interface UserData {

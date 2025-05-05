@@ -43,7 +43,7 @@ export const AppRoutes = () => {
       {/* Auth Layout Routes */}
       <Route element={
         <GuestRoute>
-          <AuthLayout />
+          <AuthLayout title="Login" description="Enter your email and password to login" showBackLink={false} children={undefined} />
         </GuestRoute>
       }>
         <Route path="auth">

@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { toast as hotToast, Toaster, ToastBar } from 'react-hot-toast';
 import { 
   CheckCircle, 
@@ -59,7 +58,7 @@ export const Toast = () => {
     >
       {(t) => (
         <ToastBar toast={t}>
-          {({ icon, message }) => (
+          {({ message }) => (
             <>
               {t.type === 'success' && (
                 <CheckCircle className="w-5 h-5 text-green-600" />
@@ -88,7 +87,6 @@ export const Toast = () => {
   );
 };
 
-// Utility functions for different toast types
 export const showToast = {
   success: (message: string) => hotToast.success(message),
   error: (message: string) => hotToast.error(message),

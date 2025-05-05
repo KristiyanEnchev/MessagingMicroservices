@@ -2,6 +2,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import * as jwt_decode from 'jwt-decode';
 import { RootState } from '@/store/index';
 import { authApi } from './authApi';
+import { AuthResponse } from '@/types/authTypes';
 
 interface UserData {
   id: string;
@@ -10,38 +11,16 @@ interface UserData {
   roles: string[];
   claims: Record<string, string>;
   requires2fa?: boolean;
+  isTwoFactorEnabled?: boolean;
 }
 
-interface AuthState {
+export interface AuthState {
   user: UserData | null;
   token: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
   expiresAt: number | null;
   isLoading: boolean;
-}
-
-export interface AuthResponse {
-  success?: boolean;
-  data?: {
-    access_token: string;
-    token_type: string;
-    refresh_token: string;
-    expires_in: number;
-    expires_at: string;
-    requires_2fa: boolean;
-    userId?: string;
-    transactionId?: string;
-  };
-  access_token?: string;
-  token_type?: string;
-  refresh_token?: string;
-  expires_in?: number;
-  expires_at?: string;
-  requires_2fa?: boolean;
-  userId?: string;
-  transactionId?: string;
-  errors?: string[] | null;
 }
 
 const initialState: AuthState = {

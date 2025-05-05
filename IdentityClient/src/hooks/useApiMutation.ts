@@ -44,7 +44,16 @@ export function useApiMutation<T>(
 
   const execute = async (args: any): Promise<T | null> => {
     try {
-      const result = await mutate(args).unwrap();
+      const response = await mutate(args);
+      let result;
+      
+      if (typeof (response as any).unwrap === 'function') {
+        result = await (response as any).unwrap();
+      } else if ('data' in response) {
+        result = response.data;
+      } else {
+        result = response;
+      }
 
       setData(result);
       setError(null);

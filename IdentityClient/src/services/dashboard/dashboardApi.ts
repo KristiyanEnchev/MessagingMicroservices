@@ -43,7 +43,7 @@ export const dashboardApi = createApi({
     getSystemStatistics: builder.query<SystemStatistics, void>({
       query: () => 'api/dashboard/statistics',
       providesTags: ['Statistics'],
-      transformResponse: (response, meta, arg) => ({
+      transformResponse: () => ({
         totalUsers: 1250,
         activeUsers: 980,
         totalRoles: 8,
@@ -68,7 +68,7 @@ export const dashboardApi = createApi({
     getSystemStatus: builder.query<SystemStatusResponse, void>({
       query: () => 'api/dashboard/status',
       providesTags: ['Status'],
-      transformResponse: (response, meta, arg) => ({
+      transformResponse: () => ({
         data: {
           status: 'Operational',
           uptime: '23 days, 4 hours, 12 minutes',

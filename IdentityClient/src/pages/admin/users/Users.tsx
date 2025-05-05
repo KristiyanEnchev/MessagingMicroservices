@@ -4,10 +4,8 @@ import {
   User,
   UserCheck,
   UserX,
-  Lock,
   Unlock,
   Shield,
-  Mail,
   Search,
   CheckCircle,
   XCircle,
@@ -27,8 +25,7 @@ import {
   useToggleUserStatusMutation,
   SortBy,
   Sort,
-  ToggleUserValue,
-  FindBy
+  ToggleUserValue
 } from '@/services/identity/identityApi';
 
 const Users = () => {
@@ -44,7 +41,7 @@ const Users = () => {
 
   const [actionMenuOpen, setActionMenuOpen] = useState<string | null>(null);
 
-  const { data: usersData, isLoading, isFetching, refetch } = useGetUsersPagedQuery({
+  const { data: usersData, isLoading, refetch } = useGetUsersPagedQuery({
     pageNumber,
     pageSize,
     sortBy,

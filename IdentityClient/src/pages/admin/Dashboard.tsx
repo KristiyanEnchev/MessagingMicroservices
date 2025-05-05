@@ -164,7 +164,7 @@ const Dashboard = () => {
               <div className="flex justify-center items-center h-full">
                 <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-full" />
               </div>
-            ) : activity?.length > 0 ? (
+            ) : activity?.data?.length! > 0 ? (
               <table className="w-full">
                 <thead className="bg-muted">
                   <tr>
@@ -174,7 +174,7 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {activity.map((item, index) => (
+                {(activity?.data ?? []).map((item, index) => (
                     <motion.tr
                       key={item.id}
                       initial={{ opacity: 0 }}
@@ -189,13 +189,13 @@ const Dashboard = () => {
                           </div>
                           <div className="ml-3">
                             <div className="text-sm font-medium text-foreground">{item.userId || 'Unknown User'}</div>
-                            <div className="text-xs text-muted-foreground">{item.additionalInfo || ''}</div>
+                            <div className="text-xs text-muted-foreground">{item.data || ''}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
-                        <span className={`px-2 py-1 text-xs rounded-full inline-block ${ActivityTypeColors[item.activityType] || 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'}`}>
-                          {item.activityType}
+                        <span className={`px-2 py-1 text-xs rounded-full inline-block ${ActivityTypeColors[item.type] || 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'}`}>
+                          {item.type}
                         </span>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-muted-foreground">

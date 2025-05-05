@@ -1,12 +1,13 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '@/store/index';
 import { setCredentials, logoutUser } from './authSlice';
+import type { QueryReturnValue } from '@reduxjs/toolkit/query';
 
 export const IDENTITY_API_URL = 'http://localhost:8080/';
 export const SERVICES_API_URL = 'http://localhost:5008/';
 
 let isRefreshing = false;
-let refreshPromise: Promise<any> | null = null;
+let refreshPromise: Promise<QueryReturnValue<any, any, any>> | QueryReturnValue<any, any, any> | null = null;
 
 export const identityBaseQuery = fetchBaseQuery({
   baseUrl: IDENTITY_API_URL,
@@ -56,15 +57,17 @@ export const baseQueryWithReauth = async (args: any, api: any, extraOptions: any
           api.dispatch(logoutUser());
           return result;
         }
-
-        refreshPromise = identityBaseQuery(
-          {
-            url: 'api/identity/refresh',
-            method: 'POST',
-            body: { refreshToken },
-          },
-          api,
-          extraOptions
+        
+        refreshPromise = Promise.resolve(
+          identityBaseQuery(
+            {
+              url: 'api/identity/refresh',
+              method: 'POST',
+              body: { refreshToken },
+            },
+            api,
+            extraOptions
+          )
         );
 
         const refreshResult = await refreshPromise;

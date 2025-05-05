@@ -14,8 +14,6 @@ import {
   Edit,
   Trash2,
   KeyRound,
-  CheckCircle,
-  XCircle,
   Clock,
   FileEdit
 } from 'lucide-react';

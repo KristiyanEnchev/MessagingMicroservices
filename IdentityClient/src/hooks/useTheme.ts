@@ -1,10 +1,7 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import {
-  selectIsDarkTheme,
-  toggleTheme,
-  setTheme
-} from '@/services/theme/themeSlice';
+import { toggleTheme, setTheme } from '@/services/theme/themeSlice';
+import { selectIsDarkTheme } from '@/store/selectors';
 
 export const useTheme = () => {
   const dispatch = useAppDispatch();

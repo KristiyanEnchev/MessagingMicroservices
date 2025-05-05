@@ -16,11 +16,10 @@ import { rolesApi } from '@/services/roles/rolesApi';
 import { activityApi } from '@/services/activity/activityApi';
 import { twoFactorAuthApi } from '@/services/auth/twoFactorAuthApi';
 import { dashboardApi } from '@/services/dashboard/dashboardApi';
+import { AuthState } from '@/services/auth/authSlice';
 
-const authTransform = createTransform(
-  (inboundState) => {
-    return inboundState;
-  },
+const authTransform = createTransform<AuthState, AuthState>(
+  (inboundState) => inboundState,
   (outboundState) => {
     const isAuthenticated = !!(outboundState.token && outboundState.user);
 
@@ -44,7 +43,7 @@ const authPersistConfig = {
   version: 1,
   debug: process.env.NODE_ENV !== 'production',
   transforms: [authTransform],
-  stateReconciler: (inboundState, originalState) => {
+  stateReconciler: (inboundState: AuthState, originalState: AuthState) => {
     const enhancedInbound = {
       ...inboundState,
       isAuthenticated: !!(inboundState.token && inboundState.user)

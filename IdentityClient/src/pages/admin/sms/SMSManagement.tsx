@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
-  MessageSquare,
   Search,
-  Plus,
   RefreshCw,
-  ArrowUpDown,
   MoreHorizontal,
   Check,
   Trash,
   Clock,
   Send,
-  Filter,
   Phone
 } from 'lucide-react';
 import { useGetSmsMessagesQuery, useSendCustomSmsMutation } from '@/services/sms/smsApi';
@@ -22,15 +18,13 @@ const SMSManagement = () => {
   const [activeTab, setActiveTab] = useState<'logs' | 'send'>('logs');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [limit, setLimit] = useState(10);
+  const [limit] = useState(10);
   const [offset, setOffset] = useState(0);
   const [recipient, setRecipient] = useState('');
   const [message, setMessage] = useState('');
 
   const {
     data: smsData,
-    isLoading,
-    isFetching,
     refetch
   } = useGetSmsMessagesQuery({
     limit,
@@ -40,7 +34,7 @@ const SMSManagement = () => {
 
   const [sendSms, sendSmsResult] = useSendCustomSmsMutation();
 
-  const smsMessages = smsData?.data?.messages || [
+  const smsMessages = [
     {
       id: '1',
       recipient: '+1234567890',
@@ -226,7 +220,7 @@ const SMSManagement = () => {
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-500 dark:text-gray-400">{new Date(message.sentAt).toLocaleString()}</div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">{new Date(message.message).toLocaleString()}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
@@ -249,9 +243,9 @@ const SMSManagement = () => {
               {/* Pagination */}
               <div className="flex justify-between items-center">
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {smsData?.data ? (
+                  {smsData?.messages ? (
                     <>
-                      Showing <span className="font-medium">{filteredSMSMessages.length}</span> of <span className="font-medium">{smsData.data.totalCount || smsMessages.length}</span> messages
+                      Showing <span className="font-medium">{filteredSMSMessages.length}</span> of <span className="font-medium">{smsData.messages.length}</span> messages
                     </>
                   ) : (
                     <>Loading message count...</>
@@ -272,7 +266,7 @@ const SMSManagement = () => {
                   >
                     {Math.floor(offset / limit) + 1}
                   </Button>
-                  {smsData?.data?.totalCount && offset + limit < smsData.data.totalCount && (
+                  {smsData?.messages?.length && offset + limit < smsData.messages.length && (
                     <Button
                       variant="outline"
                       size="sm"
@@ -284,7 +278,7 @@ const SMSManagement = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    disabled={!smsData?.data?.totalCount || offset + limit >= smsData.data.totalCount}
+                    disabled={!smsData?.messages?.length || offset + limit >= smsData.messages.length}
                     onClick={() => setOffset(offset + limit)}
                   >
                     Next
@@ -331,8 +325,8 @@ const SMSManagement = () => {
                   variant="primary"
                   isLoading={sendSmsResult.isLoading}
                   onClick={handleSendSMS}
-                  startIcon={<Send className="h-5 w-5" />}
                 >
+                  <Send className="h-5 w-5 mr-2" />
                   Send SMS
                 </Button>
               </div>

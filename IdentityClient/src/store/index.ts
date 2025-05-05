@@ -48,12 +48,6 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
 });
 
-export const persistor = persistStore(store, {
-  manualPersist: false,
-  ...(process.env.NODE_ENV !== 'production' ? {
-    onBeforeLift: () => console.log('Redux Persist: Before state rehydration'),
-    onRehydrate: (state) => console.log('Redux Persist: State rehydrated', state ? 'successfully' : 'with issues')
-  } : {})
-});
+export const persistor = persistStore(store);
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

@@ -4,11 +4,7 @@ import {
   Settings as SettingsIcon, 
   Mail, 
   Bell, 
-  Lock, 
-  Globe, 
   Shield, 
-  Layout, 
-  Palette
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';

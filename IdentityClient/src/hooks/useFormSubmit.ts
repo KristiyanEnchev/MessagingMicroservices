@@ -2,9 +2,16 @@ import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { ZodSchema } from 'zod';
 import { UseFormReturn } from 'react-hook-form';
-import { handleApiError } from '../lib/api/apiUtils';
+import { FieldValues } from 'react-hook-form';
 
-interface FormSubmitOptions<TFormData, TResponse> {
+
+export function handleApiError(error: any, _errorMessage: string): string {
+  if (error?.data?.message) return error.data.message;
+  if (error?.message) return error.message;
+  return 'An unknown error occurred';
+}
+
+interface FormSubmitOptions<_TFormData, TResponse> {
   onSuccess?: (data: TResponse) => void;
   onError?: (error: any) => void;
   successMessage?: string;
@@ -12,7 +19,7 @@ interface FormSubmitOptions<TFormData, TResponse> {
   resetForm?: boolean;
 }
 
-export function useFormSubmit<TFormData, TResponse>(
+export function useFormSubmit<TFormData extends FieldValues, TResponse>(
   submitFn: (data: TFormData) => Promise<TResponse>,
   form: UseFormReturn<TFormData>,
   options: FormSubmitOptions<TFormData, TResponse> = {}

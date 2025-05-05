@@ -16,6 +16,10 @@ export interface UserActivityModelListResult {
   success: boolean;
   data: UserActivityModel[];
   errors: string[] | null;
+  length?: number;
+  map?: <T>(callback: (value: UserActivityModel, index: number) => T) => T[];
+  find?: (predicate: (value: UserActivityModel) => boolean) => UserActivityModel | undefined;
+  filter?: (predicate: (value: UserActivityModel) => boolean) => UserActivityModel[];
 }
 
 export interface UserActivityFilterParams {
@@ -32,26 +36,26 @@ export const activityApi = createApi({
   tagTypes: ['UserActivity'],
   endpoints: (builder) => ({
     getUserActivity: builder.query<UserActivityModelListResult, UserActivityFilterParams | void>({
-      query: (params = {}) => ({
+      query: (params?: UserActivityFilterParams) => ({
         url: 'api/user-activity',
-        params
+        params: params ?? undefined
       }),
       providesTags: ['UserActivity']
     }),
-    
+
     getUserActivityById: builder.query<UserActivityModel, string>({
       query: (id) => `api/user-activity/${id}`,
-      providesTags: (result, error, id) => [{ type: 'UserActivity', id }]
+      providesTags: (_, __, id) => [{ type: 'UserActivity', id }]
     }),
-    
+
     getUserActivityByUser: builder.query<UserActivityModelListResult, { userId: string, take?: number }>({
       query: ({ userId, take = 20 }) => ({
         url: `api/user-activity/user/${userId}`,
         params: { take }
       }),
-      providesTags: (result, error, arg) => [{ type: 'UserActivity', id: arg.userId }]
+      providesTags: (_, __, arg) => [{ type: 'UserActivity', id: arg.userId }]
     }),
-    
+
     clearUserActivity: builder.mutation<void, string>({
       query: (userId) => ({
         url: `api/user-activity/clear/${userId}`,

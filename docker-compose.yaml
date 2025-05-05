@@ -25,7 +25,7 @@ services:
     image: sqlpad/sqlpad:latest
     container_name: sqlpad
     ports:
-        - "3000:3000"
+        - "3001:3000"
     environment:
         SQLPAD_ADMIN: "admin"
         SQLPAD_ADMIN_PASSWORD: "admin123"
@@ -204,6 +204,24 @@ services:
       - notificationservice
     networks:
       - identity-api-network
+
+  client:
+    build:
+        context: ./IdentityClient
+        dockerfile: Dockerfile
+        args:
+        - VITE_GATEWAY_API_URL=http://localhost:5008
+        - VITE_IDENTITY_API_URL=http://localhost:8080
+    container_name: react-client
+    ports:
+        - '3000:80'
+    depends_on:
+        authenticationservice:
+          condition: service_started
+    environment:
+        - NODE_ENV=PROD
+    networks:
+        - identity-api-network
 
 volumes:
   datakeys:

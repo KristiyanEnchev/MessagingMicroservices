@@ -38,7 +38,7 @@ const Register = () => {
     }
     
     try {
-      await register(formData).unwrap();
+      await register({ ...formData, rememberMe: false }).unwrap();
       navigate('/auth/login', { 
         state: { 
           message: 'Registration successful! Please check your email to confirm your account.' 

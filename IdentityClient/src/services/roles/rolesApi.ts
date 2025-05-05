@@ -43,7 +43,7 @@ export const rolesApi = createApi({
     getAllRoles: builder.query<StringListResult, void>({
       query: () => 'api/roles',
       providesTags: ['Role'],
-      transformResponse: (response) => {
+      transformResponse: (response: unknown) => {
         if (Array.isArray(response)) {
           return {
             success: true,
@@ -51,9 +51,10 @@ export const rolesApi = createApi({
             errors: null
           };
         }
+        const resp = response as { data?: any[] };
         return {
           success: true,
-          data: response.data || [],
+          data: resp.data || [],
           errors: null
         };
       }
@@ -76,7 +77,7 @@ export const rolesApi = createApi({
           params: { pageNumber, pageSize }
         };
       },
-      transformResponse: (response, meta, arg) => {
+      transformResponse: (response: unknown) => {
         if (!response) {
           return {
             success: true,
@@ -85,22 +86,24 @@ export const rolesApi = createApi({
           };
         }
 
-        if (Array.isArray(response)) {
+        const resp = response as { data?: UserInRoleDto[] };
+
+        if (Array.isArray(resp.data)) {
           return {
             success: true,
-            data: response,
+            data: resp.data,
             errors: null
           };
         }
 
         return {
           success: true,
-          data: response.data || [],
+          data: resp.data || [],
           errors: null
         };
       },
       providesTags: ['Role'],
-      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (_, { queryFulfilled }) => {
         try {
           await queryFulfilled;
         } catch (error) {

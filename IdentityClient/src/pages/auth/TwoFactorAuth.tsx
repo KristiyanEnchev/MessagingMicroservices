@@ -72,7 +72,7 @@ const TwoFactorAuth = () => {
       
       for (let i = 0; i < 6; i++) {
         if (inputRefs[i]) {
-          inputRefs[i].value = pastedCode[i];
+          inputRefs[i]!.value = pastedCode[i];
         }
       }
       

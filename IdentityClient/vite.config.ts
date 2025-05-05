@@ -10,14 +10,8 @@ export default defineConfig(({ mode }) => {
 
   const plugins = [
     react({
-      fastRefresh: mode === 'development',
       babel: {
-        plugins: [
-          [
-            'babel-plugin-transform-react-remove-prop-types',
-            { removeImport: true }
-          ]
-        ]
+        plugins: []
       }
     }),
 

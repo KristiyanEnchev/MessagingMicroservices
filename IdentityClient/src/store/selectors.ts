@@ -30,3 +30,8 @@ export const selectAuthLoading = createSelector(
   (state: RootState) => state.auth.isLoading,
   isLoading => isLoading
 );
+
+export const selectIsDarkTheme = createSelector(
+  (state: RootState) => state.theme.isDark,
+  isDark => isDark
+);

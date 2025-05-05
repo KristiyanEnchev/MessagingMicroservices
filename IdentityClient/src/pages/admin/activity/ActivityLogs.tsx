@@ -51,9 +51,9 @@ const ActivityLogs = () => {
   }, [selectedActivityId]);
   
   const { data: activityResponse, isLoading, refetch } = useGetUserActivityQuery(filters);
-  const activityData = activityResponse?.length ? activityResponse : [];
+  const activityData = activityResponse;
   const { data: usersData } = useGetUsersPagedQuery({ pageNumber: 1, pageSize: 100 });
-  const [clearActivity, { isLoading: isClearing }] = useClearUserActivityMutation();
+  const [clearActivity] = useClearUserActivityMutation();
   const handleFilterChange = (key: keyof UserActivityFilterParams, value: string | undefined) => {
     if (!value) {
       const newFilters = { ...filters };
@@ -95,7 +95,6 @@ const ActivityLogs = () => {
   };
   
   // Find the selected activity for reference
-  const debugActivity = selectedActivityId ? activityData.find((a: any) => a.id === selectedActivityId) : null;
   
   return (
     <div className="flex flex-col min-h-screen p-6">
@@ -228,7 +227,7 @@ const ActivityLogs = () => {
         </div>
       ) : (
         <div className="bg-card rounded-lg shadow-sm p-4 border border-border">
-          {activityData.length > 0 ? (
+          {activityData?.data && activityData.data.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-border">
                 <thead className="bg-muted">
@@ -251,7 +250,7 @@ const ActivityLogs = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-card divide-y divide-border">
-                  {activityData.map((activity) => (
+                  {(activityData?.data ?? []).map((activity) => (
                     <tr 
                       key={activity.id}
                       className={`hover:bg-muted/50 transition-colors cursor-pointer ${
@@ -274,9 +273,9 @@ const ActivityLogs = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 text-xs rounded-full ${
-                          ActivityTypeColors[activity.activityType] || 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
+                          ActivityTypeColors[activity.type] || 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
                         }`}>
-                          {activity.activityType}
+                          {activity.type}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
@@ -348,7 +347,7 @@ const ActivityLogs = () => {
               </div>
               
               {(() => {
-                const selectedActivity = activityData.find((a: any) => a.id === selectedActivityId);
+                const selectedActivity = (activityData?.data ?? []).find((a: any) => a.id === selectedActivityId);
                 if (!selectedActivity) {
                   return (
                     <div className="text-center p-4 text-muted-foreground">
@@ -367,8 +366,8 @@ const ActivityLogs = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-muted-foreground">Activity Type</p>
-                        <span className={`px-2 py-1 text-xs rounded-full inline-block ${ActivityTypeColors[selectedActivity.activityType] || 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'}`}>
-                          {selectedActivity.activityType}
+                        <span className={`px-2 py-1 text-xs rounded-full inline-block ${ActivityTypeColors[selectedActivity.type] || 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'}`}>
+                          {selectedActivity.type}
                         </span>
                       </div>
                       <div>

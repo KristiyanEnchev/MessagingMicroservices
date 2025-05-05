@@ -10,7 +10,6 @@ import {
   Shield,
   Save,
   CheckCircle,
-  XCircle,
   Eye,
   EyeOff,
 } from 'lucide-react';
@@ -55,8 +54,8 @@ const Profile = () => {
   } = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      firstName: user?.name?.split(' ')[0] || '',
-      lastName: user?.name?.split(' ')[1] || '',
+      firstName: user?.userName?.split(' ')[0] || '',
+      lastName: user?.userName?.split(' ')[1] || '',
       email: user?.email || '',
     },
   });
@@ -75,7 +74,7 @@ const Profile = () => {
     },
   });
 
-  const onSubmitProfile = async (data: ProfileFormValues) => {
+  const onSubmitProfile = async (_data: ProfileFormValues) => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -86,7 +85,7 @@ const Profile = () => {
     }
   };
 
-  const onSubmitPassword = async (data: PasswordFormValues) => {
+  const onSubmitPassword = async () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -280,12 +279,12 @@ const Profile = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <h4 className="text-sm font-medium text-gray-500">First Name</h4>
-                    <p className="mt-1">{user?.name?.split(' ')[0] || 'First'}</p>
+                    <p className="mt-1">{user?.userName?.split(' ')[0] || 'First'}</p>
                   </div>
 
                   <div>
                     <h4 className="text-sm font-medium text-gray-500">Last Name</h4>
-                    <p className="mt-1">{user?.name?.split(' ')[1] || 'Last'}</p>
+                    <p className="mt-1">{user?.userName?.split(' ')[1] || 'Last'}</p>
                   </div>
                 </div>
 
