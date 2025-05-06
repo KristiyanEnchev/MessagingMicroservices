@@ -113,21 +113,27 @@ services:
         echo "SQL ready. Starting API...";
         dotnet API.Host.dll
 
+  waitstarter:
+    image: alpine
+    command: ["sh", "-c", "echo 'Sleeping 20s...'; sleep 20"]
+    networks:
+    - identity-api-network
+
   emailservice:
     container_name: email.api
     build:
       context: ./EmailService
       dockerfile: /API/Host/Dockerfile
     environment:
-      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=EmailService;User Id=SA;Password=Aa!123456;Encrypt=False;
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=EmailService;User Id=SA;Password=Aa!123456;Encrypt=True;TrustServerCertificate=True;
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ASPNETCORE_ENVIRONMENT=DEV
     ports:
       - "5070:80"
     restart: on-failure
     depends_on:
-        authenticationservice:
-          condition: service_started
+      waitstarter:
+        condition: service_completed_successfully
     networks:
       - identity-api-network
 
@@ -143,8 +149,8 @@ services:
     ports:
       - "5073:80"
     depends_on:
-        authenticationservice:
-          condition: service_started
+      waitstarter:
+        condition: service_completed_successfully
     networks:
       - identity-api-network
 
@@ -159,8 +165,8 @@ services:
     ports:
       - "5072:80"
     depends_on:
-        authenticationservice:
-          condition: service_started
+      waitstarter:
+        condition: service_completed_successfully
     networks:
       - identity-api-network
 
@@ -176,8 +182,8 @@ services:
       - "5071:80"
     restart: on-failure
     depends_on:
-      authenticationservice:
-        condition: service_started
+      waitstarter:
+        condition: service_completed_successfully
       demo-message-broker:
         condition: service_started
       redis:

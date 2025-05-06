@@ -21,9 +21,15 @@
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer(connectionString,
-                   builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-
+                options.UseSqlServer(connectionString, sqlOptions =>
+                {
+                    sqlOptions.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+                    sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 2,
+                        maxRetryDelay: TimeSpan.FromSeconds(5),
+                        errorNumbersToAdd: null
+                    );
+                }));
         }
 
         public static async Task InitializeDatabaseAsync(this IServiceProvider services, IConfiguration config)

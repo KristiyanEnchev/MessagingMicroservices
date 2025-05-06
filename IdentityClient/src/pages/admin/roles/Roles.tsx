@@ -328,10 +328,10 @@ const Roles = () => {
                           key={user.id}
                           onClick={() => !inRole && toggleUserSelection(user.id)}
                           className={`flex items-center justify-between p-3 rounded-md border ${inRole
-                              ? 'bg-primary/5 border-primary/20'
-                              : selectedUsers.includes(user.id)
-                                ? 'bg-muted/80 border-border'
-                                : 'bg-background border-border hover:bg-muted/30'
+                            ? 'bg-primary/5 border-primary/20'
+                            : selectedUsers.includes(user.id)
+                              ? 'bg-muted/80 border-border'
+                              : 'bg-background border-border hover:bg-muted/30'
                             } transition-all ${!inRole ? 'cursor-pointer' : ''}`}
                         >
                           <div className="flex items-center">
@@ -371,8 +371,8 @@ const Roles = () => {
                                   toggleUserSelection(user.id);
                                 }}
                                 className={`p-2 rounded-md transition-colors ${selectedUsers.includes(user.id)
-                                    ? 'bg-primary/20 text-primary hover:bg-primary/30'
-                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                  ? 'bg-primary/20 text-primary hover:bg-primary/30'
+                                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
                                   }`}
                               >
                                 {selectedUsers.includes(user.id) ? (
